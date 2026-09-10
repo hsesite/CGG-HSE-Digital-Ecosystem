@@ -1,0 +1,104 @@
+
+:root{
+
+/* ===========================
+   CGG HSE Design System v1.0
+   =========================== */
+
+/* Background */
+--bg:#020817;
+--bg-elevated:#0B1220;
+--surface:rgba(15,23,42,.65);
+--surface-solid:#111827;
+--surface-light:rgba(255,255,255,.04);
+
+/* Glass */
+--glass-blur:24px;
+--glass-border:rgba(255,255,255,.08);
+
+/* Accent */
+--accent:#00E676;
+--accent-soft:#33F08A;
+--accent-glow:rgba(0,230,118,.35);
+
+/* Status */
+--success:#22C55E;
+--warning:#F59E0B;
+--danger:#EF4444;
+--info:#3B82F6;
+
+/* Text */
+--text:#F8FAFC;
+--text-secondary:#94A3B8;
+--text-muted:#64748B;
+
+/* Border */
+--border:rgba(255,255,255,.08);
+--border-strong:rgba(255,255,255,.15);
+
+/* Radius */
+--radius-xs:8px;
+--radius-sm:12px;
+--radius-md:18px;
+--radius-lg:24px;
+--radius-xl:32px;
+--radius-full:999px;
+
+/* Shadow */
+--shadow-sm:0 4px 12px rgba(0,0,0,.18);
+--shadow-md:0 12px 32px rgba(0,0,0,.28);
+--shadow-lg:0 20px 48px rgba(0,0,0,.38);
+
+/* Glow */
+--glow-accent:0 0 30px rgba(0,230,118,.25);
+
+/* Spacing */
+--space-1:4px;
+--space-2:8px;
+--space-3:12px;
+--space-4:16px;
+--space-5:20px;
+--space-6:24px;
+--space-8:32px;
+--space-10:40px;
+--space-12:48px;
+--space-16:64px;
+
+/* Typography */
+--font-main:"Inter",system-ui,sans-serif;
+
+--fs-caption:13px;
+--fs-body:16px;
+--fs-subtitle:20px;
+--fs-title:36px;
+--fs-hero:64px;
+
+/* Motion */
+--ease:cubic-bezier(.22,1,.36,1);
+--fast:160ms;
+--normal:240ms;
+--slow:320ms;
+
+/* Sidebar */
+--sidebar-width:88px;
+
+/* Right Panel */
+--right-panel-width:320px;
+
+/* Header */
+--header-height:84px;
+
+/* Mobile */
+--bottom-nav-height:82px;
+
+}
+
+/* Dark Theme Future Ready */
+[data-theme="dark"]{
+color-scheme:dark;
+}
+
+/* Light Theme Placeholder */
+[data-theme="light"]{
+
+}
