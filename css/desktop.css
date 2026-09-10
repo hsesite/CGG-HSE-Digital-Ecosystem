@@ -168,10 +168,11 @@ box-shadow:
 0 0 24px rgba(0,230,118,.08);
 }
 
+
 .dock-item{
-width:48px;
-height:48px;
-border-radius:16px;
+width:52px;
+height:52px;
+border-radius:18px;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -179,41 +180,45 @@ background:transparent;
 border:none;
 color:var(--text-secondary);
 cursor:pointer;
-transition:
-transform .22s cubic-bezier(.2,.9,.2,1),
-background .22s,
-color .22s,
-box-shadow .22s;
 position:relative;
+transition:
+background .22s,
+box-shadow .22s,
+color .22s,
+transform .22s cubic-bezier(.22,.9,.3,1.2);
 }
 
 .dock-item:hover{
 background:rgba(255,255,255,.08);
-color:var(--text);
-transform:translateY(-2px) scale(1.08);
-box-shadow:0 6px 18px rgba(0,230,118,.18);
+color:#ffffff;
+transform:translateY(-3px);
+box-shadow:
+0 8px 24px rgba(0,0,0,.35),
+0 0 18px rgba(0,230,118,.18);
 }
 
 .dock-item.active{
 background:rgba(0,230,118,.14);
 color:var(--accent);
+box-shadow:
+0 0 18px rgba(0,230,118,.28);
 }
 
 .dock-item.active::before{
 content:"";
 position:absolute;
-left:-10px;
+left:-12px;
 width:4px;
-height:22px;
+height:24px;
 border-radius:999px;
 background:var(--accent);
-box-shadow:0 0 12px rgba(0,230,118,.6);
+box-shadow:0 0 14px rgba(0,230,118,.8);
 }
 
 .dock-item svg{
 width:24px;
 height:24px;
-stroke-width:2;
+stroke-width:2.2;
 }
 
 #right-panel{
@@ -235,11 +240,10 @@ border-radius:32px 0 0 32px;
 .dock-item::after{
 content:attr(title);
 position:absolute;
-left:70px;
+left:72px;
 top:50%;
 transform:translateY(-50%);
 background:rgba(8,20,45,.96);
-color:var(--text);
 padding:8px 12px;
 border-radius:10px;
 font-size:12px;
@@ -247,14 +251,14 @@ font-weight:600;
 white-space:nowrap;
 opacity:0;
 pointer-events:none;
-transition:all .18s ease;
+transition:.18s;
 border:1px solid rgba(255,255,255,.08);
-box-shadow:0 8px 24px rgba(0,0,0,.35);
+box-shadow:0 10px 30px rgba(0,0,0,.35);
 }
 
 .dock-item:hover::after{
 opacity:1;
-left:78px;
+left:80px;
 }
 
 /* Dock lebih hidup */
