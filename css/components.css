@@ -275,3 +275,42 @@ bottom:100px;
 }
 
 }
+/* KPI Card */
+
+.kpi-card{
+
+background:#111827;
+
+border:1px solid #1f2937;
+
+border-radius:20px;
+
+padding:20px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:8px;
+
+}
+
+.kpi-card h3{
+
+margin:0;
+
+font-size:14px;
+
+color:#9ca3af;
+
+}
+
+.kpi-card span{
+
+font-size:36px;
+
+font-weight:700;
+
+color:#00E676;
+
+}
