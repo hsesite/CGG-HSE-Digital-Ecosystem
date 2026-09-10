@@ -1,32 +1,20 @@
 
 /* =========================================
    CGG HSE Digital Ecosystem
-   Navigation UI v1.0
+   Sidebar v3 (Clean Rewrite)
    ========================================= */
 
-const PRIMARY_NAV = [
-  "dashboard",
-  "inspection",
-  "hazard",
-  "incident",
-  "environment"
+const NAV_ITEMS = [
+  { route: "dashboard", icon: "layout-dashboard", title: "Dashboard" },
+  { route: "inspection", icon: "clipboard-check", title: "Inspection" },
+  { route: "hazard", icon: "triangle-alert", title: "Hazard" },
+  { route: "incident", icon: "shield-alert", title: "Incident" },
+  { route: "environment", icon: "leaf", title: "Environment" }
 ];
 
-function createNavItem(routeKey, mobile = false) {
-  const route = Router.routes[routeKey];
-  const active = Router.currentRoute === routeKey ? "active" : "";
-
-  const cls = mobile ? "mobile-nav-item" : "dock-item";
-
-  return `
-    <button
-      class="${cls} ${active}"
-      data-route="${routeKey}"
-      title="${route.title}">
-        <i data-lucide="${route.icon}"></i>
-        ${mobile ? `<span>${route.title.split(" ")[0]}</span>` : ""}
-    </button>
-  `;
+function initializeNavigation() {
+  renderSidebar();
+  bindNavigationEvents();
 }
 
 function renderSidebar() {
@@ -34,86 +22,62 @@ function renderSidebar() {
   if (!sidebar) return;
 
   sidebar.innerHTML = `
-    <div class="dock">
-      ${PRIMARY_NAV.map(route => createNavItem(route)).join("")}
+    <div style="
+      width:76px;
+      padding:16px 8px;
+      border-radius:38px;
+      background:rgba(8,20,45,.78);
+      backdrop-filter:blur(24px);
+      border:1px solid rgba(255,255,255,.08);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:center;
+    ">
+      ${NAV_ITEMS.map(item => `
+        <button
+          class="dock-btn"
+          data-route="${item.route}"
+          title="${item.title}"
+          style="
+            width:60px;
+            height:60px;
+            border:none;
+            border-radius:20px;
+            background:${location.hash === "#/"+item.route || (item.route==="dashboard" && location.hash==="") ? "rgba(0,230,118,.16)" : "transparent"};
+            color:${location.hash === "#/"+item.route || (item.route==="dashboard" && location.hash==="") ? "#00E676" : "#B8C7E8"};
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            transition:.2s;
+            position:relative;
+          ">
+          <i data-lucide="${item.icon}" style="width:30px;height:30px;"></i>
+        </button>
+      `).join("")}
     </div>
   `;
-}
 
-function renderMobileNav() {
-  const nav = document.getElementById("mobile-nav");
-  if (!nav) return;
-
-  nav.innerHTML = PRIMARY_NAV
-    .map(route => createNavItem(route, true))
-    .join("");
+  if (window.lucide) {
+    window.lucide.createIcons({
+      attrs: {
+        width: 30,
+        height: 30,
+        "stroke-width": 2.2
+      }
+    });
+  }
 }
 
 function bindNavigationEvents() {
   document.addEventListener("click", e => {
-    const btn = e.target.closest("[data-route]");
+    const btn = e.target.closest(".dock-btn");
     if (!btn) return;
 
-    navigate(btn.dataset.route);
+    location.hash = "#/" + btn.dataset.route;
+    renderSidebar();
   });
-}
 
-function refreshNavigation() {
-  renderSidebar();
-  renderMobileNav();
-
-  if (window.lucide) {
-    lucide.createIcons();
-  }
-}
-
-function initializeNavigation() {
-  refreshNavigation();
-  bindNavigationEvents();
-}
-
-/* =========================================
-   Dock Magnification Engine
-   ========================================= */
-
-function initializeDockMagnification(){
-
-const sidebar=document.getElementById("sidebar");
-
-if(!sidebar) return;
-
-sidebar.addEventListener("mousemove",event=>{
-
-const items=sidebar.querySelectorAll(".dock-item");
-
-items.forEach(item=>{
-
-const rect=item.getBoundingClientRect();
-
-const center=rect.top+rect.height/2;
-
-const distance=Math.abs(event.clientY-center);
-
-const maxDistance=120;
-
-const influence=Math.max(0,1-distance/maxDistance);
-
-const scale=1+influence*.45;
-
-item.style.transform=`scale(${scale})`;
-
-});
-
-});
-
-sidebar.addEventListener("mouseleave",()=>{
-
-sidebar.querySelectorAll(".dock-item").forEach(item=>{
-
-item.style.transform="scale(1)";
-
-});
-
-});
-
+  window.addEventListener("hashchange", renderSidebar);
 }
