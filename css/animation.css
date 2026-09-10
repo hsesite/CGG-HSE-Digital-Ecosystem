@@ -1,0 +1,261 @@
+
+/* =========================================
+   CGG HSE Digital Ecosystem
+   Animation System v1.0
+   Ownership: Motion Only
+   ========================================= */
+
+/* ---------- Global Transition ---------- */
+
+.anim{
+transition:all var(--normal) var(--ease);
+}
+
+/* ---------- Hover Lift ---------- */
+
+.hover-lift{
+transition:transform var(--normal) var(--ease),
+box-shadow var(--normal) var(--ease);
+}
+
+.hover-lift:hover{
+transform:translateY(-4px);
+box-shadow:var(--shadow-lg);
+}
+
+/* ---------- Scale ---------- */
+
+.hover-scale{
+transition:transform var(--fast) var(--ease);
+}
+
+.hover-scale:hover{
+transform:scale(1.03);
+}
+
+/* ---------- Glow ---------- */
+
+.hover-glow{
+transition:box-shadow var(--normal) var(--ease),
+border-color var(--normal) var(--ease);
+}
+
+.hover-glow:hover{
+box-shadow:var(--glow-accent);
+border-color:rgba(0,230,118,.25);
+}
+
+/* ---------- Fade ---------- */
+
+.fade-in{
+animation:fadeIn var(--slow) var(--ease);
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+}
+to{
+opacity:1;
+}
+}
+
+/* ---------- Slide Up ---------- */
+
+.slide-up{
+animation:slideUp var(--slow) var(--ease);
+}
+
+@keyframes slideUp{
+from{
+opacity:0;
+transform:translateY(24px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* ---------- Slide Down ---------- */
+
+.slide-down{
+animation:slideDown var(--slow) var(--ease);
+}
+
+@keyframes slideDown{
+from{
+opacity:0;
+transform:translateY(-18px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* ---------- Slide Left ---------- */
+
+.slide-left{
+animation:slideLeft var(--slow) var(--ease);
+}
+
+@keyframes slideLeft{
+from{
+opacity:0;
+transform:translateX(24px);
+}
+to{
+opacity:1;
+transform:translateX(0);
+}
+}
+
+/* ---------- Slide Right ---------- */
+
+.slide-right{
+animation:slideRight var(--slow) var(--ease);
+}
+
+@keyframes slideRight{
+from{
+opacity:0;
+transform:translateX(-24px);
+}
+to{
+opacity:1;
+transform:translateX(0);
+}
+}
+
+/* ---------- Floating ---------- */
+
+.floating{
+animation:floating 6s ease-in-out infinite;
+}
+
+@keyframes floating{
+0%,100%{
+transform:translateY(0);
+}
+50%{
+transform:translateY(-6px);
+}
+}
+
+/* ---------- Pulse Glow ---------- */
+
+.pulse-glow{
+animation:pulseGlow 2.8s ease-in-out infinite;
+}
+
+@keyframes pulseGlow{
+0%,100%{
+box-shadow:0 0 0 rgba(0,230,118,0);
+}
+50%{
+box-shadow:0 0 24px rgba(0,230,118,.28);
+}
+}
+
+/* ---------- Skeleton ---------- */
+
+.skeleton{
+position:relative;
+overflow:hidden;
+background:rgba(255,255,255,.05);
+}
+
+.skeleton::after{
+content:"";
+position:absolute;
+inset:0;
+transform:translateX(-100%);
+background:linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,.12),
+transparent
+);
+animation:skeleton 1.5s infinite;
+}
+
+@keyframes skeleton{
+100%{
+transform:translateX(100%);
+}
+}
+
+/* ---------- Ripple ---------- */
+
+.ripple{
+position:relative;
+overflow:hidden;
+}
+
+.ripple::after{
+content:"";
+position:absolute;
+left:50%;
+top:50%;
+width:12px;
+height:12px;
+border-radius:50%;
+background:rgba(255,255,255,.35);
+transform:translate(-50%,-50%) scale(0);
+opacity:0;
+transition:transform .55s,opacity .55s;
+}
+
+.ripple:active::after{
+transform:translate(-50%,-50%) scale(18);
+opacity:1;
+transition:0s;
+}
+
+/* ---------- Stagger ---------- */
+
+.stagger>*{
+opacity:0;
+animation:fadeUp .45s forwards;
+}
+
+.stagger>*:nth-child(1){animation-delay:.05s;}
+.stagger>*:nth-child(2){animation-delay:.10s;}
+.stagger>*:nth-child(3){animation-delay:.15s;}
+.stagger>*:nth-child(4){animation-delay:.20s;}
+.stagger>*:nth-child(5){animation-delay:.25s;}
+.stagger>*:nth-child(6){animation-delay:.30s;}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(16px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* ---------- Reduced Motion ---------- */
+
+@media (prefers-reduced-motion:reduce){
+
+.fade-in,
+.slide-up,
+.slide-down,
+.slide-left,
+.slide-right,
+.floating,
+.pulse-glow,
+.stagger>*{
+animation:none!important;
+}
+
+.hover-lift:hover,
+.hover-scale:hover{
+transform:none;
+}
+
+}
