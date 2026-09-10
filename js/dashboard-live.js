@@ -1,31 +1,40 @@
 /* ==========================================
-   Live Dashboard Engine v1.0
+   Dashboard Live Engine v1.0
+   CGG HSE Digital Ecosystem
    ========================================== */
 
 async function refreshDashboard(){
 
   try{
 
-    const data=await apiGet("dashboard");
+    const res = await apiGet("dashboard");
 
-    if(!data.success) return;
+    if(!res.success){
+      console.error("Dashboard API gagal.");
+      return;
+    }
 
-    setText("kpi-inspection",data.kpi.inspection);
-    setText("kpi-finding",data.kpi.finding);
-    setText("kpi-pica",data.kpi.pica);
-    setText("kpi-hazard",data.kpi.hazard);
-    setText("kpi-incident",data.kpi.incident);
-    setText("notif-count",data.notification.unread);
+    setValue("kpi-inspection", res.kpi.inspection);
+    setValue("kpi-finding", res.kpi.finding);
+    setValue("kpi-pica", res.kpi.pica);
+    setValue("kpi-hazard", res.kpi.hazard);
+    setValue("kpi-incident", res.kpi.incident);
+    setValue("notif-count", res.notification.unread);
+
+    const hero = document.getElementById("hero-inspection");
+    if(hero){
+      hero.textContent = res.kpi.inspection;
+    }
 
   }catch(err){
 
-    console.error(err);
+    console.error("Dashboard Error:", err);
 
   }
 
 }
 
-function setText(id,value){
+function setValue(id,value){
 
   const el=document.getElementById(id);
 
