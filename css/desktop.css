@@ -224,3 +224,50 @@ background:rgba(5,15,35,.45);
 backdrop-filter:blur(18px);
 border-radius:32px 0 0 32px;
 }
+
+/* =========================================
+   Sprint 3.5.2
+   Dock Polish
+   ========================================= */
+
+/* Tooltip */
+
+.dock-item::after{
+content:attr(title);
+position:absolute;
+left:70px;
+top:50%;
+transform:translateY(-50%);
+background:rgba(8,20,45,.96);
+color:var(--text);
+padding:8px 12px;
+border-radius:10px;
+font-size:12px;
+font-weight:600;
+white-space:nowrap;
+opacity:0;
+pointer-events:none;
+transition:all .18s ease;
+border:1px solid rgba(255,255,255,.08);
+box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+
+.dock-item:hover::after{
+opacity:1;
+left:78px;
+}
+
+/* Dock lebih hidup */
+
+.dock-item{
+transform-origin:center;
+will-change:transform;
+}
+
+.dock:hover .dock-item{
+transition:
+transform .18s cubic-bezier(.22,.9,.3,1.2),
+background .18s,
+color .18s,
+box-shadow .18s;
+}
