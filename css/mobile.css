@@ -1,0 +1,136 @@
+
+/* =========================================
+   CGG HSE Digital Ecosystem
+   Mobile UI v1.0
+   Ownership: Mobile Only
+   ========================================= */
+
+@media (max-width:768px){
+
+/* Safe Area */
+
+body{
+padding-top:env(safe-area-inset-top);
+padding-bottom:env(safe-area-inset-bottom);
+}
+
+/* Hero */
+
+#hero{
+min-height:170px;
+padding:var(--space-5);
+border-radius:var(--radius-lg);
+}
+
+/* KPI */
+
+#kpi-section{
+display:flex;
+overflow-x:auto;
+gap:var(--space-4);
+padding-bottom:var(--space-2);
+scroll-snap-type:x mandatory;
+}
+
+#kpi-section::-webkit-scrollbar{
+display:none;
+}
+
+#kpi-section>div{
+min-width:240px;
+scroll-snap-align:start;
+}
+
+/* Router */
+
+#router-view{
+padding:var(--space-4);
+border-radius:var(--radius-lg);
+}
+
+/* Bottom Navigation */
+
+#mobile-nav{
+background:rgba(15,23,42,.82);
+backdrop-filter:blur(24px);
+border:1px solid var(--border);
+border-radius:999px;
+box-shadow:
+var(--shadow-lg),
+0 0 20px rgba(0,230,118,.08);
+
+display:flex;
+justify-content:space-around;
+align-items:center;
+padding:0 var(--space-2);
+}
+
+/* Navigation Item */
+
+.mobile-nav-item{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+gap:4px;
+min-width:52px;
+min-height:52px;
+border-radius:999px;
+transition:all var(--normal) var(--ease);
+}
+
+.mobile-nav-item:active{
+transform:scale(.96);
+}
+
+.mobile-nav-item.active{
+background:rgba(0,230,118,.12);
+color:var(--accent);
+}
+
+/* Sidebar Hidden */
+
+#sidebar{
+display:none!important;
+}
+
+/* Right Panel Hidden */
+
+#right-panel{
+display:none!important;
+}
+
+/* Loading */
+
+.loader h1{
+font-size:28px;
+}
+
+.loader p{
+font-size:14px;
+color:var(--text-secondary);
+}
+
+}
+
+/* Small Phones */
+
+@media (max-width:390px){
+
+#hero{
+padding:var(--space-4);
+}
+
+#kpi-section>div{
+min-width:210px;
+}
+
+#mobile-nav{
+height:74px;
+}
+
+.mobile-nav-item{
+min-width:48px;
+}
+
+}
