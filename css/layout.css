@@ -21,6 +21,15 @@ padding:var(--space-6);
 position:sticky;
 top:var(--space-6);
 height:calc(100vh - var(--space-12));
+
+width:100%;
+min-width:var(--sidebar-width);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+overflow:visible;
 }
 
 /* Workspace */
