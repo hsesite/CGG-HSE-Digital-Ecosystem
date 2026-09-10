@@ -72,3 +72,49 @@ function initializeNavigation() {
   bindNavigationEvents();
   initializeDockMagnification();
 }
+
+/* =========================================
+   Dock Magnification Engine
+   ========================================= */
+
+function initializeDockMagnification(){
+
+const sidebar=document.getElementById("sidebar");
+
+if(!sidebar) return;
+
+sidebar.addEventListener("mousemove",event=>{
+
+const items=sidebar.querySelectorAll(".dock-item");
+
+items.forEach(item=>{
+
+const rect=item.getBoundingClientRect();
+
+const center=rect.top+rect.height/2;
+
+const distance=Math.abs(event.clientY-center);
+
+const maxDistance=120;
+
+const influence=Math.max(0,1-distance/maxDistance);
+
+const scale=1+influence*.45;
+
+item.style.transform=`scale(${scale})`;
+
+});
+
+});
+
+sidebar.addEventListener("mouseleave",()=>{
+
+sidebar.querySelectorAll(".dock-item").forEach(item=>{
+
+item.style.transform="scale(1)";
+
+});
+
+});
+
+}
