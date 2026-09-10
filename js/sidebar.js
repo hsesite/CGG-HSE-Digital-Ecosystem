@@ -1,7 +1,7 @@
 
 /* =========================================
    CGG HSE Digital Ecosystem
-   Sidebar v3 (Clean Rewrite)
+   Sidebar v4 (Force Size)
    ========================================= */
 
 const NAV_ITEMS = [
@@ -21,20 +21,22 @@ function renderSidebar() {
   const sidebar = document.getElementById("sidebar");
   if (!sidebar) return;
 
+  const current = location.hash.replace("#/","") || "dashboard";
+
   sidebar.innerHTML = `
     <div style="
       width:76px;
-      padding:16px 8px;
-      border-radius:38px;
-      background:rgba(8,20,45,.78);
-      backdrop-filter:blur(24px);
-      border:1px solid rgba(255,255,255,.08);
+      padding:18px 8px;
       display:flex;
       flex-direction:column;
-      gap:14px;
       align-items:center;
+      gap:14px;
+      border-radius:38px;
+      background:rgba(8,20,45,.78);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(24px);
     ">
-      ${NAV_ITEMS.map(item => `
+      ${NAV_ITEMS.map(item=>`
         <button
           class="dock-btn"
           data-route="${item.route}"
@@ -42,42 +44,63 @@ function renderSidebar() {
           style="
             width:60px;
             height:60px;
-            border:none;
-            border-radius:20px;
-            background:${location.hash === "#/"+item.route || (item.route==="dashboard" && location.hash==="") ? "rgba(0,230,118,.16)" : "transparent"};
-            color:${location.hash === "#/"+item.route || (item.route==="dashboard" && location.hash==="") ? "#00E676" : "#B8C7E8"};
             display:flex;
             align-items:center;
             justify-content:center;
+            border:none;
+            border-radius:20px;
             cursor:pointer;
             transition:.2s;
+            background:${current===item.route ? "rgba(0,230,118,.16)" : "transparent"};
+            color:${current===item.route ? "#00E676" : "#B8C7E8"};
             position:relative;
           ">
-          <i data-lucide="${item.icon}" style="width:30px;height:30px;"></i>
+          <i data-lucide="${item.icon}"></i>
         </button>
       `).join("")}
     </div>
   `;
 
+  // PAKSA ukuran ikon
   if (window.lucide) {
     window.lucide.createIcons({
-      attrs: {
-        width: 30,
-        height: 30,
-        "stroke-width": 2.2
+      attrs:{
+        width:32,
+        height:32,
+        "stroke-width":2.4
       }
     });
   }
+
+  // Kalau createIcons tetap memberi ukuran default,
+  // paksa lagi lewat JS.
+  sidebar.querySelectorAll("svg").forEach(svg=>{
+    svg.setAttribute("width","32");
+    svg.setAttribute("height","32");
+    svg.style.width="32px";
+    svg.style.height="32px";
+  });
 }
 
-function bindNavigationEvents() {
-  document.addEventListener("click", e => {
-    const btn = e.target.closest(".dock-btn");
-    if (!btn) return;
+function bindNavigationEvents(){
 
-    location.hash = "#/" + btn.dataset.route;
+  document.removeEventListener("click", window.__dockClickHandler);
+
+  window.__dockClickHandler=function(e){
+
+    const btn=e.target.closest(".dock-btn");
+
+    if(!btn) return;
+
+    location.hash="#/"+btn.dataset.route;
+
     renderSidebar();
-  });
 
-  window.addEventListener("hashchange", renderSidebar);
+  };
+
+  document.addEventListener("click",window.__dockClickHandler);
+
+  window.removeEventListener("hashchange",renderSidebar);
+  window.addEventListener("hashchange",renderSidebar);
+
 }
