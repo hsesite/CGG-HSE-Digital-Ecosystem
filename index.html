@@ -117,20 +117,6 @@
 <script src="js/api.js"></script>
 
 <script>
-async function testBackend() {
-  try {
-    const health = await apiGet("health");
-    alert(JSON.stringify(health, null, 2));
-  } catch (err) {
-    alert("Gagal terhubung ke backend.\n\n" + err.message);
-  }
-}
-</script>
-
-<button onclick="testBackend()"
-style="position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:10px;cursor:pointer;z-index:9999;">
-Test Backend
-</button>
 
 <script src="js/api.js"></script>
 <script src="js/dashboard-live.js"></script>
