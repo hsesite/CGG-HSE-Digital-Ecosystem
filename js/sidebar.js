@@ -70,7 +70,6 @@ function refreshNavigation() {
 function initializeNavigation() {
   refreshNavigation();
   bindNavigationEvents();
-  initializeDockMagnification();
 }
 
 /* =========================================
