@@ -41,6 +41,10 @@ function initializeApp() {
     APP.initialized = true;
 
     appHealthCheck();
+   
+    initializeRouter();
+
+    initializeNavigation();
 
     window.setTimeout(hideLoadingScreen, 600);
 
