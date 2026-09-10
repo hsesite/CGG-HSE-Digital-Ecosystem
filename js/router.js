@@ -100,7 +100,15 @@ function renderRoute(routeName){
     Router.currentRoute=routeName;
 
     document.title=`${route.title} • CGG HSE`;
+    if (routeName === "dashboard") {
 
+       container.innerHTML = renderDashboardHome();
+
+       initializeDashboard();
+
+       return;
+
+}
     container.innerHTML=`
         <div class="fade-in">
             <div class="section-header">
