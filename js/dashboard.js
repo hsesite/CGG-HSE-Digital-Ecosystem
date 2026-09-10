@@ -1,15 +1,17 @@
-
 /* =========================================
    CGG HSE Digital Ecosystem
-   Executive Dashboard v1.0
+   Executive Dashboard v1.1
    ========================================= */
 
 const Dashboard = {
 
     stats:{
         inspectionToday:0,
+        findingTotal:0,
+        picaOpen:0,
         hazardOpen:0,
-        incidentMonth:0
+        incidentMonth:0,
+        notification:0
     },
 
     contractors:[
@@ -51,7 +53,7 @@ function renderHero(){
                 Executive Dashboard
             </h1>
 
-            <div class="hero-number">
+            <div class="hero-number" id="hero-inspection">
                 ${Dashboard.stats.inspectionToday}
             </div>
 
@@ -76,17 +78,32 @@ function renderKPI(){
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Inspection</span>
-            <span class="kpi-value">${Dashboard.stats.inspectionToday}</span>
+            <span class="kpi-value" id="kpi-inspection">${Dashboard.stats.inspectionToday}</span>
+        </div>
+
+        <div class="kpi-card hover-lift">
+            <span class="kpi-label">Finding</span>
+            <span class="kpi-value" id="kpi-finding">${Dashboard.stats.findingTotal}</span>
+        </div>
+
+        <div class="kpi-card hover-lift">
+            <span class="kpi-label">PICA</span>
+            <span class="kpi-value" id="kpi-pica">${Dashboard.stats.picaOpen}</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Hazard</span>
-            <span class="kpi-value">${Dashboard.stats.hazardOpen}</span>
+            <span class="kpi-value" id="kpi-hazard">${Dashboard.stats.hazardOpen}</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Incident</span>
-            <span class="kpi-value">${Dashboard.stats.incidentMonth}</span>
+            <span class="kpi-value" id="kpi-incident">${Dashboard.stats.incidentMonth}</span>
+        </div>
+
+        <div class="kpi-card hover-lift">
+            <span class="kpi-label">Notification</span>
+            <span class="kpi-value" id="notif-count">${Dashboard.stats.notification}</span>
         </div>
 
     `;
