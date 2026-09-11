@@ -1,153 +1,122 @@
+/* ==========================================
+   CGG HDOS Layout Engine
+   Build 8 Stable
+   ========================================== */
 
-/* =========================================
-   CGG HSE Digital Ecosystem
-   Layout System v1.0
-   Ownership: Layout Only
-   ========================================= */
-
-/* App */
-
-#app{
-display:grid;
-grid-template-columns:var(--sidebar-width) minmax(0,1fr) var(--right-panel-width);
-min-height:100vh;
-gap:var(--space-6);
-padding:var(--space-6);
+*,
+*::before,
+*::after{
+box-sizing:border-box;
 }
 
-/* Sidebar */
+html,
+body{
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#020817;
+}
+
+body{
+
+font-family:Inter,system-ui,sans-serif;
+
+transform:none !important;
+scale:1 !important;
+zoom:1 !important;
+
+}
+
+#app{
+
+position:fixed;
+
+inset:0;
+
+display:grid;
+
+grid-template-columns:88px minmax(0,1fr);
+
+width:100vw;
+height:100vh;
+
+overflow:hidden;
+
+}
 
 #sidebar{
-position:sticky;
-top:var(--space-6);
-height:calc(100vh - var(--space-12));
+
+width:88px;
+height:100%;
+
+position:relative;
+
+z-index:100;
+
+flex:none;
+
+}
+
+main{
+
+position:relative;
 
 width:100%;
-min-width:var(--sidebar-width);
+height:100%;
 
-display:flex;
-justify-content:center;
-align-items:center;
-
-overflow:visible;
-}
-
-/* Workspace */
-
-#workspace{
-display:flex;
-flex-direction:column;
-gap:var(--space-6);
 min-width:0;
+
+overflow:auto;
+
+padding:24px;
+
 }
-
-/* Right Panel */
-
-#right-panel{
-position:sticky;
-top:var(--space-6);
-height:calc(100vh - var(--space-12));
-}
-
-/* Hero */
-
-#hero{
-min-height:220px;
-}
-
-/* KPI */
-
-#kpi-section{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:var(--space-5);
-}
-
-/* Router */
 
 #router-view{
-flex:1;
-min-height:500px;
-}
 
-/* Mobile Navigation */
+width:100%;
+min-width:0;
+min-height:100%;
 
-#mobile-nav{
-display:none;
-}
-
-/* Loading */
-
-#loading-screen{
-position:fixed;
-inset:0;
-display:flex;
-align-items:center;
-justify-content:center;
-background:var(--bg);
-z-index:9999;
-}
-
-.loader{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:var(--space-3);
-}
-
-.loader-logo{
-width:72px;
-height:72px;
-border-radius:var(--radius-lg);
-background:var(--surface-solid);
-}
-
-/* Tablet */
-
-@media (max-width:1200px){
-
-#app{
-grid-template-columns:var(--sidebar-width) minmax(0,1fr);
-}
-
-#right-panel{
-display:none;
-}
-
-}
-
-/* Mobile */
-
-@media (max-width:768px){
-
-#app{
 display:block;
-padding:var(--space-4);
-padding-bottom:calc(var(--bottom-nav-height) + var(--space-4));
+
+}
+
+/* Hilangkan semua transform warisan */
+
+.workspace,
+.dashboard-shell,
+.window,
+.window-content,
+.content{
+
+transform:none !important;
+scale:1 !important;
+zoom:1 !important;
+max-width:none !important;
+
+}
+
+@media(max-width:768px){
+
+#app{
+
+grid-template-columns:72px minmax(0,1fr);
+
 }
 
 #sidebar{
-display:none;
+
+width:72px;
+
 }
 
-#workspace{
-gap:var(--space-5);
-}
+main{
 
-#kpi-section{
-grid-template-columns:1fr;
-}
+padding:16px;
 
-#mobile-nav{
-display:flex;
-position:fixed;
-left:50%;
-transform:translateX(-50%);
-bottom:var(--space-3);
-width:calc(100% - 24px);
-max-width:500px;
-height:var(--bottom-nav-height);
-z-index:900;
 }
 
 }
