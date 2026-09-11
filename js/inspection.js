@@ -112,6 +112,17 @@ const InspectionModule = (() => {
           </button>
 
         </div>
+        if (asModal) {
+
+  const form = view.firstElementChild;
+
+  const holder = document.createElement("div");
+
+  holder.appendChild(form);
+
+  EnterpriseModal.open("Inspection", holder);
+
+}
 
         <!-- ==========================================
              Quick Action Bar
