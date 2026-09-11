@@ -3,7 +3,7 @@
    Build #007
    ========================================== */
 
-const DashboardModule=(()=>{
+window.Dashboard = (() => {
 
 async function render(){
 
