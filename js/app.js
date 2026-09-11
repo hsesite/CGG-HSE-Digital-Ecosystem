@@ -51,3 +51,92 @@ function initializeApp() {
 }
 
 window.addEventListener("DOMContentLoaded", initializeApp);
+/* ==========================================
+   Enterprise Modal Manager
+   FF-01B
+   ========================================== */
+
+window.EnterpriseModal = (() => {
+
+  let backdrop = null;
+  let modal = null;
+  let body = null;
+
+  function ensure() {
+
+    if (backdrop) return;
+
+    backdrop = document.createElement("div");
+    backdrop.className = "enterprise-backdrop";
+
+    modal = document.createElement("div");
+    modal.className = "enterprise-modal";
+
+    modal.innerHTML = `
+      <div class="enterprise-modal-header">
+
+        <div style="display:flex;align-items:center;gap:14px;">
+
+          <div class="enterprise-handle"></div>
+
+          <div class="enterprise-title">
+            <strong id="modal-title">Workspace</strong>
+            <small id="modal-subtitle">CGG HSE Digital Ecosystem</small>
+          </div>
+
+        </div>
+
+        <button class="enterprise-close">✕</button>
+
+      </div>
+
+      <div class="enterprise-modal-body" id="enterprise-body"></div>
+    `;
+
+    body = modal.querySelector("#enterprise-body");
+
+    document.body.append(backdrop, modal);
+
+    backdrop.onclick = close;
+
+    modal.querySelector(".enterprise-close").onclick = close;
+
+    document.addEventListener("keydown", e => {
+
+      if (e.key === "Escape") close();
+
+    });
+
+  }
+
+  function open(title, element) {
+
+    ensure();
+
+    document.getElementById("modal-title").textContent = title;
+
+    body.innerHTML = "";
+
+    body.appendChild(element);
+
+    backdrop.classList.add("show");
+    modal.classList.add("show");
+
+    document.body.style.overflow = "hidden";
+
+  }
+
+  function close() {
+
+    if (!backdrop) return;
+
+    backdrop.classList.remove("show");
+    modal.classList.remove("show");
+
+    document.body.style.overflow = "";
+
+  }
+
+  return { open, close };
+
+})();
