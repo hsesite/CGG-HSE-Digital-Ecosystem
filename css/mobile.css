@@ -7,6 +7,19 @@
 
 @media (max-width:768px){
 
+  .logo-circle{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+  }
+
+  .cgg-logo{
+      width:36px;
+      height:36px;
+  }
+
+}
+
 /* Safe Area */
 
 body{
