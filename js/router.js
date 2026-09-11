@@ -1,200 +1,154 @@
-/* =========================================
-   CGG HSE Digital Ecosystem
-   Navigation Core v2.0
-   Router Engine
-   ========================================= */
+/* ==========================================
+   CGG HDOS Router
+   Build 8A
+   ========================================== */
 
-const Router = {
+window.Router = (() => {
 
-    currentRoute:"dashboard",
+    let current = "dashboard";
 
-    routes:{
+    const routes = {
 
-        dashboard:{
-            title:"Executive Dashboard",
-            icon:"layout-dashboard"
+        dashboard: async () => {
+
+            if (window.Dashboard) {
+                await Dashboard.render();
+            }
+
         },
 
-        inspection:{
-            title:"Safety Inspection",
-            icon:"clipboard-check"
+        inspection: async () => {
+
+            if (window.Inspection) {
+                await Inspection.render();
+            }
+
         },
 
-        hazard:{
-            title:"Hazard Report",
-            icon:"triangle-alert"
+        incident: async () => {
+
+            placeholder("Incident");
+
         },
 
-        incident:{
-            title:"Incident Management",
-            icon:"shield-alert"
+        ptw: async () => {
+
+            placeholder("Permit To Work");
+
         },
 
-        environment:{
-            title:"Environment",
-            icon:"leaf"
+        audit: async () => {
+
+            placeholder("Audit");
+
         },
 
-        medical:{
-            title:"Medical",
-            icon:"heart-pulse"
+        sop: async () => {
+
+            placeholder("SOP Center");
+
         },
 
-        contractor:{
-            title:"Contractor",
-            icon:"building"
+        analytics: async () => {
+
+            placeholder("Analytics");
+
         },
 
-        sop:{
-            title:"SOP & Policy",
-            icon:"book-open"
+        reports: async () => {
+
+            placeholder("Reports");
+
         },
 
-        area:{
-            title:"Area Management",
-            icon:"map"
-        },
+        "mine-permit": async () => {
 
-        admin:{
-            title:"Administration",
-            icon:"settings"
+            placeholder("Mine Permit");
+
         }
 
-    }
+    };
 
-};
+    async function init() {
 
-/* =========================================
-   Current Route
-   ========================================= */
+        const hash = location.hash.replace("#", "") || "dashboard";
 
-function getCurrentHash(){
+        await navigate(hash, false);
 
-    const hash=window.location.hash.replace("#/","");
+        window.addEventListener("hashchange", async () => {
 
-    return hash||"dashboard";
+            const next = location.hash.replace("#", "") || "dashboard";
 
-}
+            await navigate(next, false);
 
-/* =========================================
-   Render Route
-   ========================================= */
-
-function renderRoute(routeName){
-
-    const container=document.getElementById("router-view");
-
-    if(!container) return;
-
-    const route=Router.routes[routeName];
-
-    if(!route){
-
-        container.innerHTML=`
-            <div class="empty-state fade-in">
-                <h3>404</h3>
-                <p>Halaman tidak ditemukan.</p>
-            </div>
-        `;
-
-        return;
+        });
 
     }
 
-    Router.currentRoute=routeName;
+    async function navigate(route, push = true) {
 
-    document.title=`${route.title} • CGG HSE`;
+        if (!routes[route]) {
 
-    /* ---------- Dashboard ---------- */
+            route = "dashboard";
 
-if(routeName==="dashboard"){
+        }
 
-    container.innerHTML=renderDashboardHome();
+        current = route;
 
-    initializeDashboard();
+        if (push) {
 
-    return;
+            location.hash = route;
 
-}
+        }
 
-/* ---------- Inspection ---------- */
+        await routes[route]();
 
-if(routeName==="inspection"){
-
-    InspectionModule.render(true);
-
-    return;
-
-}
-
-    /* ---------- Inspection ---------- */
-
-    if(routeName==="inspection"){
-
-        InspectionModule.openModal();
-
-        return;
+        highlightSidebar(route);
 
     }
 
-    /* ---------- Placeholder Module ---------- */
+    function highlightSidebar(route) {
 
-    container.innerHTML=`
+        document.querySelectorAll(".nav-item").forEach(item => {
 
-        <div class="fade-in">
+            item.classList.remove("active");
 
-            <div class="section-header">
+            if (item.dataset.route === route) {
 
-                <h2 class="section-title">
-                    ${route.title}
-                </h2>
+                item.classList.add("active");
 
-                <span class="badge badge-info">
-                    Sprint Berikutnya
-                </span>
+            }
 
-            </div>
+        });
 
-            <div class="empty-state">
+    }
 
-                <h3>${route.title}</h3>
+    function placeholder(title) {
 
-                <p>Modul ini akan dibangun setelah Inspection selesai.</p>
+        const view = document.getElementById("router-view");
 
-            </div>
+        if (!view) return;
 
-        </div>
+        view.innerHTML = `
+        <div class="glass-card section-card fade-in">
 
-    `;
+            <h2>${title}</h2>
 
-}
+            <p>Modul sedang dipersiapkan.</p>
 
-/* =========================================
-   Navigate
-   ========================================= */
+        </div>`;
+    }
 
-function navigate(route){
+    return {
 
-    window.location.hash=`/${route}`;
+        init,
+        navigate,
+        get current() {
 
-}
+            return current;
 
-/* =========================================
-   Listener
-   ========================================= */
+        }
 
-window.addEventListener("hashchange",()=>{
+    };
 
-    renderRoute(getCurrentHash());
-
-});
-
-/* =========================================
-   Init
-   ========================================= */
-
-function initializeRouter(){
-
-    renderRoute(getCurrentHash());
-
-}
+})();
