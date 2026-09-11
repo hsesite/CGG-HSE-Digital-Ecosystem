@@ -1,6 +1,7 @@
 /* ==========================================
-   Inspection Module v2.0
+   Inspection Module v3.0
    CGG HSE Digital Ecosystem
+   Enterprise Inspection Engine
    ========================================== */
 
 const InspectionModule = (() => {
@@ -11,7 +12,7 @@ const InspectionModule = (() => {
      Render
      ========================================== */
 
-  function render() {
+  async function render() {
 
     const view = document.getElementById("router-view");
     if (!view) return;
@@ -33,27 +34,22 @@ const InspectionModule = (() => {
           <div class="form-grid">
 
             <div class="form-group">
-              <label for="company">Perusahaan</label>
-              <select id="company">
-                <option value="CGG">CGG</option>
-                <option value="VIP">VIP</option>
-                <option value="SLS">SLS</option>
-                <option value="SUBKON">SUBKON</option>
-              </select>
+              <label>Perusahaan</label>
+              <select id="company"></select>
             </div>
 
             <div class="form-group">
-              <label for="site">Site</label>
-              <input id="site" placeholder="Contoh: Siumbatu">
+              <label>Site</label>
+              <input id="site" readonly>
             </div>
 
             <div class="form-group">
-              <label for="area">Area</label>
-              <input id="area" placeholder="Contoh: Pit Jaja KM10">
+              <label>Area</label>
+              <select id="area"></select>
             </div>
 
             <div class="form-group">
-              <label for="shift">Shift</label>
+              <label>Shift</label>
               <select id="shift">
                 <option>Pagi</option>
                 <option>Malam</option>
@@ -61,12 +57,27 @@ const InspectionModule = (() => {
             </div>
 
             <div class="form-group">
-              <label for="inspector">Inspector</label>
+              <label>Unit ID</label>
+              <select id="unit"></select>
+            </div>
+
+            <div class="form-group">
+              <label>Nomor Unit</label>
+              <input id="unit-number" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Jenis Unit</label>
+              <input id="unit-type" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Inspector</label>
               <input id="inspector" placeholder="Nama Inspector">
             </div>
 
             <div class="form-group">
-              <label for="date">Tanggal</label>
+              <label>Tanggal</label>
               <input id="date" type="date">
             </div>
 
@@ -75,13 +86,11 @@ const InspectionModule = (() => {
           <hr class="section-divider">
 
           <div class="finding-header">
-
             <h3>Daftar Temuan</h3>
 
             <button id="btn-add-finding" class="btn-outline" type="button">
               + Tambah Temuan
             </button>
-
           </div>
 
           <div id="finding-list" class="finding-list"></div>
@@ -97,6 +106,8 @@ const InspectionModule = (() => {
 
     document.getElementById("date").value = today();
 
+    populateMasterData();
+
     document
       .getElementById("btn-add-finding")
       .addEventListener("click", addFinding);
@@ -105,7 +116,67 @@ const InspectionModule = (() => {
       .getElementById("btn-save-inspection")
       .addEventListener("click", submitInspection);
 
+    document
+      .getElementById("area")
+      .addEventListener("change", autoFillArea);
+
+    document
+      .getElementById("unit")
+      .addEventListener("change", autoFillUnit);
+
     addFinding();
+
+  }
+
+  /* ==========================================
+     Master Data
+     ========================================== */
+
+  function populateMasterData(){
+
+    const company=document.getElementById("company");
+    const area=document.getElementById("area");
+    const unit=document.getElementById("unit");
+
+    company.innerHTML=InspectionMaster.contractors
+      .map(c=>`<option value="${c.induk}">${c.nama}</option>`)
+      .join("");
+
+    area.innerHTML=InspectionMaster.areas
+      .map(a=>`<option value="${a.area_id}">${a.area}</option>`)
+      .join("");
+
+    unit.innerHTML=InspectionMaster.units
+      .map(u=>`<option value="${u.unit_id}">${u.unit_id}</option>`)
+      .join("");
+
+    autoFillArea();
+    autoFillUnit();
+
+  }
+
+  function autoFillArea(){
+
+    const id=document.getElementById("area").value;
+
+    const data=InspectionMaster.areas.find(a=>a.area_id===id);
+
+    if(!data) return;
+
+    document.getElementById("site").value=data.site;
+
+  }
+
+  function autoFillUnit(){
+
+    const id=document.getElementById("unit").value;
+
+    const data=InspectionMaster.units.find(u=>u.unit_id===id);
+
+    if(!data) return;
+
+    document.getElementById("unit-number").value=data.nomor;
+    document.getElementById("unit-type").value=data.jenis;
 
   }
 
@@ -113,13 +184,16 @@ const InspectionModule = (() => {
      Finding
      ========================================== */
 
-  function addFinding() {
+  function addFinding(){
 
     findings.push({
 
-      category: "Housekeeping",
-      description: "",
-      risk: "LOW"
+      category:"",
+      subcategory:"",
+      description:"",
+      consequence:"",
+      control:"",
+      risk:"LOW"
 
     });
 
@@ -127,7 +201,7 @@ const InspectionModule = (() => {
 
   }
 
-  function removeFinding(index) {
+  function removeFinding(index){
 
     findings.splice(index,1);
 
@@ -143,7 +217,7 @@ const InspectionModule = (() => {
 
   }
 
-  function drawFindings() {
+  function drawFindings(){
 
     const list=document.getElementById("finding-list");
 
@@ -151,7 +225,17 @@ const InspectionModule = (() => {
 
     list.innerHTML="";
 
+    const categories=[...new Set(
+
+      InspectionMaster.hazards.map(h=>h.category)
+
+    )];
+
     findings.forEach((f,index)=>{
+
+      const subs=InspectionMaster.hazards
+        .filter(h=>h.category===f.category)
+        .map(h=>h.subcategory);
 
       const card=document.createElement("div");
 
@@ -163,10 +247,9 @@ const InspectionModule = (() => {
 
           <h4>Temuan ${index+1}</h4>
 
-          <button
-            class="remove-btn"
-            data-index="${index}"
-            type="button">
+          <button class="remove-btn"
+                  data-index="${index}"
+                  type="button">
 
             Hapus
 
@@ -182,17 +265,32 @@ const InspectionModule = (() => {
 
             <select class="category" data-index="${index}">
 
-              <option ${f.category==="Housekeeping"?"selected":""}>Housekeeping</option>
+              <option value="">Pilih</option>
 
-              <option ${f.category==="APD"?"selected":""}>APD</option>
+              ${categories.map(c=>`
+                <option ${f.category===c?"selected":""}>
+                  ${c}
+                </option>
+              `).join("")}
 
-              <option ${f.category==="LV"?"selected":""}>LV</option>
+            </select>
 
-              <option ${f.category==="Heavy Equipment"?"selected":""}>Heavy Equipment</option>
+          </div>
 
-              <option ${f.category==="Environment"?"selected":""}>Environment</option>
+          <div class="form-group">
 
-              <option ${f.category==="Electrical"?"selected":""}>Electrical</option>
+            <label>Subkategori</label>
+
+            <select class="subcategory"
+                    data-index="${index}">
+
+              <option value="">Pilih</option>
+
+              ${subs.map(s=>`
+                <option ${f.subcategory===s?"selected":""}>
+                  ${s}
+                </option>
+              `).join("")}
 
             </select>
 
@@ -202,11 +300,30 @@ const InspectionModule = (() => {
 
             <label>Deskripsi</label>
 
-            <textarea
-              class="description"
-              data-index="${index}"
-              rows="4"
-              placeholder="Jelaskan kondisi yang ditemukan...">${f.description}</textarea>
+            <textarea class="description"
+                      data-index="${index}"
+                      rows="4"
+                      placeholder="Jelaskan kondisi yang ditemukan...">${f.description}</textarea>
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Potensi Konsekuensi</label>
+
+            <input class="consequence"
+                   value="${f.consequence}"
+                   readonly>
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Kontrol Awal</label>
+
+            <input class="control"
+                   value="${f.control}"
+                   readonly>
 
           </div>
 
@@ -214,17 +331,9 @@ const InspectionModule = (() => {
 
             <label>Tingkat Risiko</label>
 
-            <select class="risk" data-index="${index}">
-
-              <option ${f.risk==="LOW"?"selected":""}>LOW</option>
-
-              <option ${f.risk==="MEDIUM"?"selected":""}>MEDIUM</option>
-
-              <option ${f.risk==="HIGH"?"selected":""}>HIGH</option>
-
-              <option ${f.risk==="CRITICAL"?"selected":""}>CRITICAL</option>
-
-            </select>
+            <input class="risk"
+                   value="${f.risk}"
+                   readonly>
 
           </div>
 
@@ -252,7 +361,45 @@ const InspectionModule = (() => {
 
       el.onchange=e=>{
 
-        findings[e.target.dataset.index].category=e.target.value;
+        const i=Number(e.target.dataset.index);
+
+        findings[i].category=e.target.value;
+
+        findings[i].subcategory="";
+        findings[i].consequence="";
+        findings[i].control="";
+        findings[i].risk="LOW";
+
+        drawFindings();
+
+      };
+
+    });
+
+    document.querySelectorAll(".subcategory").forEach(el=>{
+
+      el.onchange=e=>{
+
+        const i=Number(e.target.dataset.index);
+
+        findings[i].subcategory=e.target.value;
+
+        const data=InspectionMaster.hazards.find(h=>
+
+          h.category===findings[i].category &&
+          h.subcategory===findings[i].subcategory
+
+        );
+
+        if(data){
+
+          findings[i].consequence=data.consequence;
+          findings[i].control=data.control;
+          findings[i].risk=data.risk;
+
+        }
+
+        drawFindings();
 
       };
 
@@ -263,16 +410,6 @@ const InspectionModule = (() => {
       el.oninput=e=>{
 
         findings[e.target.dataset.index].description=e.target.value;
-
-      };
-
-    });
-
-    document.querySelectorAll(".risk").forEach(el=>{
-
-      el.onchange=e=>{
-
-        findings[e.target.dataset.index].risk=e.target.value;
 
       };
 
@@ -289,20 +426,17 @@ const InspectionModule = (() => {
     const payload={
 
       company:document.getElementById("company").value,
-      site:document.getElementById("site").value.trim(),
-      area:document.getElementById("area").value.trim(),
+      site:document.getElementById("site").value,
+      area:document.getElementById("area").value,
+      unit:document.getElementById("unit").value,
+      unit_number:document.getElementById("unit-number").value,
+      unit_type:document.getElementById("unit-type").value,
       shift:document.getElementById("shift").value,
       inspector:document.getElementById("inspector").value.trim(),
       date:document.getElementById("date").value,
       findings
 
     };
-
-    if(!payload.site)
-      return alert("Site wajib diisi.");
-
-    if(!payload.area)
-      return alert("Area wajib diisi.");
 
     if(!payload.inspector)
       return alert("Nama Inspector wajib diisi.");
@@ -357,12 +491,12 @@ const InspectionModule = (() => {
   };
 
 })();
+
 /* ==========================================
-   Enterprise Master Loader v1.0
-   Tambahkan di paling bawah inspection.js
+   Enterprise Master Loader
    ========================================== */
 
-window.InspectionMaster = {
+window.InspectionMaster={
 
   units:[],
   areas:[],
@@ -371,32 +505,28 @@ window.InspectionMaster = {
 
   async load(){
 
-    try{
+    const [u,a,c,h]=await Promise.all([
 
-      const [u,a,c,h]=await Promise.all([
-        apiGet("units"),
-        apiGet("areas"),
-        apiGet("contractors"),
-        apiGet("hazards")
-      ]);
+      apiGet("units"),
+      apiGet("areas"),
+      apiGet("contractors"),
+      apiGet("hazards")
 
-      this.units=u.items||[];
-      this.areas=a.items||[];
-      this.contractors=c.items||[];
-      this.hazards=h.items||[];
+    ]);
 
-      console.log("Master Data Loaded",{
-        unit:this.units.length,
-        area:this.areas.length,
-        contractor:this.contractors.length,
-        hazard:this.hazards.length
-      });
+    this.units=u.items||[];
+    this.areas=a.items||[];
+    this.contractors=c.items||[];
+    this.hazards=h.items||[];
 
-    }catch(err){
+    console.log("Master Loaded",{
 
-      console.error("Master Loader Error",err);
+      unit:this.units.length,
+      area:this.areas.length,
+      contractor:this.contractors.length,
+      hazard:this.hazards.length
 
-    }
+    });
 
   }
 
