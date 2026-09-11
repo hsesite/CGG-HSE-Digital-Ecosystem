@@ -170,3 +170,157 @@ box-shadow:0 0 30px rgba(0,230,118,.25);
 }
 
 }
+/* ==========================================
+   FF-00C-1
+   Desktop macOS Layout Refinement
+   Aman - CSS Only
+   ========================================== */
+
+@media (min-width:1024px){
+
+/* ---------- Main Layout ---------- */
+
+.main-content,
+.content-wrapper,
+#router-view{
+
+    max-width:1320px;
+
+    margin:0 auto;
+
+}
+
+/* ---------- Inspection ---------- */
+
+.inspection-form{
+
+    padding:32px;
+
+    border-radius:30px;
+
+}
+
+/* ---------- Grid ---------- */
+
+.form-grid{
+
+    gap:22px 18px;
+
+}
+
+/* ---------- Form ---------- */
+
+.form-group{
+
+    margin-bottom:2px;
+
+}
+
+.form-group label{
+
+    font-size:12px;
+
+    letter-spacing:.04em;
+
+    color:rgba(255,255,255,.62);
+
+    margin-bottom:8px;
+
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    min-height:52px;
+
+}
+
+/* ---------- Textarea ---------- */
+
+.form-group textarea{
+
+    min-height:96px;
+
+    resize:vertical;
+
+}
+
+/* ---------- Card ---------- */
+
+.finding-card{
+
+    padding:20px;
+
+    border-radius:24px;
+
+    margin-bottom:18px;
+
+}
+
+.finding-card-header{
+
+    margin-bottom:16px;
+
+}
+
+.finding-grid{
+
+    gap:16px;
+
+}
+
+/* ---------- Auto Fields ---------- */
+
+.finding-card input[readonly]{
+
+    background:rgba(255,255,255,.04);
+
+    color:rgba(255,255,255,.78);
+
+}
+
+/* ---------- Save Button ---------- */
+
+#btn-save-inspection{
+
+    position:sticky;
+
+    bottom:18px;
+
+    z-index:50;
+
+    border-radius:18px;
+
+    min-height:54px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    box-shadow:0 12px 35px rgba(0,230,118,.22);
+
+}
+
+/* ---------- Quick Action ---------- */
+
+.quick-action-bar{
+
+    bottom:88px;
+
+    right:28px;
+
+}
+
+/* ---------- Smooth ---------- */
+
+.finding-card,
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    transition:all .22s cubic-bezier(.22,1,.36,1);
+
+}
+
+}
