@@ -562,3 +562,86 @@ color:#00E676;
 }
 
 }
+/* ==========================================
+   FF-02
+   Context Ribbon
+   CGG Enterprise
+   ========================================== */
+
+.context-ribbon{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    padding:10px 14px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.03);
+
+    border:1px solid rgba(255,255,255,.06);
+
+    margin-bottom:18px;
+
+}
+
+.context-pill{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:7px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#fff;
+
+    background:rgba(255,255,255,.05);
+
+    transition:.2s;
+
+}
+
+.context-pill.online{
+
+    color:#00E676;
+
+    background:rgba(0,230,118,.10);
+
+}
+
+.context-pill.gps{
+
+    color:#4FC3F7;
+
+}
+
+.context-pill.sync{
+
+    color:#FFD54F;
+
+}
+
+.context-pill.time{
+
+    color:#C4B5FD;
+
+}
+
+.context-pill:hover{
+
+    transform:translateY(-1px);
+
+}
