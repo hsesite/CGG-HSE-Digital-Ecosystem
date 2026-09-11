@@ -1,4 +1,17 @@
 /* ==========================================
+   Compatibility Layer
+   ========================================== */
+
+window.DashboardState = window.DashboardState || {
+  inspection: 0,
+  finding: 0,
+  pica: 0,
+  ptw: 0,
+  notifications: [],
+  contractor: {},
+  liveActivity: []
+};
+/* ==========================================
    Dashboard Live Engine v2.1
    CGG HSE Digital Ecosystem
    ========================================== */
