@@ -1,7 +1,8 @@
 /* ==========================================
-   Inspection Module v3.0
+   Inspection Module v3.1
    CGG HSE Digital Ecosystem
    Enterprise Inspection Engine
+   Foundation Freeze FF-00B-8
    ========================================== */
 
 const InspectionModule = (() => {
@@ -86,17 +87,65 @@ const InspectionModule = (() => {
           <hr class="section-divider">
 
           <div class="finding-header">
+
             <h3>Daftar Temuan</h3>
 
-            <button id="btn-add-finding" class="btn-outline" type="button">
+            <button id="btn-add-finding"
+                    class="btn-outline"
+                    type="button">
+
               + Tambah Temuan
+
             </button>
+
           </div>
 
-          <div id="finding-list" class="finding-list"></div>
+          <div id="finding-list"
+               class="finding-list"></div>
 
-          <button id="btn-save-inspection" class="btn-primary" type="button">
+          <button id="btn-save-inspection"
+                  class="btn-primary"
+                  type="button">
+
             Simpan Inspection
+
+          </button>
+
+        </div>
+
+        <!-- ==========================================
+             Quick Action Bar
+             FF-00B-8
+             ========================================== -->
+
+        <div id="quick-action-bar"
+             class="quick-action-bar">
+
+          <button id="fab-photo"
+                  class="quick-action-btn"
+                  type="button"
+                  title="Foto">
+
+            📷
+
+          </button>
+
+          <button id="fab-add"
+                  class="quick-action-btn"
+                  type="button"
+                  title="Tambah Temuan">
+
+            ➕
+
+          </button>
+
+          <button id="fab-save"
+                  class="quick-action-btn primary"
+                  type="button"
+                  title="Simpan Inspection">
+
+            Simpan
+
           </button>
 
         </div>
@@ -125,6 +174,10 @@ const InspectionModule = (() => {
       .addEventListener("change", autoFillUnit);
 
     addFinding();
+
+    /* FF-00B-8 */
+
+    initQuickActionBar();
 
   }
 
@@ -159,7 +212,9 @@ const InspectionModule = (() => {
 
     const id=document.getElementById("area").value;
 
-    const data=InspectionMaster.areas.find(a=>a.area_id===id);
+    const data=InspectionMaster.areas.find(
+      a=>a.area_id===id
+    );
 
     if(!data) return;
 
@@ -171,7 +226,9 @@ const InspectionModule = (() => {
 
     const id=document.getElementById("unit").value;
 
-    const data=InspectionMaster.units.find(u=>u.unit_id===id);
+    const data=InspectionMaster.units.find(
+      u=>u.unit_id===id
+    );
 
     if(!data) return;
 
@@ -208,7 +265,6 @@ const InspectionModule = (() => {
     if(findings.length===0){
 
       addFinding();
-
       return;
 
     }
@@ -225,11 +281,11 @@ const InspectionModule = (() => {
 
     list.innerHTML="";
 
-    const categories=[...new Set(
-
-      InspectionMaster.hazards.map(h=>h.category)
-
-    )];
+    const categories=[
+      ...new Set(
+        InspectionMaster.hazards.map(h=>h.category)
+      )
+    ];
 
     findings.forEach((f,index)=>{
 
@@ -263,7 +319,8 @@ const InspectionModule = (() => {
 
             <label>Kategori</label>
 
-            <select class="category" data-index="${index}">
+            <select class="category"
+                    data-index="${index}">
 
               <option value="">Pilih</option>
 
@@ -348,8 +405,7 @@ const InspectionModule = (() => {
     bindFindingEvents();
 
   }
-
-  function bindFindingEvents(){
+     function bindFindingEvents(){
 
     document.querySelectorAll(".remove-btn").forEach(btn=>{
 
@@ -364,11 +420,25 @@ const InspectionModule = (() => {
         const i=Number(e.target.dataset.index);
 
         findings[i].category=e.target.value;
-
         findings[i].subcategory="";
-        findings[i].consequence="";
-        findings[i].control="";
-        findings[i].risk="LOW";
+
+        const match=InspectionMaster.hazards.find(
+          h=>h.category===findings[i].category
+        );
+
+        if(match){
+
+          findings[i].consequence=match.consequence;
+          findings[i].control=match.control;
+          findings[i].risk=match.risk;
+
+        }else{
+
+          findings[i].consequence="";
+          findings[i].control="";
+          findings[i].risk="LOW";
+
+        }
 
         drawFindings();
 
@@ -384,18 +454,17 @@ const InspectionModule = (() => {
 
         findings[i].subcategory=e.target.value;
 
-        const data=InspectionMaster.hazards.find(h=>
-
-          h.category===findings[i].category &&
-          h.subcategory===findings[i].subcategory
-
+        const match=InspectionMaster.hazards.find(
+          h=>
+            h.category===findings[i].category &&
+            h.subcategory===findings[i].subcategory
         );
 
-        if(data){
+        if(match){
 
-          findings[i].consequence=data.consequence;
-          findings[i].control=data.control;
-          findings[i].risk=data.risk;
+          findings[i].consequence=match.consequence;
+          findings[i].control=match.control;
+          findings[i].risk=match.risk;
 
         }
 
@@ -428,15 +497,21 @@ const InspectionModule = (() => {
       company:document.getElementById("company").value,
       site:document.getElementById("site").value,
       area:document.getElementById("area").value,
+      shift:document.getElementById("shift").value,
       unit:document.getElementById("unit").value,
       unit_number:document.getElementById("unit-number").value,
       unit_type:document.getElementById("unit-type").value,
-      shift:document.getElementById("shift").value,
       inspector:document.getElementById("inspector").value.trim(),
       date:document.getElementById("date").value,
       findings
 
     };
+
+    if(!payload.area)
+      return alert("Area wajib dipilih.");
+
+    if(!payload.unit)
+      return alert("Unit wajib dipilih.");
 
     if(!payload.inspector)
       return alert("Nama Inspector wajib diisi.");
@@ -478,6 +553,75 @@ const InspectionModule = (() => {
 
   }
 
+  /* ==========================================
+     Quick Action Bar
+     FF-00B-8
+     ========================================== */
+
+  function initQuickActionBar(){
+
+    const bar=document.getElementById("quick-action-bar");
+
+    if(!bar) return;
+
+    const btnAdd=document.getElementById("fab-add");
+    const btnSave=document.getElementById("fab-save");
+    const btnPhoto=document.getElementById("fab-photo");
+
+    const handleScroll=()=>{
+
+      if(window.scrollY>280){
+
+        bar.classList.add("show");
+
+      }else{
+
+        bar.classList.remove("show");
+
+      }
+
+    };
+
+    window.addEventListener("scroll",handleScroll,{passive:true});
+
+    handleScroll();
+
+    if(btnAdd){
+
+      btnAdd.onclick=()=>{
+
+        document.getElementById("btn-add-finding")?.click();
+
+      };
+
+    }
+
+    if(btnSave){
+
+      btnSave.onclick=()=>{
+
+        document.getElementById("btn-save-inspection")?.click();
+
+      };
+
+    }
+
+    if(btnPhoto){
+
+      btnPhoto.onclick=()=>{
+
+        alert("Fitur kamera akan diaktifkan pada Sprint 4.");
+
+      };
+
+    }
+
+  }
+
+  /* ==========================================
+     Helper
+     ========================================== */
+
   function today(){
 
     return new Date().toISOString().split("T")[0];
@@ -494,6 +638,7 @@ const InspectionModule = (() => {
 
 /* ==========================================
    Enterprise Master Loader
+   v3.1
    ========================================== */
 
 window.InspectionMaster={
@@ -505,28 +650,36 @@ window.InspectionMaster={
 
   async load(){
 
-    const [u,a,c,h]=await Promise.all([
+    try{
 
-      apiGet("units"),
-      apiGet("areas"),
-      apiGet("contractors"),
-      apiGet("hazards")
+      const [u,a,c,h]=await Promise.all([
 
-    ]);
+        apiGet("units"),
+        apiGet("areas"),
+        apiGet("contractors"),
+        apiGet("hazards")
 
-    this.units=u.items||[];
-    this.areas=a.items||[];
-    this.contractors=c.items||[];
-    this.hazards=h.items||[];
+      ]);
 
-    console.log("Master Loaded",{
+      this.units=u.items||[];
+      this.areas=a.items||[];
+      this.contractors=c.items||[];
+      this.hazards=h.items||[];
 
-      unit:this.units.length,
-      area:this.areas.length,
-      contractor:this.contractors.length,
-      hazard:this.hazards.length
+      console.log("Master Data Loaded",{
 
-    });
+        unit:this.units.length,
+        area:this.areas.length,
+        contractor:this.contractors.length,
+        hazard:this.hazards.length
+
+      });
+
+    }catch(err){
+
+      console.error("Master Loader Error",err);
+
+    }
 
   }
 
