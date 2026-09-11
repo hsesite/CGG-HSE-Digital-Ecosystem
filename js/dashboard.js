@@ -1,18 +1,10 @@
-/* =========================================
+/* ==========================================
+   Dashboard Engine v2.0
    CGG HSE Digital Ecosystem
-   Executive Dashboard v1.1
-   ========================================= */
+   Frontend + Live KPI
+   ========================================== */
 
-const Dashboard = {
-
-    stats:{
-        inspectionToday:0,
-        findingTotal:0,
-        picaOpen:0,
-        hazardOpen:0,
-        incidentMonth:0,
-        notification:0
-    },
+const Dashboard={
 
     contractors:[
         {
@@ -45,16 +37,19 @@ function renderHero(){
     if(!hero) return;
 
     hero.innerHTML=`
+
         <div class="hero-card slide-up">
 
-            <span class="badge badge-success">System Online</span>
+            <span class="badge badge-success">
+                System Online
+            </span>
 
             <h1 class="hero-title">
                 Executive Dashboard
             </h1>
 
-            <div class="hero-number" id="hero-inspection">
-                ${Dashboard.stats.inspectionToday}
+            <div id="hero-inspection" class="hero-number">
+                0
             </div>
 
             <p class="hero-subtitle">
@@ -62,6 +57,7 @@ function renderHero(){
             </p>
 
         </div>
+
     `;
 
 }
@@ -78,32 +74,32 @@ function renderKPI(){
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Inspection</span>
-            <span class="kpi-value" id="kpi-inspection">${Dashboard.stats.inspectionToday}</span>
+            <span id="kpi-inspection" class="kpi-value">0</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Finding</span>
-            <span class="kpi-value" id="kpi-finding">${Dashboard.stats.findingTotal}</span>
+            <span id="kpi-finding" class="kpi-value">0</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">PICA</span>
-            <span class="kpi-value" id="kpi-pica">${Dashboard.stats.picaOpen}</span>
+            <span id="kpi-pica" class="kpi-value">0</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Hazard</span>
-            <span class="kpi-value" id="kpi-hazard">${Dashboard.stats.hazardOpen}</span>
+            <span id="kpi-hazard" class="kpi-value">0</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Incident</span>
-            <span class="kpi-value" id="kpi-incident">${Dashboard.stats.incidentMonth}</span>
+            <span id="kpi-incident" class="kpi-value">0</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Notification</span>
-            <span class="kpi-value" id="notif-count">${Dashboard.stats.notification}</span>
+            <span id="notif-count" class="kpi-value">0</span>
         </div>
 
     `;
@@ -119,6 +115,7 @@ function renderDashboardHome(){
         <div class="slide-up">
 
             <div class="section-header">
+
                 <h2 class="section-title">
                     Ringkasan Operasional
                 </h2>
@@ -126,6 +123,7 @@ function renderDashboardHome(){
                 <span class="badge badge-info">
                     Prototype
                 </span>
+
             </div>
 
             <div class="glass" style="padding:24px;margin-bottom:24px;">
@@ -191,7 +189,6 @@ function renderDashboardHome(){
 function initializeDashboard(){
 
     renderHero();
-
     renderKPI();
 
 }
