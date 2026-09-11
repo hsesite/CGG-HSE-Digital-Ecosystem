@@ -107,21 +107,25 @@ function renderRoute(routeName){
 
     /* ---------- Dashboard ---------- */
 
-    if(routeName==="dashboard"){
+if(routeName==="dashboard"){
 
-        container.innerHTML=renderDashboardHome();
+    container.innerHTML=renderDashboardHome();
 
-        initializeDashboard();
+    initializeDashboard();
 
-        if(window.DashboardLive){
+    return;
 
-            DashboardLive.refresh();
+}
 
-        }
+/* ---------- Inspection ---------- */
 
-        return;
+if(routeName==="inspection"){
 
-    }
+    InspectionModule.render();
+
+    return;
+
+}
 
     /* ---------- Inspection ---------- */
 
