@@ -16,6 +16,8 @@ const InspectionModule = (() => {
     const view = document.getElementById("router-view");
     if (!view) return;
 
+    await InspectionMaster.load();
+
     findings = [];
 
     view.innerHTML = `
@@ -355,3 +357,47 @@ const InspectionModule = (() => {
   };
 
 })();
+/* ==========================================
+   Enterprise Master Loader v1.0
+   Tambahkan di paling bawah inspection.js
+   ========================================== */
+
+window.InspectionMaster = {
+
+  units:[],
+  areas:[],
+  contractors:[],
+  hazards:[],
+
+  async load(){
+
+    try{
+
+      const [u,a,c,h]=await Promise.all([
+        apiGet("units"),
+        apiGet("areas"),
+        apiGet("contractors"),
+        apiGet("hazards")
+      ]);
+
+      this.units=u.items||[];
+      this.areas=a.items||[];
+      this.contractors=c.items||[];
+      this.hazards=h.items||[];
+
+      console.log("Master Data Loaded",{
+        unit:this.units.length,
+        area:this.areas.length,
+        contractor:this.contractors.length,
+        hazard:this.hazards.length
+      });
+
+    }catch(err){
+
+      console.error("Master Loader Error",err);
+
+    }
+
+  }
+
+};
