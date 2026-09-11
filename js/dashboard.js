@@ -365,3 +365,11 @@ refresh
 };
 
 })();
+/* ==========================================
+   Legacy Compatibility (WAJIB)
+   Jangan hapus, dipakai router.js lama
+   ========================================== */
+
+window.renderDashboardHome = function () {
+  return Dashboard.render();
+};
