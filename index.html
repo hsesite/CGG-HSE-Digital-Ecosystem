@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>CGG HSE Digital Operating System</title>
 
-<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020817">
 
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="assets/Logo/logo-cgg.png">
+
+<!-- CSS -->
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
@@ -22,34 +27,11 @@
 <link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/animation.css">
 
-<link rel="icon" href="assets/Logo/logo-cgg.png">
-
 <style>
 
-html,body{
-margin:0;
-padding:0;
-height:100%;
-background:#060b14;
-overflow:hidden;
-font-family:Inter,system-ui,sans-serif;
-}
-
-#app{
-display:grid;
-grid-template-columns:88px 1fr;
-height:100vh;
-}
-
-main{
-position:relative;
-overflow:auto;
-padding:24px;
-}
-
-#router-view{
-min-height:100%;
-}
+/* ==================================================
+   Splash Screen
+   ================================================== */
 
 #splash-screen{
 
@@ -57,33 +39,36 @@ position:fixed;
 inset:0;
 
 display:flex;
-align-items:center;
-justify-content:center;
 flex-direction:column;
+justify-content:center;
+align-items:center;
 
 background:
-radial-gradient(circle at top,#0f3d2a,#05080d);
+radial-gradient(circle at top,#0f3d2a 0%,#05080d 100%);
 
 z-index:99999;
 
-transition:opacity .45s ease;
+transition:opacity .45s ease, visibility .45s ease;
 
 }
 
 #splash-screen.fade-out{
 
 opacity:0;
-pointer-events:none;
+visibility:hidden;
 
 }
 
-.splash-logo-cgg.png{
+.splash-logo{
 
 width:120px;
 height:120px;
+
 object-fit:contain;
 
-animation:pulse 1.8s infinite;
+filter:drop-shadow(0 0 22px rgba(0,230,118,.35));
+
+animation:pulse 2s infinite ease-in-out;
 
 }
 
@@ -96,36 +81,27 @@ animation:pulse 1.8s infinite;
 
 .splash-title{
 
-margin-top:18px;
-font-size:22px;
+margin-top:20px;
+
+font-size:24px;
 font-weight:700;
-color:white;
+
+color:#fff;
 
 }
 
 .splash-sub{
 
-margin-top:6px;
-color:#9fb7a9;
+margin-top:8px;
+
 font-size:14px;
+color:#9fb7a9;
 
 }
 
 @media(max-width:768px){
 
-#app{
-
-grid-template-columns:72px 1fr;
-
-}
-
-main{
-
-padding:16px;
-
-}
-
-.splash-logo-cgg.png{
+.splash-logo{
 
 width:92px;
 height:92px;
@@ -146,11 +122,16 @@ font-size:18px;
 
 <body>
 
+<!-- ==========================================
+     Splash Screen
+     ========================================== -->
+
 <div id="splash-screen">
 
-<img src=assets/Logo/logo-cgg.png">
-class="splash-logo-cgg.png"
-alt="CGG">
+<img
+src="assets/Logo/logo-cgg.png"
+class="splash-logo"
+alt="CGG Logo">
 
 <div class="splash-title">
 
@@ -166,6 +147,10 @@ Loading Command Center...
 
 </div>
 
+<!-- ==========================================
+     Main App
+     ========================================== -->
+
 <div id="app">
 
 <aside id="sidebar"></aside>
@@ -177,6 +162,10 @@ Loading Command Center...
 </main>
 
 </div>
+
+<!-- ==========================================
+     JS Engine
+     ========================================== -->
 
 <script src="js/api.js"></script>
 
@@ -195,6 +184,26 @@ Loading Command Center...
 
 <script src="js/router.js"></script>
 <script src="js/app.js"></script>
+
+<script>
+
+/* ==========================================
+   Splash Controller
+   ========================================== */
+
+window.addEventListener("load",()=>{
+
+setTimeout(()=>{
+
+document
+.getElementById("splash-screen")
+.classList.add("fade-out");
+
+},1200);
+
+});
+
+</script>
 
 </body>
 </html>
