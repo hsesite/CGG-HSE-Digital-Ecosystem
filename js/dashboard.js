@@ -33,17 +33,21 @@ window.Dashboard = (() => {
 
   <div class="executive-header glass-card">
 
-    <div class="executive-left">
+   <div class="executive-left">
 
-      <div class="logo-circle">CGG</div>
+  <div class="logo-circle">
+    <img
+      src="assets/img/logo-cgg.png"
+      alt="CGG Logo"
+      class="cgg-logo">
+  </div>
 
-      <div>
-        <h1>CGG HSE Digital Operating System</h1>
-        <p>Command Center • Foreman Safety</p>
-      </div>
+  <div>
+    <h1>CGG HSE Digital Operating System</h1>
+    <p>Command Center • Foreman Safety</p>
+  </div>
 
-    </div>
-
+</div>
     <div class="executive-right">
       <div id="live-clock">00:00:00</div>
     </div>
