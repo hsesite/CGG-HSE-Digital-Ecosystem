@@ -363,6 +363,24 @@ color:#000;
 font-weight:bold;
 
 }
+.logo-circle{
+    width:64px;
+    height:64px;
+    border-radius:18px;
+    background:rgba(255,255,255,.06);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 24px rgba(0,230,118,.18);
+}
+
+.cgg-logo{
+    width:46px;
+    height:46px;
+    object-fit:contain;
+    filter:drop-shadow(0 0 10px rgba(0,230,118,.35));
+}
 
 .command-center{
 
