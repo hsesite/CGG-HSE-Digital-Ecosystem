@@ -1,57 +1,153 @@
 /* ==========================================
-   CGG HDOS Bootstrap
-   Build 8A Emergency Fix
+   CGG HSE Digital Operating System
+   App Bootstrap
+   Build 8A Stable
    ========================================== */
 
-window.addEventListener("DOMContentLoaded", async () => {
+(() => {
 
-    const splash = document.getElementById("splash-screen");
+"use strict";
 
-    // Splash hilang dulu (jangan menunggu modul)
-    if (splash) {
-        splash.classList.add("fade-out");
-        setTimeout(() => splash.remove(), 300);
-    }
+window.CGG = window.CGG || {};
 
-    // Sidebar
-    try {
-        window.Sidebar?.init?.();
-    } catch (e) {
-        console.error("Sidebar:", e);
-    }
+CGG.version = "8A Stable";
 
-    // Dashboard Live
-    try {
-        window.DashboardLive?.start?.();
-    } catch (e) {
-        console.error("DashboardLive:", e);
-    }
+const Boot = {
 
-    // Router
-    try {
+started:false,
 
-        if (window.Router?.init) {
+async start(){
 
-            await Router.init();
+if(this.started) return;
 
-        } else if (window.Dashboard?.render) {
+this.started=true;
 
-            // Fallback paksa render dashboard
-            await Dashboard.render();
+console.log("CGG HDOS Boot Starting...");
 
-        }
+await this.hideSplash();
 
-    } catch (e) {
+await this.initCore();
 
-        console.error("Router:", e);
+await this.initModules();
 
-        // Fallback terakhir
-        if (window.Dashboard?.render) {
-            await Dashboard.render();
-        }
+console.log("CGG HDOS Boot Complete");
 
-    }
+},
 
-    console.log("CGG HDOS Boot Complete");
+async hideSplash(){
 
-});
+const splash=document.getElementById("splash-screen");
+
+if(!splash) return;
+
+await new Promise(r=>requestAnimationFrame(r));
+
+splash.classList.add("fade-out");
+
+setTimeout(()=>{
+
+if(splash.parentNode){
+
+splash.parentNode.removeChild(splash);
+
+}
+
+},420);
+
+},
+
+async initCore(){
+
+this.ensureApp();
+
+this.ensureRouterView();
+
+},
+
+async initModules(){
+
+await this.safe("Sidebar",()=>window.Sidebar?.init?.());
+
+await this.safe("Window Manager",()=>window.WindowManager?.init?.());
+
+await this.safe("Command Center",()=>window.CommandCenter?.init?.());
+
+await this.safe("Dashboard Live",()=>window.DashboardLive?.start?.());
+
+await this.safe("Router",()=>window.Router?.init?.());
+
+},
+
+ensureApp(){
+
+let app=document.getElementById("app");
+
+if(app) return;
+
+app=document.createElement("div");
+
+app.id="app";
+
+document.body.appendChild(app);
+
+},
+
+ensureRouterView(){
+
+let app=document.getElementById("app");
+
+let main=app.querySelector("main");
+
+if(!main){
+
+main=document.createElement("main");
+
+app.appendChild(main);
+
+}
+
+let view=document.getElementById("router-view");
+
+if(!view){
+
+view=document.createElement("div");
+
+view.id="router-view";
+
+main.appendChild(view);
+
+}
+
+},
+
+async safe(name,fn){
+
+try{
+
+if(typeof fn==="function"){
+
+await fn();
+
+console.log("✔ "+name);
+
+}else{
+
+console.log("• "+name+" skipped");
+
+}
+
+}catch(err){
+
+console.error("✖ "+name,err);
+
+}
+
+}
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>Boot.start());
+
+window.CGG.boot=Boot;
+
+})();
