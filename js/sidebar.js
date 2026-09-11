@@ -202,8 +202,9 @@ return`
 
 <button id="sb-toggle" class="sb-toggle">☰</button>
 
-<img src="assets/Logo/logo-cgg.png" alt="CGG Logo">
-
+<img src="/CGG-HSE-Digital-Ecosystem/assets/Logo/logo-cgg.png"
+     alt="CGG Logo"
+     onerror="this.src='assets/Logo/logo-cgg.png'">
 <div class="sb-brand">
 <b>CGG HDOS</b>
 <span>Digital Operating System</span>
