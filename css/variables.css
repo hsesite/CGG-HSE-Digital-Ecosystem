@@ -1,0 +1,155 @@
+/* ==========================================
+   CGG HSE Digital Operating System
+   Design Engine v10.1
+   Global Design Tokens
+   ========================================== */
+
+:root{
+
+/* ---------- Brand ---------- */
+
+--brand-green:#00E676;
+--brand-green-dark:#00C853;
+--brand-blue:#3B82F6;
+--brand-orange:#F59E0B;
+--brand-red:#EF4444;
+
+/* ---------- Background ---------- */
+
+--bg-primary:#020617;
+--bg-secondary:#0B1220;
+--surface:#0F172A;
+--surface-2:#162033;
+
+/* ---------- Glass ---------- */
+
+--glass:rgba(20,28,45,.72);
+--glass-light:rgba(255,255,255,.05);
+--glass-border:rgba(255,255,255,.08);
+
+--blur-xl:24px;
+--blur-lg:18px;
+--blur-md:12px;
+
+/* ---------- Text ---------- */
+
+--text:#E5E7EB;
+--text-secondary:#94A3B8;
+--text-muted:#64748B;
+
+/* ---------- Radius ---------- */
+
+--radius-xs:10px;
+--radius-sm:14px;
+--radius-md:18px;
+--radius-lg:24px;
+--radius-xl:30px;
+--radius-round:999px;
+
+/* ---------- Shadow ---------- */
+
+--shadow-soft:
+0 10px 30px rgba(0,0,0,.25);
+
+--shadow-glass:
+0 20px 60px rgba(0,0,0,.35);
+
+--shadow-hover:
+0 28px 80px rgba(0,0,0,.45);
+
+/* ---------- Animation ---------- */
+
+--ease:cubic-bezier(.2,.8,.2,1);
+
+--speed-fast:.16s;
+--speed:.22s;
+--speed-slow:.32s;
+
+/* ---------- Layout ---------- */
+
+--sidebar-width:84px;
+--content-max:1480px;
+--workspace-max:1220px;
+--header-height:84px;
+
+}
+
+/* ==========================================
+   Dark Theme Lock
+   ========================================== */
+
+html{
+
+color-scheme:dark;
+
+}
+
+body{
+
+background:var(--bg-primary);
+color:var(--text);
+font-family:
+Inter,
+"Segoe UI Variable",
+system-ui,
+sans-serif;
+
+}
+
+/* ==========================================
+   Ambient Background
+   ========================================== */
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+inset:-30%;
+
+pointer-events:none;
+
+background:
+
+radial-gradient(circle at 20% 20%,
+rgba(0,230,118,.08),
+transparent 35%),
+
+radial-gradient(circle at 80% 10%,
+rgba(59,130,246,.07),
+transparent 35%),
+
+radial-gradient(circle at 50% 80%,
+rgba(255,255,255,.03),
+transparent 45%);
+
+filter:blur(80px);
+
+z-index:-2;
+
+animation:ambientFloat 18s ease-in-out infinite;
+
+}
+
+@keyframes ambientFloat{
+
+0%{
+
+transform:translate(0,0);
+
+}
+
+50%{
+
+transform:translate(20px,-25px);
+
+}
+
+100%{
+
+transform:translate(0,0);
+
+}
+
+}
