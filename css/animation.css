@@ -259,3 +259,18 @@ transform:none;
 }
 
 }
+#splash-screen{
+    position:fixed;
+    inset:0;
+    background:#020817;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:99999;
+    transition:opacity .4s ease;
+}
+
+#splash-screen.fade-out{
+    opacity:0;
+    pointer-events:none;
+}
