@@ -1,88 +1,92 @@
-
 /* =========================================
    CGG HSE Digital Ecosystem
-   Navigation Core v1.0
+   Navigation Core v2.0
+   Router Engine
    ========================================= */
 
 const Router = {
 
-    currentRoute: "dashboard",
+    currentRoute:"dashboard",
 
-    routes: {
+    routes:{
 
-        dashboard: {
-            title: "Executive Dashboard",
-            icon: "layout-dashboard"
+        dashboard:{
+            title:"Executive Dashboard",
+            icon:"layout-dashboard"
         },
 
-        inspection: {
-            title: "Safety Inspection",
-            icon: "clipboard-check"
+        inspection:{
+            title:"Safety Inspection",
+            icon:"clipboard-check"
         },
 
-        hazard: {
-            title: "Hazard Report",
-            icon: "triangle-alert"
+        hazard:{
+            title:"Hazard Report",
+            icon:"triangle-alert"
         },
 
-        incident: {
-            title: "Incident Management",
-            icon: "shield-alert"
+        incident:{
+            title:"Incident Management",
+            icon:"shield-alert"
         },
 
-        environment: {
-            title: "Environment",
-            icon: "leaf"
+        environment:{
+            title:"Environment",
+            icon:"leaf"
         },
 
-        medical: {
-            title: "Medical",
-            icon: "heart-pulse"
+        medical:{
+            title:"Medical",
+            icon:"heart-pulse"
         },
 
-        contractor: {
-            title: "Contractor",
-            icon: "building"
+        contractor:{
+            title:"Contractor",
+            icon:"building"
         },
 
-        sop: {
-            title: "SOP & Policy",
-            icon: "book-open"
+        sop:{
+            title:"SOP & Policy",
+            icon:"book-open"
         },
 
-        area: {
-            title: "Area Management",
-            icon: "map"
+        area:{
+            title:"Area Management",
+            icon:"map"
         },
 
-        admin: {
-            title: "Administration",
-            icon: "settings"
+        admin:{
+            title:"Administration",
+            icon:"settings"
         }
 
     }
 
 };
 
-/* ---------- Route Resolver ---------- */
+/* =========================================
+   Current Route
+   ========================================= */
 
 function getCurrentHash(){
 
-    const hash = window.location.hash.replace("#/","");
+    const hash=window.location.hash.replace("#/","");
 
-    return hash || "dashboard";
+    return hash||"dashboard";
 
 }
 
-/* ---------- Render ---------- */
+/* =========================================
+   Render Route
+   ========================================= */
 
 function renderRoute(routeName){
 
-    const container = document.getElementById("router-view");
+    const container=document.getElementById("router-view");
 
     if(!container) return;
 
-    const route = Router.routes[routeName];
+    const route=Router.routes[routeName];
 
     if(!route){
 
@@ -100,32 +104,70 @@ function renderRoute(routeName){
     Router.currentRoute=routeName;
 
     document.title=`${route.title} • CGG HSE`;
-    if (routeName === "dashboard") {
 
-       container.innerHTML = renderDashboardHome();
+    /* ---------- Dashboard ---------- */
 
-       initializeDashboard();
+    if(routeName==="dashboard"){
 
-       return;
+        container.innerHTML=renderDashboardHome();
 
-}
+        initializeDashboard();
+
+        if(window.DashboardLive){
+
+            DashboardLive.refresh();
+
+        }
+
+        return;
+
+    }
+
+    /* ---------- Inspection ---------- */
+
+    if(routeName==="inspection"){
+
+        InspectionModule.render();
+
+        return;
+
+    }
+
+    /* ---------- Placeholder Module ---------- */
+
     container.innerHTML=`
+
         <div class="fade-in">
+
             <div class="section-header">
-                <h2 class="section-title">${route.title}</h2>
-                <span class="badge badge-info">Prototype</span>
+
+                <h2 class="section-title">
+                    ${route.title}
+                </h2>
+
+                <span class="badge badge-info">
+                    Sprint Berikutnya
+                </span>
+
             </div>
 
             <div class="empty-state">
+
                 <h3>${route.title}</h3>
-                <p>Modul ini akan dibangun pada sprint berikutnya.</p>
+
+                <p>Modul ini akan dibangun setelah Inspection selesai.</p>
+
             </div>
+
         </div>
+
     `;
 
 }
 
-/* ---------- Navigate ---------- */
+/* =========================================
+   Navigate
+   ========================================= */
 
 function navigate(route){
 
@@ -133,7 +175,9 @@ function navigate(route){
 
 }
 
-/* ---------- Listener ---------- */
+/* =========================================
+   Listener
+   ========================================= */
 
 window.addEventListener("hashchange",()=>{
 
@@ -141,7 +185,9 @@ window.addEventListener("hashchange",()=>{
 
 });
 
-/* ---------- Init ---------- */
+/* =========================================
+   Init
+   ========================================= */
 
 function initializeRouter(){
 
