@@ -131,7 +131,7 @@ if(routeName==="inspection"){
 
     if(routeName==="inspection"){
 
-        InspectionModule.render();
+        InspectionModule.openModal();
 
         return;
 
