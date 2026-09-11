@@ -4,6 +4,17 @@
    ========================================== */
 
 window.Dashboard = (() => {
+   /* Legacy Dashboard State */
+
+window.DashboardState = window.DashboardState || {
+  inspection: 0,
+  finding: 0,
+  pica: 0,
+  ptw: 0,
+  notifications: [],
+  contractor: {},
+  liveActivity: []
+};
 
 let clockTimer = null;
 let kpiLoaded = false;
