@@ -1,60 +1,20 @@
 /* ==========================================
    CGG HDOS Desktop
-   Build 8 Stable
+   Build 9 Stable
+   Layout Ownership Removed
    ========================================== */
 
 @media (min-width:769px){
 
-html,body{
-width:100%;
-height:100%;
-overflow:hidden;
-}
-
-#app{
-display:grid;
-grid-template-columns:88px minmax(0,1fr);
-width:100vw;
-height:100vh;
-background:
-linear-gradient(90deg,#020817,#031a2d 50%,#020817);
-}
-
-#sidebar{
-width:88px;
-height:100vh;
-position:sticky;
-top:0;
-display:flex;
-justify-content:center;
-padding:18px 0;
-background:rgba(5,15,35,.55);
-backdrop-filter:blur(24px);
-border-right:1px solid rgba(255,255,255,.06);
-z-index:1000;
-}
-
-main{
-min-width:0;
-height:100vh;
-overflow:auto;
-padding:22px;
-}
-
-#router-view{
-width:100%;
-min-height:100%;
-}
-
-/* DASHBOARD */
+/* ==========================================
+   DASHBOARD
+   ========================================== */
 
 .dashboard-shell{
 width:100%;
-max-width:none;
-margin:0;
 display:flex;
 flex-direction:column;
-gap:22px;
+gap:24px;
 }
 
 .glass-card{
@@ -66,6 +26,8 @@ box-shadow:
 0 20px 60px rgba(0,0,0,.35),
 inset 0 1px rgba(255,255,255,.04);
 }
+
+/* Header */
 
 .executive-header{
 padding:28px;
@@ -89,7 +51,7 @@ object-fit:contain;
 
 .executive-left h1{
 margin:0;
-font-size:36px;
+font-size:34px;
 font-weight:700;
 color:white;
 }
@@ -104,6 +66,8 @@ font-size:22px;
 font-weight:600;
 color:white;
 }
+
+/* Command */
 
 .command-center{
 margin-top:4px;
@@ -138,10 +102,10 @@ gap:18px;
 
 .kpi-card{
 padding:24px;
-min-height:120px;
+min-height:140px;
 display:flex;
 flex-direction:column;
-justify-content:center;
+justify-content:space-between;
 }
 
 .kpi-label{
@@ -153,13 +117,12 @@ text-transform:uppercase;
 }
 
 .kpi-value{
-margin-top:10px;
-font-size:42px;
+font-size:46px;
 font-weight:800;
 color:white;
 }
 
-/* ZONES */
+/* Section */
 
 .section-card{
 padding:24px;
@@ -171,6 +134,8 @@ font-weight:700;
 color:white;
 margin-bottom:20px;
 }
+
+/* Zones */
 
 .zone-grid{
 display:grid;
@@ -192,21 +157,21 @@ background:rgba(255,255,255,.07);
 
 .zone-status{
 font-size:22px;
+margin-bottom:8px;
 }
 
 .zone-name{
-margin-top:8px;
-color:white;
 font-weight:600;
+color:white;
 }
 
 .zone-desc{
 margin-top:6px;
-color:#8fa3c0;
 font-size:13px;
+color:#8fa3c0;
 }
 
-/* QUICK LAUNCH */
+/* Quick Launch */
 
 .launch-grid{
 display:grid;
@@ -219,8 +184,8 @@ padding:20px;
 text-align:center;
 border-radius:20px;
 background:rgba(255,255,255,.04);
-transition:.25s;
 cursor:pointer;
+transition:.25s;
 }
 
 .launch-card:hover{
@@ -233,7 +198,7 @@ font-size:28px;
 margin-bottom:12px;
 }
 
-/* BOTTOM */
+/* Bottom */
 
 .dashboard-two{
 display:grid;
@@ -268,7 +233,7 @@ background:rgba(255,180,0,.16);
 background:rgba(0,160,255,.16);
 }
 
-/* ANIMATION */
+/* Animation */
 
 .fade-in{
 animation:fadeIn .35s ease;
