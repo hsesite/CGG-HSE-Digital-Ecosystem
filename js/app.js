@@ -1,53 +1,36 @@
 /* ==========================================
-   CGG HSE Digital Operating System
-   App Bootstrap
-   Build 8A
+   CGG HDOS App Bootstrap
+   Build 8A Stable
    ========================================== */
 
 window.CGG = window.CGG || {};
 
 CGG.boot = async function () {
 
-    try {
+    const splash = document.getElementById("splash-screen");
 
-        // Splash Screen
-        const splash = document.getElementById("splash-screen");
-
-        if (splash) {
-
-            splash.classList.add("fade-out");
-
-            setTimeout(() => {
-
-                splash.remove();
-
-            }, 400);
-
+    const safeRun = async (name, fn) => {
+        try {
+            if (typeof fn === "function") {
+                await fn();
+            }
+        } catch (err) {
+            console.error(`${name} Error:`, err);
         }
+    };
 
-        // Sidebar
-        if (window.Sidebar && Sidebar.init) {
-            Sidebar.init();
-        }
+    // Jalankan setiap modul satu-satu (tidak saling mematikan)
+    await safeRun("Sidebar", () => window.Sidebar?.init?.());
+    await safeRun("DashboardLive", () => window.DashboardLive?.start?.());
+    await safeRun("Router", () => window.Router?.init?.());
 
-        // Dashboard Live
-        if (window.DashboardLive && DashboardLive.start) {
-            DashboardLive.start();
-        }
-
-        // Router
-        if (window.Router && Router.init) {
-            await Router.init();
-        }
-
-        console.log("CGG HDOS Boot Success");
-
-    } catch (err) {
-
-        console.error("Boot Error", err);
-
+    // Splash WAJIB hilang walaupun ada error
+    if (splash) {
+        splash.classList.add("fade-out");
+        setTimeout(() => splash.remove(), 400);
     }
 
+    console.log("CGG HDOS Boot Complete");
 };
 
 document.addEventListener("DOMContentLoaded", CGG.boot);
