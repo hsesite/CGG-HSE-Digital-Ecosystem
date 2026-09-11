@@ -1,79 +1,48 @@
 /* ==========================================
    CGG HDOS Router
-   Build 8A
+   Build 8A Stable
+   Full Replacement
    ========================================== */
 
 window.Router = (() => {
 
-    let current = "dashboard";
+    let currentRoute = "dashboard";
 
-    const routes = {
+    const ROUTES = {
 
-        dashboard: async () => {
+        dashboard: () => window.Dashboard?.render?.(),
 
-            if (window.Dashboard) {
-                await Dashboard.render();
-            }
+        inspection: () => window.Inspection?.render?.() || placeholder("Inspection"),
 
-        },
+        ptw: () => placeholder("Permit To Work"),
 
-        inspection: async () => {
+        incident: () => placeholder("Incident"),
 
-            if (window.Inspection) {
-                await Inspection.render();
-            }
+        hazard: () => placeholder("Hazard"),
 
-        },
+        pica: () => placeholder("PICA"),
 
-        incident: async () => {
+        audit: () => placeholder("Audit"),
 
-            placeholder("Incident");
+        sop: () => placeholder("SOP Center"),
 
-        },
+        analytics: () => placeholder("Analytics"),
 
-        ptw: async () => {
+        reports: () => placeholder("Reports"),
 
-            placeholder("Permit To Work");
+        "mine-permit": () => placeholder("Mine Permit"),
 
-        },
-
-        audit: async () => {
-
-            placeholder("Audit");
-
-        },
-
-        sop: async () => {
-
-            placeholder("SOP Center");
-
-        },
-
-        analytics: async () => {
-
-            placeholder("Analytics");
-
-        },
-
-        reports: async () => {
-
-            placeholder("Reports");
-
-        },
-
-        "mine-permit": async () => {
-
-            placeholder("Mine Permit");
-
-        }
+        settings: () => placeholder("Settings")
 
     };
 
     async function init() {
 
-        const hash = location.hash.replace("#", "") || "dashboard";
+        ensureRouterView();
 
-        await navigate(hash, false);
+        const first = location.hash.replace("#", "") || "dashboard";
+
+        await navigate(first, false);
 
         window.addEventListener("hashchange", async () => {
 
@@ -87,33 +56,67 @@ window.Router = (() => {
 
     async function navigate(route, push = true) {
 
-        if (!routes[route]) {
+        if (!ROUTES[route]) route = "dashboard";
 
-            route = "dashboard";
-
-        }
-
-        current = route;
+        currentRoute = route;
 
         if (push) {
 
-            location.hash = route;
+            history.replaceState({}, "", "#" + route);
 
         }
 
-        await routes[route]();
+        try {
 
-        highlightSidebar(route);
+            await Promise.resolve(ROUTES[route]());
+
+        } catch (err) {
+
+            console.error("Router:", err);
+
+            if (route !== "dashboard") {
+
+                await Promise.resolve(ROUTES.dashboard());
+
+            }
+
+        }
+
+        activateSidebar(route);
 
     }
 
-    function highlightSidebar(route) {
+    function ensureRouterView() {
+
+        let view = document.getElementById("router-view");
+
+        if (view) return;
+
+        const main =
+            document.querySelector("main") ||
+            document.querySelector(".workspace") ||
+            document.querySelector(".content") ||
+            document.body;
+
+        view = document.createElement("div");
+        view.id = "router-view";
+
+        main.appendChild(view);
+
+    }
+
+    function activateSidebar(route) {
 
         document.querySelectorAll(".nav-item").forEach(item => {
 
             item.classList.remove("active");
 
-            if (item.dataset.route === route) {
+            const target =
+                item.dataset.route ||
+                item.dataset.page ||
+                item.dataset.module;
+
+            if (target === route) {
 
                 item.classList.add("active");
 
@@ -130,22 +133,24 @@ window.Router = (() => {
         if (!view) return;
 
         view.innerHTML = `
-        <div class="glass-card section-card fade-in">
+            <div class="glass-card section-card fade-in">
 
-            <h2>${title}</h2>
+                <h2>${title}</h2>
 
-            <p>Modul sedang dipersiapkan.</p>
+                <p>Modul sedang dipersiapkan.</p>
 
-        </div>`;
+            </div>`;
+
     }
 
     return {
 
         init,
         navigate,
+
         get current() {
 
-            return current;
+            return currentRoute;
 
         }
 
