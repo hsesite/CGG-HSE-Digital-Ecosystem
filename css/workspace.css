@@ -1,239 +1,186 @@
 /* ==========================================
    CGG HDOS Workspace Engine
-   Build #002
+   Full Replacement
+   Build 8 Stable
    ========================================== */
 
-.workspace-overlay{
+:root{
+    --workspace-gap:24px;
+    --workspace-radius:24px;
+}
 
-position:fixed;
+/* Workspace utama */
 
-inset:0;
+.workspace{
+    position:relative;
 
-display:flex;
+    width:100%;
+    min-width:0;
 
-align-items:center;
+    min-height:100%;
 
-justify-content:center;
+    display:flex;
+    flex-direction:column;
 
-background:rgba(2,6,23,.45);
+    gap:var(--workspace-gap);
 
-backdrop-filter:blur(12px);
+    margin:0;
+    padding:0;
 
-opacity:0;
+    overflow:visible;
 
-visibility:hidden;
+    transform:none;
+}
 
-transition:.25s cubic-bezier(.2,.8,.2,1);
+/* Area konten */
 
-z-index:5000;
+.workspace-content{
+    position:relative;
+
+    width:100%;
+    min-width:0;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:24px;
+}
+
+.content{
+    width:100%;
+    min-width:0;
+
+    display:block;
+
+    transform:none;
+}
+
+/* Card */
+
+.glass-card{
+    width:100%;
+}
+
+/* Section */
+
+.section-card{
+    position:relative;
+
+    width:100%;
+    min-width:0;
+
+    border-radius:var(--workspace-radius);
+}
+
+/* Grid Dashboard */
+
+.dashboard-grid{
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    width:100%;
+}
+
+/* Grid Zone */
+
+.zone-grid{
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:18px;
+
+    width:100%;
+}
+
+/* Quick Launch */
+
+.launch-grid{
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+
+    gap:18px;
+
+    width:100%;
+}
+
+/* Dashboard bawah */
+
+.dashboard-two{
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:20px;
+
+    width:100%;
+}
+
+/* Tablet */
+
+@media(max-width:1024px){
+
+.dashboard-two{
+
+grid-template-columns:1fr;
 
 }
 
-.workspace-overlay.active{
-
-opacity:1;
-
-visibility:visible;
-
 }
 
-.workspace-window{
-
-width:min(1220px,92vw);
-
-height:min(88vh,860px);
-
-background:rgba(15,23,42,.92);
-
-backdrop-filter:blur(24px);
-
-border:1px solid rgba(255,255,255,.08);
-
-border-radius:28px;
-
-box-shadow:
-0 25px 80px rgba(0,0,0,.45);
-
-overflow:hidden;
-
-display:flex;
-
-flex-direction:column;
-
-transform:translateY(20px) scale(.98);
-
-transition:.28s cubic-bezier(.2,.8,.2,1);
-
-}
-
-.workspace-overlay.active .workspace-window{
-
-transform:translateY(0) scale(1);
-
-}
-
-.workspace-header{
-
-height:60px;
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-padding:0 18px;
-
-background:linear-gradient(
-180deg,
-rgba(255,255,255,.04),
-transparent);
-
-border-bottom:1px solid rgba(255,255,255,.06);
-
-}
-
-.workspace-controls{
-
-display:flex;
-
-gap:8px;
-
-}
-
-.workspace-dot{
-
-width:12px;
-
-height:12px;
-
-border-radius:50%;
-
-}
-
-.workspace-dot.red{
-
-background:#FF5F57;
-
-}
-
-.workspace-dot.yellow{
-
-background:#FEBC2E;
-
-}
-
-.workspace-dot.green{
-
-background:#28C840;
-
-}
-
-.workspace-title{
-
-font-size:15px;
-
-font-weight:600;
-
-color:#E5E7EB;
-
-}
-
-.workspace-actions{
-
-display:flex;
-
-gap:10px;
-
-}
-
-.workspace-btn{
-
-background:rgba(255,255,255,.05);
-
-border:1px solid rgba(255,255,255,.08);
-
-color:#E5E7EB;
-
-padding:8px 14px;
-
-border-radius:12px;
-
-cursor:pointer;
-
-transition:.2s;
-
-}
-
-.workspace-btn:hover{
-
-background:rgba(255,255,255,.09);
-
-}
-
-.workspace-body{
-
-flex:1;
-
-overflow:auto;
-
-padding:24px;
-
-}
-
-.workspace-footer{
-
-padding:16px 22px;
-
-border-top:1px solid rgba(255,255,255,.06);
-
-background:rgba(255,255,255,.02);
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-font-size:13px;
-
-color:#94A3B8;
-
-}
-
-body.workspace-open{
-
-overflow:hidden;
-
-}
+/* Mobile */
 
 @media(max-width:768px){
 
-.workspace-overlay{
+.workspace{
 
-align-items:flex-end;
-
-}
-
-.workspace-window{
-
-width:100%;
-
-height:92vh;
-
-border-radius:28px 28px 0 0;
+gap:18px;
 
 }
 
-.workspace-header{
+.dashboard-grid{
 
-height:64px;
+grid-template-columns:repeat(2,minmax(140px,1fr));
 
 }
 
-.workspace-body{
+.zone-grid{
 
-padding:18px;
+grid-template-columns:repeat(2,minmax(140px,1fr));
+
+}
+
+.launch-grid{
+
+grid-template-columns:repeat(3,minmax(90px,1fr));
+
+}
+
+}
+
+/* HP kecil */
+
+@media(max-width:480px){
+
+.dashboard-grid{
+
+grid-template-columns:repeat(2,minmax(120px,1fr));
+
+}
+
+.zone-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.launch-grid{
+
+grid-template-columns:repeat(2,minmax(120px,1fr));
 
 }
 
