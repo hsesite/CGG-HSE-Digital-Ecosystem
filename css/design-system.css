@@ -1,0 +1,388 @@
+/* ==========================================
+   CGG Living Design System v1.0
+   Foundation Freeze FF-00A
+   ========================================== */
+
+/* ---------- Root ---------- */
+
+:root{
+
+  --bg:#020817;
+  --bg-secondary:#071426;
+  --surface:rgba(255,255,255,.06);
+  --surface-strong:rgba(255,255,255,.10);
+  --border:rgba(255,255,255,.08);
+
+  --primary:#00E676;
+  --info:#3B82F6;
+  --warning:#F59E0B;
+  --high:#EA580C;
+  --critical:#DC2626;
+
+  --text:#F8FAFC;
+  --text-secondary:#94A3B8;
+
+  --radius-xs:10px;
+  --radius-sm:14px;
+  --radius-md:18px;
+  --radius-lg:24px;
+  --radius-xl:28px;
+
+  --shadow-soft:0 10px 30px rgba(0,0,0,.30);
+  --shadow-hover:0 18px 45px rgba(0,0,0,.45);
+
+  --transition:.22s cubic-bezier(.22,1,.36,1);
+
+}
+
+/* ---------- Body ---------- */
+
+body{
+
+  background:
+  radial-gradient(circle at top,#0a1d2f 0%,var(--bg) 60%),
+  var(--bg);
+
+  color:var(--text);
+
+}
+
+/* ---------- Glass Card ---------- */
+
+.glass{
+
+  background:var(--surface);
+
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+
+  border:1px solid var(--border);
+
+  border-radius:var(--radius-lg);
+
+  box-shadow:var(--shadow-soft);
+
+  transition:all var(--transition);
+
+}
+
+.glass:hover{
+
+  transform:translateY(-3px);
+
+  box-shadow:var(--shadow-hover);
+
+}
+
+/* ---------- Hero ---------- */
+
+.hero-card{
+
+  background:
+  linear-gradient(145deg,
+  rgba(255,255,255,.10),
+  rgba(255,255,255,.04));
+
+  border-radius:32px;
+
+  padding:30px;
+
+  border:1px solid rgba(255,255,255,.10);
+
+  overflow:hidden;
+
+  position:relative;
+
+}
+
+.hero-card::before{
+
+  content:"";
+
+  position:absolute;
+
+  width:220px;
+  height:220px;
+
+  right:-90px;
+  top:-90px;
+
+  border-radius:50%;
+
+  background:rgba(0,230,118,.10);
+
+  filter:blur(60px);
+
+}
+
+/* ---------- KPI ---------- */
+
+.kpi-card{
+
+  background:var(--surface);
+
+  border-radius:22px;
+
+  border:1px solid var(--border);
+
+  padding:22px;
+
+  transition:all var(--transition);
+
+  position:relative;
+
+  overflow:hidden;
+
+}
+
+.kpi-card::after{
+
+  content:"";
+
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  height:3px;
+
+  background:linear-gradient(90deg,
+  transparent,
+  var(--primary),
+  transparent);
+
+  opacity:0;
+
+  transition:opacity var(--transition);
+
+}
+
+.kpi-card:hover{
+
+  transform:translateY(-4px);
+
+}
+
+.kpi-card:hover::after{
+
+  opacity:1;
+
+}
+
+.kpi-label{
+
+  display:block;
+
+  color:var(--text-secondary);
+
+  font-size:13px;
+
+}
+
+.kpi-value{
+
+  display:block;
+
+  margin-top:10px;
+
+  font-size:34px;
+
+  font-weight:700;
+
+}
+
+/* ---------- Badge ---------- */
+
+.badge{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:6px;
+
+  padding:6px 12px;
+
+  border-radius:999px;
+
+  font-size:12px;
+
+  font-weight:600;
+
+}
+
+.badge-success{
+
+  background:rgba(0,230,118,.15);
+
+  color:var(--primary);
+
+}
+
+.badge-info{
+
+  background:rgba(59,130,246,.15);
+
+  color:var(--info);
+
+}
+
+/* ---------- Button ---------- */
+
+.btn-primary{
+
+  background:linear-gradient(135deg,
+  var(--primary),
+  #00C853);
+
+  color:#00120A;
+
+  border:none;
+
+  border-radius:18px;
+
+  padding:14px 22px;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+  transition:all var(--transition);
+
+}
+
+.btn-primary:hover{
+
+  transform:translateY(-2px);
+
+}
+
+.btn-outline{
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.12);
+
+  color:var(--text);
+
+  border-radius:16px;
+
+  padding:12px 18px;
+
+  cursor:pointer;
+
+  transition:all var(--transition);
+
+}
+
+.btn-outline:hover{
+
+  background:rgba(255,255,255,.10);
+
+}
+
+/* ---------- Form ---------- */
+
+.form-group{
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:8px;
+
+}
+
+.form-group label{
+
+  font-size:13px;
+
+  color:var(--text-secondary);
+
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:16px;
+
+  color:var(--text);
+
+  padding:14px;
+
+  transition:all var(--transition);
+
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+
+  outline:none;
+
+  border-color:var(--primary);
+
+  box-shadow:0 0 0 4px rgba(0,230,118,.10);
+
+}
+
+/* ---------- Finding Card ---------- */
+
+.finding-card{
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:24px;
+
+  padding:22px;
+
+  margin-bottom:18px;
+
+  transition:all var(--transition);
+
+}
+
+.finding-card:hover{
+
+  transform:translateY(-3px);
+
+}
+
+/* ---------- Status Ring ---------- */
+
+.status-ring{
+
+  width:12px;
+  height:12px;
+
+  border-radius:50%;
+
+  background:var(--primary);
+
+  box-shadow:0 0 12px rgba(0,230,118,.6);
+
+}
+
+/* ---------- Scrollbar ---------- */
+
+::-webkit-scrollbar{
+
+  width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+  background:rgba(255,255,255,.12);
+
+  border-radius:999px;
+
+}
