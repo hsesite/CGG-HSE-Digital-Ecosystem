@@ -1,103 +1,201 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>CGG HSE Digital Ecosystem</title>
+<title>CGG HSE Digital Operating System</title>
 
-    <meta name="description" content="PT Cahaya Ginda Ganda HSE Digital Ecosystem">
-    <meta name="theme-color" content="#020817">
-    <meta name="color-scheme" content="dark">
+<link rel="manifest" href="manifest.json">
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CGG HSE">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/design-system.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/workspace.css">
+<link rel="stylesheet" href="css/widgets.css">
+<link rel="stylesheet" href="css/window-manager.css">
+<link rel="stylesheet" href="css/forms.css">
+<link rel="stylesheet" href="css/desktop.css">
+<link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/animation.css">
 
-    <meta property="og:title" content="CGG HSE Digital Ecosystem">
-    <meta property="og:description" content="Executive HSE Dashboard">
-    <meta property="og:type" content="website">
+<link rel="icon" href="assets/Logo/logo-cgg.png">
 
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+html,body{
+margin:0;
+padding:0;
+height:100%;
+background:#060b14;
+overflow:hidden;
+font-family:Inter,system-ui,sans-serif;
+}
 
-    <link rel="icon" href="assets/img/favicon.png">
+#app{
+display:grid;
+grid-template-columns:88px 1fr;
+height:100vh;
+}
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/tokens.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/desktop.css">
-    <link rel="stylesheet" href="css/mobile.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/forms.css">
-    <link rel="stylesheet" href="css/design-system.css">
-    <link rel="stylesheet" href="css/workspace.css">
-    <link rel="stylesheet" href="css/layout-engine.css">
-    <link rel="stylesheet" href="css/widgets.css">
-    <link rel="stylesheet" href="css/window-manager.css">
-    <link rel="stylesheet" href="css/command-center.css">
-    <link rel="stylesheet" href="css/animation.css">
+main{
+position:relative;
+overflow:auto;
+padding:24px;
+}
+
+#router-view{
+min-height:100%;
+}
+
+#splash-screen{
+
+position:fixed;
+inset:0;
+
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+
+background:
+radial-gradient(circle at top,#0f3d2a,#05080d);
+
+z-index:99999;
+
+transition:opacity .45s ease;
+
+}
+
+#splash-screen.fade-out{
+
+opacity:0;
+pointer-events:none;
+
+}
+
+.splash-logo{
+
+width:120px;
+height:120px;
+object-fit:contain;
+
+animation:pulse 1.8s infinite;
+
+}
+
+@keyframes pulse{
+
+0%,100%{transform:scale(1);}
+50%{transform:scale(1.06);}
+
+}
+
+.splash-title{
+
+margin-top:18px;
+font-size:22px;
+font-weight:700;
+color:white;
+
+}
+
+.splash-sub{
+
+margin-top:6px;
+color:#9fb7a9;
+font-size:14px;
+
+}
+
+@media(max-width:768px){
+
+#app{
+
+grid-template-columns:72px 1fr;
+
+}
+
+main{
+
+padding:16px;
+
+}
+
+.splash-logo{
+
+width:92px;
+height:92px;
+
+}
+
+.splash-title{
+
+font-size:18px;
+
+}
+
+}
+
+</style>
+
 </head>
 
 <body>
 
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="loader">
-            <div class="loader-logo"></div>
-            <h1>CGG HSE</h1>
-            <p>Digital Ecosystem</p>
-        </div>
-    </div>
+<div id="splash-screen">
 
-    <!-- App Shell -->
-    <div id="app">
+<img
+src="assets/Logo/logo-cgg.png"
+class="splash-logo"
+alt="CGG">
 
-        <!-- Desktop Dock -->
-        <aside id="sidebar"></aside>
+<div class="splash-title">
 
-        <!-- Main Workspace -->
-        <main id="workspace">
+CGG HSE Digital Operating System
 
-            <!-- Hero -->
-            <section id="hero"></section>
+</div>
 
-            <!-- KPI -->
-            <section id="kpi-section"></section>
+<div class="splash-sub">
 
-            <!-- Router View -->
-            <section id="router-view"></section>
+Loading Command Center...
 
-        </main>
+</div>
 
-        <!-- Right Panel -->
-        <aside id="right-panel"></aside>
+</div>
 
-    </div>
+<div id="app">
 
-    <!-- Mobile Navigation -->
-    <nav id="mobile-nav"></nav>
+<aside id="sidebar"></aside>
 
-    <!-- JavaScript -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+<main>
 
-    <script src="js/api.js"></script>
-    <script src="js/dashboard-live.js"></script>
-    <script src="js/router.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/inspection.js"></script>
-    <script src="js/layout-engine.js"></script>
-    <script src="js/widget-engine.js"></script>
-<!-- <script src="js/workspace.js"></script> -->
-    <script src="js/window-manager.js"></script>
-    <script src="js/command-center.js"></script>
-    <script src="js/app.js"></script>
+<div id="router-view"></div>
+
+</main>
+
+</div>
+
+<script src="js/api.js"></script>
+
+<script src="js/layout-engine.js"></script>
+<script src="js/widget-engine.js"></script>
+<script src="js/window-manager.js"></script>
+
+<script src="js/sidebar.js"></script>
+<script src="js/command-center.js"></script>
+
+<script src="js/dashboard-api.js"></script>
+<script src="js/dashboard-live.js"></script>
+<script src="js/dashboard.js"></script>
+
+<script src="js/inspection.js"></script>
+
+<script src="js/router.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
