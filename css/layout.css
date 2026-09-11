@@ -1,33 +1,60 @@
 /* ==========================================
-   CGG HDOS Layout Engine
+   CGG HSE Digital Operating System
+   Layout Engine
+   Full Replacement
    Build 8 Stable
    ========================================== */
+
+/* ---------- RESET ---------- */
 
 *,
 *::before,
 *::after{
 box-sizing:border-box;
-}
-
-html,
-body{
 margin:0;
 padding:0;
+}
+
+:root{
+
+--sidebar-width:88px;
+--sidebar-mobile:72px;
+
+--bg:#020817;
+--panel:#0b1220;
+--panel-2:#121c2f;
+
+--border:rgba(255,255,255,.06);
+
+--radius:24px;
+
+}
+
+html{
 width:100%;
 height:100%;
-overflow:hidden;
-background:#020817;
 }
 
 body{
 
-font-family:Inter,system-ui,sans-serif;
+width:100%;
+height:100%;
+
+overflow:hidden;
+
+background:var(--bg);
+
+color:#fff;
+
+font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 
 transform:none !important;
 scale:1 !important;
 zoom:1 !important;
 
 }
+
+/* ---------- ROOT ---------- */
 
 #app{
 
@@ -37,27 +64,51 @@ inset:0;
 
 display:grid;
 
-grid-template-columns:88px minmax(0,1fr);
+grid-template-columns:var(--sidebar-width) minmax(0,1fr);
 
 width:100vw;
 height:100vh;
 
 overflow:hidden;
 
+background:
+linear-gradient(
+90deg,
+#020817,
+#041b2f 55%,
+#020817
+);
+
 }
+
+/* ---------- SIDEBAR ---------- */
 
 #sidebar{
 
-width:88px;
+position:relative;
+
+width:100%;
 height:100%;
 
-position:relative;
+display:flex;
+justify-content:center;
+
+padding:18px 0;
+
+background:
+rgba(5,15,35,.58);
+
+backdrop-filter:blur(26px);
+
+border-right:1px solid var(--border);
 
 z-index:100;
 
-flex:none;
+overflow:hidden;
 
 }
+
+/* ---------- MAIN ---------- */
 
 main{
 
@@ -74,48 +125,227 @@ padding:24px;
 
 }
 
+/* ---------- ROUTER ---------- */
+
 #router-view{
+
+position:relative;
 
 width:100%;
 min-width:0;
+
 min-height:100%;
 
 display:block;
 
 }
 
-/* Hilangkan semua transform warisan */
+/* ---------- WORKSPACE ---------- */
 
 .workspace,
-.dashboard-shell,
+.dashboard-shell{
+
+width:100%;
+max-width:none;
+
+margin:0;
+
+display:flex;
+flex-direction:column;
+
+gap:24px;
+
+transform:none !important;
+
+}
+
+/* ---------- CARD ---------- */
+
+.glass-card{
+
+width:100%;
+
+border-radius:var(--radius);
+
+background:
+rgba(12,22,45,.72);
+
+border:1px solid var(--border);
+
+backdrop-filter:blur(22px);
+
+}
+
+/* ---------- GRID ---------- */
+
+.dashboard-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+width:100%;
+
+}
+
+.zone-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:18px;
+
+width:100%;
+
+}
+
+.launch-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(140px,1fr));
+
+gap:18px;
+
+width:100%;
+
+}
+
+.dashboard-two{
+
+display:grid;
+
+grid-template-columns:2fr 1fr;
+
+gap:20px;
+
+width:100%;
+
+}
+
+/* ---------- WINDOW ---------- */
+
 .window,
 .window-content,
 .content{
 
 transform:none !important;
-scale:1 !important;
-zoom:1 !important;
+
 max-width:none !important;
 
 }
+
+/* ---------- FORM ---------- */
+
+input,
+select,
+textarea{
+
+width:100%;
+
+}
+
+/* ---------- SCROLL ---------- */
+
+main::-webkit-scrollbar{
+
+width:8px;
+
+}
+
+main::-webkit-scrollbar-thumb{
+
+background:#1f3b63;
+
+border-radius:999px;
+
+}
+
+/* ---------- TABLET ---------- */
+
+@media(max-width:1024px){
+
+.dashboard-two{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+/* ---------- MOBILE ---------- */
 
 @media(max-width:768px){
 
 #app{
 
-grid-template-columns:72px minmax(0,1fr);
-
-}
-
-#sidebar{
-
-width:72px;
+grid-template-columns:var(--sidebar-mobile) minmax(0,1fr);
 
 }
 
 main{
 
 padding:16px;
+
+}
+
+.workspace,
+.dashboard-shell{
+
+gap:18px;
+
+}
+
+.dashboard-grid{
+
+grid-template-columns:
+repeat(2,minmax(130px,1fr));
+
+}
+
+.zone-grid{
+
+grid-template-columns:
+repeat(2,minmax(130px,1fr));
+
+}
+
+.launch-grid{
+
+grid-template-columns:
+repeat(3,minmax(90px,1fr));
+
+}
+
+}
+
+/* ---------- SMALL PHONE ---------- */
+
+@media(max-width:420px){
+
+.dashboard-grid{
+
+grid-template-columns:
+repeat(2,minmax(120px,1fr));
+
+}
+
+.zone-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.launch-grid{
+
+grid-template-columns:
+repeat(2,minmax(120px,1fr));
 
 }
 
