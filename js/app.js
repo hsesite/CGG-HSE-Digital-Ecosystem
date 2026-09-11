@@ -117,7 +117,7 @@ window.EnterpriseModal = (() => {
 
     body.innerHTML = "";
 
-    body.appendChild(element);
+    return body;
 
     backdrop.classList.add("show");
     modal.classList.add("show");
