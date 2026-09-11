@@ -1,17 +1,23 @@
 /* ==========================================
    CGG HDOS Dashboard Enterprise
-   Build #007
+   Build 7.1 (Dependency Safe)
    ========================================== */
 
 window.Dashboard = (() => {
 
-async function render(){
+let clockTimer = null;
+let kpiLoaded = false;
 
-const view=document.getElementById("router-view");
-if(!view) return;
+/* ==========================================
+   Render Dashboard
+   ========================================== */
 
-view.innerHTML=`
+async function render() {
 
+  const view = document.getElementById("router-view");
+  if (!view) return;
+
+  view.innerHTML = `
 <div class="dashboard-shell fade-in">
 
 <div class="executive-header glass-card">
@@ -21,19 +27,14 @@ view.innerHTML=`
 <div class="logo-circle">CGG</div>
 
 <div>
-
 <h1>CGG HSE Digital Operating System</h1>
-
 <p>Command Center • Foreman Safety</p>
-
 </div>
 
 </div>
 
 <div class="executive-right">
-
 <div id="live-clock">00:00</div>
-
 </div>
 
 </div>
@@ -142,135 +143,224 @@ ${activity("10:15","Safety Talk")}
 </div>
 
 </div>
-
 `;
 
-startClock();
-loadDashboardData();
-bindCommand();
+  startClock();
+  bindCommand();
+
+  await loadDashboardData();
 
 }
 
+/* ==========================================
+   Components
+   ========================================== */
+
 function zoneCard(name,status,desc){
 
-return`
-
+return `
 <div class="zone-card">
-
 <div class="zone-status">${status}</div>
-
 <div class="zone-name">${name}</div>
-
 <div class="zone-desc">${desc}</div>
-
 </div>`;
-
 }
 
 function launch(icon,title){
 
-return`
-
+return `
 <div class="launch-card">
-
 <div class="launch-icon">${icon}</div>
-
 <div>${title}</div>
-
 </div>`;
-
 }
 
 function activity(time,text){
 
-return`
-
+return `
 <div class="activity-item">
-
 <span>${time}</span>
-
 <b>${text}</b>
-
 </div>`;
-
 }
+
+/* ==========================================
+   Clock
+   ========================================== */
 
 function startClock(){
 
 const el=document.getElementById("live-clock");
-
-setInterval(()=>{
-
 if(!el) return;
 
-el.textContent=new Date().toLocaleTimeString("id-ID");
+if(clockTimer) clearInterval(clockTimer);
 
-},1000);
+const update=()=>{
+
+el.textContent=new Date().toLocaleTimeString("id-ID",{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+});
+
+};
+
+update();
+
+clockTimer=setInterval(update,1000);
 
 }
+
+/* ==========================================
+   Dashboard Data
+   ========================================== */
 
 async function loadDashboardData(){
 
 try{
 
-if(window.DashboardLive){
+/* Hindari loop Dashboard ↔ DashboardLive */
 
-await DashboardLive.refresh();
+if(window.DashboardAPI && typeof DashboardAPI.getSummary==="function"){
 
-}
+const summary=await DashboardAPI.getSummary();
 
-}catch(e){
+animateCounter("kpi-inspection",summary.inspection||0);
+animateCounter("kpi-finding",summary.finding||0);
+animateCounter("kpi-pica",summary.pica||0);
+animateCounter("kpi-ptw",summary.ptw||0);
 
-console.log(e);
-
-}
-
-count("kpi-inspection",28);
-count("kpi-finding",12);
-count("kpi-pica",4);
-count("kpi-ptw",7);
+kpiLoaded=true;
+return;
 
 }
 
-function count(id,target){
+}catch(err){
+
+console.log("DashboardAPI fallback",err);
+
+}
+
+/* Fallback sementara */
+
+if(!kpiLoaded){
+
+animateCounter("kpi-inspection",5);
+animateCounter("kpi-finding",10);
+animateCounter("kpi-pica",10);
+animateCounter("kpi-ptw",2);
+
+kpiLoaded=true;
+
+}
+
+}
+
+/* Dipanggil dashboard-live.js */
+
+async function refresh(){
+
+kpiLoaded=false;
+await loadDashboardData();
+
+}
+
+/* ==========================================
+   Counter Animation
+   ========================================== */
+
+function animateCounter(id,target){
 
 const el=document.getElementById(id);
+if(!el) return;
 
-let n=0;
+const current=Number(el.textContent)||0;
 
-const t=setInterval(()=>{
+if(current===target){
 
-n++;
-
-el.textContent=n;
-
-if(n>=target) clearInterval(t);
-
-},20);
+el.textContent=target;
+return;
 
 }
+
+const step=Math.max(1,Math.ceil(target/30));
+
+let value=0;
+
+const timer=setInterval(()=>{
+
+value+=step;
+
+if(value>=target){
+
+value=target;
+clearInterval(timer);
+
+}
+
+el.textContent=value;
+
+},18);
+
+}
+
+/* ==========================================
+   Command Center
+   ========================================== */
 
 function bindCommand(){
 
 const input=document.getElementById("dashboard-command");
+if(!input) return;
 
-input.addEventListener("keydown",e=>{
+input.onkeydown=e=>{
 
-if(e.key==="Enter"){
+if(e.key!=="Enter") return;
 
-alert("Command: "+input.value);
+const value=input.value.trim().toLowerCase();
+
+switch(value){
+
+case "inspection":
+
+if(window.Router){
+
+Router.navigate("inspection");
+
+}
+
+break;
+
+case "incident":
+
+alert("Modul Incident segera aktif.");
+break;
+
+case "ptw":
+
+alert("Modul PTW segera aktif.");
+break;
+
+default:
+
+alert("Pencarian: "+input.value);
+
+}
 
 input.value="";
 
-}
-
-});
+};
 
 }
+
+/* ==========================================
+   Public API
+   ========================================== */
 
 return{
 
-render
+render,
+refresh
 
 };
 
