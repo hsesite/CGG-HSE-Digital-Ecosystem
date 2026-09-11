@@ -1,142 +1,53 @@
-
-/* =========================================
-   CGG HSE Digital Ecosystem
-   Core Bootstrap v1.0
-   ========================================= */
-
-const APP = {
-    name: "CGG HSE Digital Ecosystem",
-    version: "7.0.0",
-    build: "Sprint-3",
-    initialized: false
-};
-
-function hideLoadingScreen() {
-    const loading = document.getElementById("loading-screen");
-    if (!loading) return;
-
-    loading.style.opacity = "0";
-
-    setTimeout(() => {
-        loading.style.display = "none";
-    }, 300);
-}
-
-function appHealthCheck() {
-
-    console.group("CGG HSE System Check");
-
-    console.log("Version:", APP.version);
-    console.log("Build:", APP.build);
-    console.log("Browser:", navigator.userAgent);
-
-    console.groupEnd();
-
-}
-
-function initializeApp() {
-
-    if (APP.initialized) return;
-
-    APP.initialized = true;
-
-    appHealthCheck();
-   
-    initializeRouter();
-
-    initializeNavigation();
-
-    window.setTimeout(hideLoadingScreen, 600);
-
-}
-
-window.addEventListener("DOMContentLoaded", initializeApp);
 /* ==========================================
-   Enterprise Modal Manager
-   FF-01B
+   CGG HSE Digital Operating System
+   App Bootstrap
+   Build 8A
    ========================================== */
 
-window.EnterpriseModal = (() => {
+window.CGG = window.CGG || {};
 
-  let backdrop = null;
-  let modal = null;
-  let body = null;
+CGG.boot = async function () {
 
-  function ensure() {
+    try {
 
-    if (backdrop) return;
+        // Splash Screen
+        const splash = document.getElementById("splash-screen");
 
-    backdrop = document.createElement("div");
-    backdrop.className = "enterprise-backdrop";
+        if (splash) {
 
-    modal = document.createElement("div");
-    modal.className = "enterprise-modal";
+            splash.classList.add("fade-out");
 
-    modal.innerHTML = `
-      <div class="enterprise-modal-header">
+            setTimeout(() => {
 
-        <div style="display:flex;align-items:center;gap:14px;">
+                splash.remove();
 
-          <div class="enterprise-handle"></div>
+            }, 400);
 
-          <div class="enterprise-title">
-            <strong id="modal-title">Workspace</strong>
-            <small id="modal-subtitle">CGG HSE Digital Ecosystem</small>
-          </div>
+        }
 
-        </div>
+        // Sidebar
+        if (window.Sidebar && Sidebar.init) {
+            Sidebar.init();
+        }
 
-        <button class="enterprise-close">✕</button>
+        // Dashboard Live
+        if (window.DashboardLive && DashboardLive.start) {
+            DashboardLive.start();
+        }
 
-      </div>
+        // Router
+        if (window.Router && Router.init) {
+            await Router.init();
+        }
 
-      <div class="enterprise-modal-body" id="enterprise-body"></div>
-    `;
+        console.log("CGG HDOS Boot Success");
 
-    body = modal.querySelector("#enterprise-body");
+    } catch (err) {
 
-    document.body.append(backdrop, modal);
+        console.error("Boot Error", err);
 
-    backdrop.onclick = close;
+    }
 
-    modal.querySelector(".enterprise-close").onclick = close;
+};
 
-    document.addEventListener("keydown", e => {
-
-      if (e.key === "Escape") close();
-
-    });
-
-  }
-
-  function open(title, element) {
-
-    ensure();
-
-    document.getElementById("modal-title").textContent = title;
-
-    body.innerHTML = "";
-
-    return body;
-
-    backdrop.classList.add("show");
-    modal.classList.add("show");
-
-    document.body.style.overflow = "hidden";
-
-  }
-
-  function close() {
-
-    if (!backdrop) return;
-
-    backdrop.classList.remove("show");
-    modal.classList.remove("show");
-
-    document.body.style.overflow = "";
-
-  }
-
-  return { open, close };
-
-})();
+document.addEventListener("DOMContentLoaded", CGG.boot);
