@@ -1,5 +1,5 @@
 /* ==========================================
-   Inspection Module v1.0
+   Inspection Module v2.0
    CGG HSE Digital Ecosystem
    ========================================== */
 
@@ -7,7 +7,9 @@ const InspectionModule = (() => {
 
   let findings = [];
 
-  /* ---------- Render ---------- */
+  /* ==========================================
+     Render
+     ========================================== */
 
   function render() {
 
@@ -15,7 +17,6 @@ const InspectionModule = (() => {
     if (!view) return;
 
     findings = [];
-    addFinding();
 
     view.innerHTML = `
       <div class="slide-up">
@@ -25,12 +26,12 @@ const InspectionModule = (() => {
           <span class="badge badge-info">Live Form</span>
         </div>
 
-        <div class="glass" style="padding:24px;">
+        <div class="glass inspection-form">
 
           <div class="form-grid">
 
-            <div class="field">
-              <label>Perusahaan</label>
+            <div class="form-group">
+              <label for="company">Perusahaan</label>
               <select id="company">
                 <option value="CGG">CGG</option>
                 <option value="VIP">VIP</option>
@@ -39,46 +40,53 @@ const InspectionModule = (() => {
               </select>
             </div>
 
-            <div class="field">
-              <label>Site</label>
+            <div class="form-group">
+              <label for="site">Site</label>
               <input id="site" placeholder="Contoh: Siumbatu">
             </div>
 
-            <div class="field">
-              <label>Area</label>
+            <div class="form-group">
+              <label for="area">Area</label>
               <input id="area" placeholder="Contoh: Pit Jaja KM10">
             </div>
 
-            <div class="field">
-              <label>Shift</label>
+            <div class="form-group">
+              <label for="shift">Shift</label>
               <select id="shift">
                 <option>Pagi</option>
                 <option>Malam</option>
               </select>
             </div>
 
-            <div class="field">
-              <label>Inspector</label>
+            <div class="form-group">
+              <label for="inspector">Inspector</label>
               <input id="inspector" placeholder="Nama Inspector">
             </div>
 
-            <div class="field">
-              <label>Tanggal</label>
+            <div class="form-group">
+              <label for="date">Tanggal</label>
               <input id="date" type="date">
             </div>
 
           </div>
 
-          <hr style="margin:24px 0;border-color:rgba(255,255,255,.08);">
+          <hr class="section-divider">
 
-          <row justify=between align=center>
-            <title size=sm>Daftar Temuan</title>
-            <button id="btn-add-finding" variant=outline>+ Tambah Temuan</button>
-          </row>
+          <div class="finding-header">
 
-          <box id="finding-list" gap=3 padding={{ top: 3, bottom: 3 }} />
+            <h3>Daftar Temuan</h3>
 
-          <button id="btn-save-inspection" block>Simpan Inspection</button>
+            <button id="btn-add-finding" class="btn-outline" type="button">
+              + Tambah Temuan
+            </button>
+
+          </div>
+
+          <div id="finding-list" class="finding-list"></div>
+
+          <button id="btn-save-inspection" class="btn-primary" type="button">
+            Simpan Inspection
+          </button>
 
         </div>
 
@@ -87,24 +95,34 @@ const InspectionModule = (() => {
 
     document.getElementById("date").value = today();
 
-    document.getElementById("btn-add-finding").addEventListener("click", addFinding);
+    document
+      .getElementById("btn-add-finding")
+      .addEventListener("click", addFinding);
 
-    document.getElementById("btn-save-inspection").addEventListener("click", submitInspection);
+    document
+      .getElementById("btn-save-inspection")
+      .addEventListener("click", submitInspection);
 
-    drawFindings();
+    addFinding();
+
   }
 
-  /* ---------- Finding ---------- */
+  /* ==========================================
+     Finding
+     ========================================== */
 
   function addFinding() {
 
     findings.push({
+
       category: "Housekeeping",
       description: "",
       risk: "LOW"
+
     });
 
     drawFindings();
+
   }
 
   function removeFinding(index) {
@@ -112,16 +130,21 @@ const InspectionModule = (() => {
     findings.splice(index,1);
 
     if(findings.length===0){
+
       addFinding();
+
       return;
+
     }
 
     drawFindings();
+
   }
 
   function drawFindings() {
 
     const list=document.getElementById("finding-list");
+
     if(!list) return;
 
     list.innerHTML="";
@@ -130,47 +153,80 @@ const InspectionModule = (() => {
 
       const card=document.createElement("div");
 
-      card.className="glass";
-
-      card.style.padding="18px";
+      card.className="finding-card";
 
       card.innerHTML=`
 
-        <row justify=between align=center>
-          <title size=sm>Temuan ${index+1}</title>
-          <button class="remove-btn" data-index="${index}" color=danger variant=outline size=sm>Hapus</button>
-        </row>
+        <div class="finding-card-header">
 
-        <box gap=2 padding={{ top: 2 }}>
+          <h4>Temuan ${index+1}</h4>
 
-          <box gap=1>
-            <label size=sm>Kategori</label>
+          <button
+            class="remove-btn"
+            data-index="${index}"
+            type="button">
+
+            Hapus
+
+          </button>
+
+        </div>
+
+        <div class="finding-grid">
+
+          <div class="form-group">
+
+            <label>Kategori</label>
+
             <select class="category" data-index="${index}">
+
               <option ${f.category==="Housekeeping"?"selected":""}>Housekeeping</option>
+
               <option ${f.category==="APD"?"selected":""}>APD</option>
+
               <option ${f.category==="LV"?"selected":""}>LV</option>
+
               <option ${f.category==="Heavy Equipment"?"selected":""}>Heavy Equipment</option>
+
               <option ${f.category==="Environment"?"selected":""}>Environment</option>
+
               <option ${f.category==="Electrical"?"selected":""}>Electrical</option>
+
             </select>
-          </box>
 
-          <box gap=1>
-            <label size=sm>Deskripsi</label>
-            <textarea class="description" data-index="${index}" rows=3 placeholder="Jelaskan kondisi yang ditemukan...">${f.description}</textarea>
-          </box>
+          </div>
 
-          <box gap=1>
-            <label size=sm>Tingkat Risiko</label>
+          <div class="form-group full">
+
+            <label>Deskripsi</label>
+
+            <textarea
+              class="description"
+              data-index="${index}"
+              rows="4"
+              placeholder="Jelaskan kondisi yang ditemukan...">${f.description}</textarea>
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Tingkat Risiko</label>
+
             <select class="risk" data-index="${index}">
-              <option ${f.risk==="LOW"?"selected":""}>LOW</option>
-              <option ${f.risk==="MEDIUM"?"selected":""}>MEDIUM</option>
-              <option ${f.risk==="HIGH"?"selected":""}>HIGH</option>
-              <option ${f.risk==="CRITICAL"?"selected":""}>CRITICAL</option>
-            </select>
-          </box>
 
-        </box>
+              <option ${f.risk==="LOW"?"selected":""}>LOW</option>
+
+              <option ${f.risk==="MEDIUM"?"selected":""}>MEDIUM</option>
+
+              <option ${f.risk==="HIGH"?"selected":""}>HIGH</option>
+
+              <option ${f.risk==="CRITICAL"?"selected":""}>CRITICAL</option>
+
+            </select>
+
+          </div>
+
+        </div>
 
       `;
 
@@ -179,6 +235,7 @@ const InspectionModule = (() => {
     });
 
     bindFindingEvents();
+
   }
 
   function bindFindingEvents(){
@@ -221,7 +278,9 @@ const InspectionModule = (() => {
 
   }
 
-  /* ---------- Submit ---------- */
+  /* ==========================================
+     Submit
+     ========================================== */
 
   async function submitInspection(){
 
@@ -283,13 +342,9 @@ const InspectionModule = (() => {
 
   }
 
-  /* ---------- Helper ---------- */
-
   function today(){
 
-    const d=new Date();
-
-    return d.toISOString().split("T")[0];
+    return new Date().toISOString().split("T")[0];
 
   }
 
