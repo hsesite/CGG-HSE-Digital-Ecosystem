@@ -1,0 +1,380 @@
+/* ==========================================
+   CGG HSE Digital Ecosystem
+   Forms System v1.0
+   Reusable Form UI
+   ========================================== */
+
+/* ---------- Form Container ---------- */
+
+.inspection-form{
+    padding:28px;
+}
+
+/* ---------- Grid ---------- */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(260px,1fr));
+    gap:22px;
+    margin-bottom:6px;
+}
+
+/* ---------- Group ---------- */
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+/* ---------- Label ---------- */
+
+.form-group label{
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-secondary);
+    letter-spacing:.4px;
+}
+
+/* ---------- Input ---------- */
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    width:100%;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:var(--text);
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    transition:.25s ease;
+
+    font-family:inherit;
+
+}
+
+/* ---------- Height ---------- */
+
+.form-group input,
+.form-group select{
+    height:50px;
+    padding:0 16px;
+}
+
+.form-group textarea{
+    min-height:110px;
+    padding:14px 16px;
+    resize:vertical;
+}
+
+/* ---------- Focus ---------- */
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+
+    outline:none;
+
+    border-color:var(--accent);
+
+    box-shadow:0 0 0 3px rgba(0,230,118,.15);
+
+}
+
+/* ---------- Placeholder ---------- */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder{
+    color:rgba(255,255,255,.35);
+}
+
+/* ---------- Divider ---------- */
+
+.section-divider{
+
+    border:none;
+
+    height:1px;
+
+    background:rgba(255,255,255,.08);
+
+    margin:30px 0;
+
+}
+
+/* ==========================================
+   Finding Section
+   ========================================== */
+
+.finding-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:16px;
+
+    margin-bottom:18px;
+
+}
+
+.finding-header h3{
+
+    margin:0;
+
+    font-size:18px;
+
+    color:var(--text);
+
+}
+
+.finding-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    margin-bottom:24px;
+
+}
+
+/* ---------- Finding Card ---------- */
+
+.finding-card{
+
+    background:rgba(255,255,255,.03);
+
+    border:1px solid rgba(0,230,118,.12);
+
+    border-radius:18px;
+
+    padding:22px;
+
+    transition:.25s ease;
+
+}
+
+.finding-card:hover{
+
+    border-color:rgba(0,230,118,.35);
+
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+
+}
+
+/* ---------- Finding Header ---------- */
+
+.finding-card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+
+}
+
+.finding-card-header h4{
+
+    margin:0;
+
+    font-size:17px;
+
+    color:var(--text);
+
+}
+
+/* ---------- Finding Grid ---------- */
+
+.finding-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+.finding-grid .full{
+
+    grid-column:1/-1;
+
+}
+
+/* ==========================================
+   Buttons
+   ========================================== */
+
+.btn-primary{
+
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:linear-gradient(135deg,#00E676,#00C853);
+
+    color:#00150a;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.25s ease;
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 28px rgba(0,230,118,.35);
+
+}
+
+.btn-outline{
+
+    height:42px;
+
+    padding:0 18px;
+
+    border-radius:12px;
+
+    border:1px solid rgba(0,230,118,.25);
+
+    background:transparent;
+
+    color:var(--accent);
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.2s ease;
+
+}
+
+.btn-outline:hover{
+
+    background:rgba(0,230,118,.08);
+
+    border-color:rgba(0,230,118,.45);
+
+}
+
+.remove-btn{
+
+    background:rgba(255,71,87,.08);
+
+    color:#ff6b6b;
+
+    border:1px solid rgba(255,71,87,.22);
+
+    border-radius:10px;
+
+    padding:8px 14px;
+
+    cursor:pointer;
+
+    transition:.2s ease;
+
+}
+
+.remove-btn:hover{
+
+    background:rgba(255,71,87,.18);
+
+}
+
+/* ==========================================
+   Select Arrow
+   ========================================== */
+
+select{
+
+    appearance:none;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+
+    background-repeat:no-repeat;
+
+    background-position:right 16px center;
+
+    padding-right:44px;
+
+}
+
+/* ==========================================
+   Date Picker
+   ========================================== */
+
+input[type="date"]{
+
+    color-scheme:dark;
+
+}
+
+/* ==========================================
+   Mobile
+   ========================================== */
+
+@media(max-width:768px){
+
+    .inspection-form{
+
+        padding:18px;
+
+    }
+
+    .form-grid{
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+
+    }
+
+    .finding-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .finding-header{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .btn-outline{
+
+        width:100%;
+
+    }
+
+}
