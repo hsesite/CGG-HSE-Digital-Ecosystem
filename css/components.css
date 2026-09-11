@@ -314,3 +314,251 @@ font-weight:700;
 color:#00E676;
 
 }
+/* ==========================================
+   FF-01A
+   Enterprise Modal Infrastructure
+   CGG HSE v8.0
+   ========================================== */
+
+/* ---------- Backdrop ---------- */
+
+.enterprise-backdrop{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(3,7,18,.55);
+
+    backdrop-filter:blur(16px);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.25s cubic-bezier(.22,1,.36,1);
+
+    z-index:9990;
+
+}
+
+/* ---------- Active ---------- */
+
+.enterprise-backdrop.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+/* ---------- Modal ---------- */
+
+.enterprise-modal{
+
+    position:fixed;
+
+    left:50%;
+
+    top:50%;
+
+    transform:translate(-50%,120%);
+
+    width:min(1180px,92vw);
+
+    height:min(88vh,940px);
+
+    display:flex;
+
+    flex-direction:column;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    background:
+    linear-gradient(180deg,
+    rgba(22,31,50,.98),
+    rgba(16,24,40,.98));
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+      0 45px 120px rgba(0,0,0,.55);
+
+    transition:
+      transform .38s cubic-bezier(.22,1,.36,1);
+
+    z-index:9991;
+
+}
+
+/* ---------- Active ---------- */
+
+.enterprise-modal.show{
+
+    transform:translate(-50%,-50%);
+
+}
+
+/* ---------- Header ---------- */
+
+.enterprise-modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 24px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    background:rgba(255,255,255,.02);
+
+    backdrop-filter:blur(18px);
+
+}
+
+/* ---------- Drag Handle ---------- */
+
+.enterprise-handle{
+
+    width:54px;
+
+    height:5px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.22);
+
+    margin:auto;
+
+}
+
+/* ---------- Title ---------- */
+
+.enterprise-title{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+}
+
+/* ---------- Body ---------- */
+
+.enterprise-modal-body{
+
+    flex:1;
+
+    overflow:auto;
+
+    padding:24px;
+
+}
+
+/* ---------- Footer ---------- */
+
+.enterprise-modal-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    padding:18px 24px;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+    background:rgba(255,255,255,.02);
+
+    backdrop-filter:blur(18px);
+
+}
+
+/* ---------- Close ---------- */
+
+.enterprise-close{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    border:none;
+
+    cursor:pointer;
+
+    background:rgba(255,255,255,.06);
+
+    color:white;
+
+    transition:.22s;
+
+}
+
+.enterprise-close:hover{
+
+    transform:rotate(90deg);
+
+    background:rgba(239,68,68,.18);
+
+}
+
+/* ---------- Scroll ---------- */
+
+.enterprise-modal-body::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+.enterprise-modal-body::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.12);
+
+    border-radius:999px;
+
+}
+
+/* ---------- Mobile ---------- */
+
+@media(max-width:768px){
+
+.enterprise-modal{
+
+    width:100vw;
+
+    height:100vh;
+
+    border-radius:26px 26px 0 0;
+
+    left:50%;
+
+    top:auto;
+
+    bottom:0;
+
+    transform:translate(-50%,100%);
+
+}
+
+.enterprise-modal.show{
+
+    transform:translate(-50%,0);
+
+}
+
+.enterprise-modal-body{
+
+    padding:18px;
+
+}
+
+}
