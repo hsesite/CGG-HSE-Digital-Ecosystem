@@ -650,3 +650,132 @@ input[type="date"]{
 }
 
 }
+/* ==========================================
+   FF-00B-8
+   Floating Quick Action Bar
+   Aman - CSS Only
+   ========================================== */
+
+/* Desktop Floating Action */
+
+.quick-action-bar{
+
+    position:fixed;
+
+    right:28px;
+
+    bottom:24px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:10px;
+
+    border-radius:999px;
+
+    background:rgba(8,15,30,.78);
+
+    backdrop-filter:blur(24px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:0 16px 40px rgba(0,0,0,.45);
+
+    z-index:999;
+
+    opacity:0;
+
+    transform:translateY(20px);
+
+    pointer-events:none;
+
+    transition:.28s cubic-bezier(.22,1,.36,1);
+
+}
+
+/* Muncul saat aktif */
+
+.quick-action-bar.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+    pointer-events:auto;
+
+}
+
+/* Tombol */
+
+.quick-action-btn{
+
+    width:48px;
+
+    height:48px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    border:none;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:rgba(255,255,255,.06);
+
+    transition:.22s;
+
+}
+
+.quick-action-btn:hover{
+
+    transform:translateY(-2px) scale(1.05);
+
+    background:rgba(255,255,255,.12);
+
+}
+
+/* Tombol utama */
+
+.quick-action-btn.primary{
+
+    width:auto;
+
+    padding:0 20px;
+
+    border-radius:999px;
+
+    background:linear-gradient(135deg,#00E676,#00C853);
+
+    color:#00120A;
+
+    font-weight:700;
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.quick-action-bar{
+
+    left:16px;
+
+    right:16px;
+
+    bottom:18px;
+
+    justify-content:space-between;
+
+}
+
+}
