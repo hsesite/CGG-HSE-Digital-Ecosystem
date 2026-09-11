@@ -236,10 +236,17 @@ if(window.DashboardAPI && typeof DashboardAPI.getSummary==="function"){
 
 const summary=await DashboardAPI.getSummary();
 
-animateCounter("kpi-inspection",summary.inspection||0);
-animateCounter("kpi-finding",summary.finding||0);
-animateCounter("kpi-pica",summary.pica||0);
-animateCounter("kpi-ptw",summary.ptw||0);
+if (!kpiLoaded) {
+
+  DashboardState.inspection = 5;
+  DashboardState.finding = 10;
+  DashboardState.pica = 10;
+  DashboardState.ptw = 2;
+
+  animateCounter("kpi-inspection", DashboardState.inspection);
+  animateCounter("kpi-finding", DashboardState.finding);
+  animateCounter("kpi-pica", DashboardState.pica);
+  animateCounter("kpi-ptw", DashboardState.ptw);
 
 kpiLoaded=true;
 return;
