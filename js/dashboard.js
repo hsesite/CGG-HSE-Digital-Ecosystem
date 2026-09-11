@@ -1,5 +1,5 @@
 /* ==========================================
-   Dashboard Engine v2.0
+   Dashboard Engine v2.1
    CGG HSE Digital Ecosystem
    Frontend + Live KPI
    ========================================== */
@@ -16,6 +16,8 @@ window.DashboardState = window.DashboardState || {
     notification:0
 
 };
+
+/* ---------- Static Dashboard Data ---------- */
 
 const Dashboard={
 
@@ -41,7 +43,9 @@ const Dashboard={
 
 };
 
-/* ---------- Hero ---------- */
+/* ==========================================
+   Hero
+   ========================================== */
 
 function renderHero(){
 
@@ -62,7 +66,7 @@ function renderHero(){
             </h1>
 
             <div id="hero-inspection" class="hero-number">
-                0
+                ${DashboardState.inspection}
             </div>
 
             <p class="hero-subtitle">
@@ -75,7 +79,9 @@ function renderHero(){
 
 }
 
-/* ---------- KPI ---------- */
+/* ==========================================
+   KPI
+   ========================================== */
 
 function renderKPI(){
 
@@ -87,39 +93,41 @@ function renderKPI(){
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Inspection</span>
-            <span id="kpi-inspection" class="kpi-value">0</span>
+            <span id="kpi-inspection" class="kpi-value">${DashboardState.inspection}</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Finding</span>
-            <span id="kpi-finding" class="kpi-value">0</span>
+            <span id="kpi-finding" class="kpi-value">${DashboardState.finding}</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">PICA</span>
-            <span id="kpi-pica" class="kpi-value">0</span>
+            <span id="kpi-pica" class="kpi-value">${DashboardState.pica}</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Hazard</span>
-            <span id="kpi-hazard" class="kpi-value">0</span>
+            <span id="kpi-hazard" class="kpi-value">${DashboardState.hazard}</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Incident</span>
-            <span id="kpi-incident" class="kpi-value">0</span>
+            <span id="kpi-incident" class="kpi-value">${DashboardState.incident}</span>
         </div>
 
         <div class="kpi-card hover-lift">
             <span class="kpi-label">Notification</span>
-            <span id="notif-count" class="kpi-value">0</span>
+            <span id="notif-count" class="kpi-value">${DashboardState.notification}</span>
         </div>
 
     `;
 
 }
 
-/* ---------- Dashboard Content ---------- */
+/* ==========================================
+   Dashboard Content
+   ========================================== */
 
 function renderDashboardHome(){
 
@@ -197,7 +205,9 @@ function renderDashboardHome(){
 
 }
 
-/* ---------- Init ---------- */
+/* ==========================================
+   Init
+   ========================================== */
 
 function initializeDashboard(){
 
