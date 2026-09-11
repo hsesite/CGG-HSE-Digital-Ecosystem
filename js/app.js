@@ -1,7 +1,7 @@
 /* ==========================================
    CGG HSE Digital Operating System
    App Bootstrap
-   Build 8A Stable
+   Build 9 Stable
    ========================================== */
 
 (() => {
@@ -9,8 +9,7 @@
 "use strict";
 
 window.CGG = window.CGG || {};
-
-CGG.version = "8A Stable";
+CGG.version = "9 Stable";
 
 const Boot = {
 
@@ -19,14 +18,13 @@ started:false,
 async start(){
 
 if(this.started) return;
-
 this.started=true;
 
 console.log("CGG HDOS Boot Starting...");
 
 await this.hideSplash();
 
-await this.initCore();
+this.ensureStructure();
 
 await this.initModules();
 
@@ -34,10 +32,11 @@ console.log("CGG HDOS Boot Complete");
 
 },
 
+/* Splash */
+
 async hideSplash(){
 
 const splash=document.getElementById("splash-screen");
-
 if(!splash) return;
 
 await new Promise(r=>requestAnimationFrame(r));
@@ -45,24 +44,65 @@ await new Promise(r=>requestAnimationFrame(r));
 splash.classList.add("fade-out");
 
 setTimeout(()=>{
-
 if(splash.parentNode){
-
 splash.parentNode.removeChild(splash);
+}
+},450);
+
+},
+
+/* DOM */
+
+ensureStructure(){
+
+let app=document.getElementById("app");
+
+if(!app){
+
+app=document.createElement("div");
+app.id="app";
+document.body.appendChild(app);
 
 }
 
-},420);
+/* Sidebar */
+
+let sidebar=document.getElementById("sidebar");
+
+if(!sidebar){
+
+sidebar=document.createElement("aside");
+sidebar.id="sidebar";
+app.prepend(sidebar);
+
+}
+
+/* Main */
+
+let main=app.querySelector("main");
+
+if(!main){
+
+main=document.createElement("main");
+app.appendChild(main);
+
+}
+
+/* Router */
+
+let view=document.getElementById("router-view");
+
+if(!view){
+
+view=document.createElement("div");
+view.id="router-view";
+main.appendChild(view);
+
+}
 
 },
 
-async initCore(){
-
-this.ensureApp();
-
-this.ensureRouterView();
-
-},
+/* Module */
 
 async initModules(){
 
@@ -78,47 +118,7 @@ await this.safe("Router",()=>window.Router?.init?.());
 
 },
 
-ensureApp(){
-
-let app=document.getElementById("app");
-
-if(app) return;
-
-app=document.createElement("div");
-
-app.id="app";
-
-document.body.appendChild(app);
-
-},
-
-ensureRouterView(){
-
-let app=document.getElementById("app");
-
-let main=app.querySelector("main");
-
-if(!main){
-
-main=document.createElement("main");
-
-app.appendChild(main);
-
-}
-
-let view=document.getElementById("router-view");
-
-if(!view){
-
-view=document.createElement("div");
-
-view.id="router-view";
-
-main.appendChild(view);
-
-}
-
-},
+/* Safe */
 
 async safe(name,fn){
 
@@ -128,17 +128,17 @@ if(typeof fn==="function"){
 
 await fn();
 
-console.log("✔ "+name);
+console.log("✔",name);
 
 }else{
 
-console.log("• "+name+" skipped");
+console.log("•",name,"skipped");
 
 }
 
 }catch(err){
 
-console.error("✖ "+name,err);
+console.error("✖",name,err);
 
 }
 
