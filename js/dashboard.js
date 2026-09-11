@@ -364,3 +364,14 @@ window.Dashboard = (() => {
 window.renderDashboardHome=function(){
   return Dashboard.render();
 };
+/* ==========================================
+   Legacy Compatibility
+   ========================================== */
+
+window.renderDashboardHome = function () {
+  return Dashboard.render();
+};
+
+window.initializeDashboard = async function () {
+  return Dashboard.render();
+};
