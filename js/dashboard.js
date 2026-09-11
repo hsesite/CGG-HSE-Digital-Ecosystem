@@ -4,6 +4,19 @@
    Frontend + Live KPI
    ========================================== */
 
+/* ---------- Dashboard State ---------- */
+
+window.DashboardState = window.DashboardState || {
+
+    inspection:0,
+    finding:0,
+    pica:0,
+    hazard:0,
+    incident:0,
+    notification:0
+
+};
+
 const Dashboard={
 
     contractors:[
