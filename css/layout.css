@@ -237,3 +237,29 @@ body.sidebar-collapsed .sb-item{
   }
 
 }
+/* ===== Sidebar SVG Fix ===== */
+
+.sb-item svg{
+    width:22px;
+    height:22px;
+    stroke:#9FB3D1;
+    fill:none;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+/* Rect & Circle butuh fill agar ikon grid tampil */
+.sb-item svg rect,
+.sb-item svg circle{
+    fill:#9FB3D1;
+}
+
+.sb-item.active svg{
+    stroke:#00E676;
+}
+
+.sb-item.active svg rect,
+.sb-item.active svg circle{
+    fill:#00E676;
+}
