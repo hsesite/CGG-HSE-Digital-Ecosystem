@@ -645,3 +645,377 @@ color:#00E676;
     transform:translateY(-1px);
 
 }
+/* ==========================================
+   CGG HDOS v10.1.1
+   Enterprise Component Library
+   APPEND ONLY
+   ========================================== */
+
+/* ---------- Glass Card ---------- */
+
+.glass-card{
+
+    background:var(--glass);
+
+    backdrop-filter:blur(var(--blur-xl));
+
+    border:1px solid var(--glass-border);
+
+    border-radius:var(--radius-xl);
+
+    box-shadow:var(--shadow-glass);
+
+    transition:
+        transform var(--speed) var(--ease),
+        box-shadow var(--speed) var(--ease),
+        border-color var(--speed) var(--ease);
+
+}
+
+.glass-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:var(--shadow-hover);
+
+    border-color:rgba(255,255,255,.14);
+
+}
+
+/* ---------- Executive Card ---------- */
+
+.executive-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.executive-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(0,230,118,.08),
+        rgba(59,130,246,.05),
+        transparent);
+
+    pointer-events:none;
+
+}
+
+/* ---------- KPI Card ---------- */
+
+.kpi-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:22px;
+
+    min-height:140px;
+
+}
+
+.kpi-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:120px;
+
+    height:120px;
+
+    right:-30px;
+
+    top:-30px;
+
+    border-radius:50%;
+
+    background:
+      radial-gradient(circle,
+      rgba(255,255,255,.10),
+      transparent);
+
+}
+
+.kpi-label{
+
+    font-size:13px;
+
+    color:var(--text-secondary);
+
+    margin-bottom:10px;
+
+}
+
+.kpi-value{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    line-height:1;
+
+}
+
+.kpi-trend{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    margin-top:14px;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    background:rgba(255,255,255,.05);
+
+}
+
+/* ---------- Workspace Card ---------- */
+
+.workspace-card{
+
+    padding:24px;
+
+    cursor:pointer;
+
+    transition:
+        transform var(--speed) var(--ease),
+        background var(--speed) var(--ease);
+
+}
+
+.workspace-card:hover{
+
+    transform:translateY(-5px) scale(1.01);
+
+}
+
+.workspace-icon{
+
+    width:56px;
+
+    height:56px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.06);
+
+    margin-bottom:18px;
+
+}
+
+/* ---------- Status Badge ---------- */
+
+.status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.status-open{
+
+    background:rgba(59,130,246,.15);
+
+    color:#60A5FA;
+
+}
+
+.status-progress{
+
+    background:rgba(245,158,11,.15);
+
+    color:#FBBF24;
+
+}
+
+.status-overdue{
+
+    background:rgba(239,68,68,.15);
+
+    color:#F87171;
+
+}
+
+.status-closed{
+
+    background:rgba(0,230,118,.15);
+
+    color:#4ADE80;
+
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline-card{
+
+    padding:24px;
+
+}
+
+.timeline-item{
+
+    display:flex;
+
+    gap:16px;
+
+    padding:16px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+.timeline-dot{
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+    background:var(--brand-green);
+
+    margin-top:7px;
+
+    box-shadow:0 0 12px rgba(0,230,118,.45);
+
+}
+
+/* ---------- Notification ---------- */
+
+.notification-card{
+
+    display:flex;
+
+    gap:14px;
+
+    align-items:flex-start;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.03);
+
+    border:1px solid rgba(255,255,255,.06);
+
+    transition:all var(--speed) var(--ease);
+
+}
+
+.notification-card:hover{
+
+    background:rgba(255,255,255,.05);
+
+}
+
+/* ---------- Contractor Card ---------- */
+
+.contractor-card{
+
+    position:relative;
+
+    padding:22px;
+
+}
+
+.contractor-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:18px;
+
+    bottom:18px;
+
+    width:5px;
+
+    border-radius:999px;
+
+    background:var(--brand-green);
+
+}
+
+/* ---------- Health Card ---------- */
+
+.health-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 22px;
+
+}
+
+/* ---------- Mobile ---------- */
+
+@media(max-width:768px){
+
+.kpi-card{
+
+    min-height:118px;
+
+    padding:18px;
+
+}
+
+.kpi-value{
+
+    font-size:28px;
+
+}
+
+.workspace-card{
+
+    padding:18px;
+
+}
+
+.workspace-icon{
+
+    width:48px;
+
+    height:48px;
+
+}
+
+}
