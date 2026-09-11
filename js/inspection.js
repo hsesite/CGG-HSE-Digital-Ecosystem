@@ -13,7 +13,7 @@ const InspectionModule = (() => {
      Render
      ========================================== */
 
-  async function render() {
+  async function render(asModal = false) {
 
     const view = document.getElementById("router-view");
     if (!view) return;
