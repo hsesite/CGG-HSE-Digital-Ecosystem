@@ -1,159 +1,186 @@
 /* ==========================================
-   CGG HDOS Router
+   CGG HSE Digital Operating System
+   Router Engine
    Build 8A Stable
-   Full Replacement
    ========================================== */
 
-window.Router = (() => {
+(() => {
 
-    let currentRoute = "dashboard";
+"use strict";
 
-    const ROUTES = {
+const Router = {
 
-        dashboard: () => window.Dashboard?.render?.(),
+current: "dashboard",
 
-        inspection: () => window.Inspection?.render?.() || placeholder("Inspection"),
+routes: {},
 
-        ptw: () => placeholder("Permit To Work"),
+init() {
 
-        incident: () => placeholder("Incident"),
+this.registerDefaults();
 
-        hazard: () => placeholder("Hazard"),
+this.bindSidebar();
 
-        pica: () => placeholder("PICA"),
+this.bindHash();
 
-        audit: () => placeholder("Audit"),
+const first = location.hash.replace("#", "") || "dashboard";
 
-        sop: () => placeholder("SOP Center"),
+return this.navigate(first, false);
 
-        analytics: () => placeholder("Analytics"),
+},
 
-        reports: () => placeholder("Reports"),
+registerDefaults() {
 
-        "mine-permit": () => placeholder("Mine Permit"),
+this.routes = {
 
-        settings: () => placeholder("Settings")
+dashboard: async () => {
 
-    };
+if (window.Dashboard?.render) {
 
-    async function init() {
+await Dashboard.render();
 
-        ensureRouterView();
+} else {
 
-        const first = location.hash.replace("#", "") || "dashboard";
+this.placeholder("Dashboard belum tersedia.");
 
-        await navigate(first, false);
+}
 
-        window.addEventListener("hashchange", async () => {
+},
 
-            const next = location.hash.replace("#", "") || "dashboard";
+inspection: async () => {
 
-            await navigate(next, false);
+if (window.Inspection?.render) {
 
-        });
+await Inspection.render();
 
-    }
+} else {
 
-    async function navigate(route, push = true) {
+this.placeholder("Modul Inspection sedang dipersiapkan.");
 
-        if (!ROUTES[route]) route = "dashboard";
+}
 
-        currentRoute = route;
+},
 
-        if (push) {
+ptw: () => this.placeholder("Permit To Work"),
 
-            history.replaceState({}, "", "#" + route);
+incident: () => this.placeholder("Incident Management"),
 
-        }
+hazard: () => this.placeholder("Hazard Report"),
 
-        try {
+pica: () => this.placeholder("PICA Management"),
 
-            await Promise.resolve(ROUTES[route]());
+audit: () => this.placeholder("Audit"),
 
-        } catch (err) {
+sop: () => this.placeholder("SOP Center"),
 
-            console.error("Router:", err);
+analytics: () => this.placeholder("Analytics"),
 
-            if (route !== "dashboard") {
+reports: () => this.placeholder("Reports"),
 
-                await Promise.resolve(ROUTES.dashboard());
+"mine-permit": () => this.placeholder("Mine Permit"),
 
-            }
+settings: () => this.placeholder("Settings")
 
-        }
+};
 
-        activateSidebar(route);
+},
 
-    }
+async navigate(route = "dashboard", push = true) {
 
-    function ensureRouterView() {
+if (!this.routes[route]) {
 
-        let view = document.getElementById("router-view");
+route = "dashboard";
 
-        if (view) return;
+}
 
-        const main =
-            document.querySelector("main") ||
-            document.querySelector(".workspace") ||
-            document.querySelector(".content") ||
-            document.body;
+this.current = route;
 
-        view = document.createElement("div");
-        view.id = "router-view";
+if (push) {
 
-        main.appendChild(view);
+history.replaceState({}, "", "#" + route);
 
-    }
+}
 
-    function activateSidebar(route) {
+this.activateSidebar(route);
 
-        document.querySelectorAll(".nav-item").forEach(item => {
+const view = document.getElementById("router-view");
 
-            item.classList.remove("active");
+if (view) {
 
-            const target =
-                item.dataset.route ||
-                item.dataset.page ||
-                item.dataset.module;
+view.innerHTML = "";
 
-            if (target === route) {
+}
 
-                item.classList.add("active");
+try {
 
-            }
+await Promise.resolve(this.routes[route]());
 
-        });
+} catch (err) {
 
-    }
+console.error("Router:", err);
 
-    function placeholder(title) {
+this.placeholder("Terjadi kesalahan saat membuka modul.");
 
-        const view = document.getElementById("router-view");
+}
 
-        if (!view) return;
+},
 
-        view.innerHTML = `
-            <div class="glass-card section-card fade-in">
+bindHash() {
 
-                <h2>${title}</h2>
+window.addEventListener("hashchange", () => {
 
-                <p>Modul sedang dipersiapkan.</p>
+const route = location.hash.replace("#", "") || "dashboard";
 
-            </div>`;
+this.navigate(route, false);
 
-    }
+});
 
-    return {
+},
 
-        init,
-        navigate,
+bindSidebar() {
 
-        get current() {
+document.addEventListener("click", e => {
 
-            return currentRoute;
+const item = e.target.closest("[data-route]");
 
-        }
+if (!item) return;
 
-    };
+e.preventDefault();
+
+this.navigate(item.dataset.route);
+
+});
+
+},
+
+activateSidebar(route) {
+
+document.querySelectorAll("[data-route]").forEach(el => {
+
+el.classList.toggle("active", el.dataset.route === route);
+
+});
+
+},
+
+placeholder(title) {
+
+const view = document.getElementById("router-view");
+
+if (!view) return;
+
+view.innerHTML = `
+<div class="glass-card section-card fade-in">
+
+<h2>${title}</h2>
+
+<p>Modul akan dibangun pada Build berikutnya.</p>
+
+</div>`;
+
+}
+
+};
+
+window.Router = Router;
 
 })();
