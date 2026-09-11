@@ -1,106 +1,81 @@
 /* ==========================================
-   Dashboard Live Engine v2.0
+   Dashboard Live Engine v2.1
    CGG HSE Digital Ecosystem
    ========================================== */
 
-const DashboardLive = {
+const DashboardLive={
 
-    refreshInterval:30000,
-    cacheKey:"cgg_dashboard_cache",
+    timer:null,
 
     async refresh(){
 
         try{
 
-            const res = await apiGet("dashboard");
+            const res=await apiGet("dashboard");
 
             if(!res.success){
-                throw new Error("Dashboard API gagal.");
+
+                console.error("Dashboard API gagal.");
+
+                return;
+
             }
 
-            this.updateUI(res);
+            /* ---------- Simpan ke DashboardState ---------- */
 
-            this.saveCache(res);
+            DashboardState.inspection=res.kpi.inspection;
+            DashboardState.finding=res.kpi.finding;
+            DashboardState.pica=res.kpi.pica;
+            DashboardState.hazard=res.kpi.hazard;
+            DashboardState.incident=res.kpi.incident;
+            DashboardState.notification=res.notification.unread;
 
-            this.setStatus(true);
+            /* ---------- Update Hero ---------- */
+
+            setValue("hero-inspection",DashboardState.inspection);
+
+            /* ---------- Update KPI ---------- */
+
+            setValue("kpi-inspection",DashboardState.inspection);
+            setValue("kpi-finding",DashboardState.finding);
+            setValue("kpi-pica",DashboardState.pica);
+            setValue("kpi-hazard",DashboardState.hazard);
+            setValue("kpi-incident",DashboardState.incident);
+            setValue("notif-count",DashboardState.notification);
 
         }catch(err){
 
             console.error("Dashboard Error:",err);
 
-            this.setStatus(false);
-
-            this.loadCache();
-
         }
 
     },
 
-    updateUI(res){
+    start(){
 
-        setValue("kpi-inspection",res.kpi.inspection);
-        setValue("kpi-finding",res.kpi.finding);
-        setValue("kpi-pica",res.kpi.pica);
-        setValue("kpi-hazard",res.kpi.hazard);
-        setValue("kpi-incident",res.kpi.incident);
-        setValue("notif-count",res.notification.unread);
+        if(this.timer){
 
-        const hero=document.getElementById("hero-inspection");
+            clearInterval(this.timer);
 
-        if(hero){
-            hero.textContent=res.kpi.inspection;
         }
 
-        const badge=document.querySelector(".badge-success");
+        this.refresh();
 
-        if(badge){
-            badge.textContent="System Online";
-        }
+        this.timer=setInterval(()=>{
 
-    },
+            this.refresh();
 
-    saveCache(data){
-
-        try{
-
-            localStorage.setItem(
-                this.cacheKey,
-                JSON.stringify(data)
-            );
-
-        }catch(e){}
+        },30000);
 
     },
 
-    loadCache(){
+    stop(){
 
-        try{
+        if(this.timer){
 
-            const raw=localStorage.getItem(this.cacheKey);
+            clearInterval(this.timer);
 
-            if(!raw) return;
-
-            const data=JSON.parse(raw);
-
-            this.updateUI(data);
-
-        }catch(e){}
-
-    },
-
-    setStatus(online){
-
-        const badge=document.querySelector(".badge-success");
-
-        if(!badge) return;
-
-        if(online){
-
-            badge.textContent="System Online";
-
-        }else{
-
-            badge.textContent="Mode Offline";
+            this.timer=null;
 
         }
 
@@ -115,20 +90,17 @@ function setValue(id,value){
     const el=document.getElementById(id);
 
     if(el){
-        el.textContent=value ?? 0;
+
+        el.textContent=value;
+
     }
 
 }
 
-/* ---------- Init ---------- */
+/* ---------- Auto Start ---------- */
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-    DashboardLive.refresh();
-
-    setInterval(
-        ()=>DashboardLive.refresh(),
-        DashboardLive.refreshInterval
-    );
+    DashboardLive.start();
 
 });
