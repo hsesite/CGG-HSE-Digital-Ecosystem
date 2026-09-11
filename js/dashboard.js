@@ -3,9 +3,7 @@
    Build 7.1 (Dependency Safe)
    ========================================== */
 
-window.Dashboard = (() => {
-   /* Legacy Dashboard State */
-
+/* Legacy State (dipakai dashboard_live.js) */
 window.DashboardState = window.DashboardState || {
   inspection: 0,
   finding: 0,
@@ -16,378 +14,353 @@ window.DashboardState = window.DashboardState || {
   liveActivity: []
 };
 
-let clockTimer = null;
-let kpiLoaded = false;
+window.Dashboard = (() => {
 
-/* ==========================================
-   Render Dashboard
-   ========================================== */
+  let clockTimer = null;
+  let kpiLoaded = false;
 
-async function render() {
+  /* ==========================================
+     Render Dashboard
+     ========================================== */
 
-  const view = document.getElementById("router-view");
-  if (!view) return;
+  async function render() {
 
-  view.innerHTML = `
+    const view = document.getElementById("router-view");
+    if (!view) return;
+
+    view.innerHTML = `
 <div class="dashboard-shell fade-in">
 
-<div class="executive-header glass-card">
+  <div class="executive-header glass-card">
 
-<div class="executive-left">
+    <div class="executive-left">
 
-<div class="logo-circle">CGG</div>
+      <div class="logo-circle">CGG</div>
 
-<div>
-<h1>CGG HSE Digital Operating System</h1>
-<p>Command Center • Foreman Safety</p>
-</div>
+      <div>
+        <h1>CGG HSE Digital Operating System</h1>
+        <p>Command Center • Foreman Safety</p>
+      </div>
 
-</div>
+    </div>
 
-<div class="executive-right">
-<div id="live-clock">00:00</div>
-</div>
+    <div class="executive-right">
+      <div id="live-clock">00:00:00</div>
+    </div>
 
-</div>
+  </div>
 
-<div class="command-center">
+  <div class="command-center">
 
-<div class="command-bar">
+    <div class="command-bar">
 
-<span>⌘</span>
+      <span>⌘</span>
 
-<input
-id="dashboard-command"
-placeholder="Cari Unit, Area, PICA atau buka Modul...">
+      <input
+        id="dashboard-command"
+        placeholder="Cari Unit, Area, PICA atau buka Modul..." />
 
-</div>
+    </div>
 
-</div>
+  </div>
 
-<div class="dashboard-grid">
+  <div class="dashboard-grid">
 
-<div class="kpi-card glass-card">
-<div class="kpi-label">Inspection</div>
-<div id="kpi-inspection" class="kpi-value">0</div>
-</div>
+    <div class="kpi-card glass-card">
+      <div class="kpi-label">Inspection</div>
+      <div id="kpi-inspection" class="kpi-value">0</div>
+    </div>
 
-<div class="kpi-card glass-card">
-<div class="kpi-label">Finding</div>
-<div id="kpi-finding" class="kpi-value">0</div>
-</div>
+    <div class="kpi-card glass-card">
+      <div class="kpi-label">Finding</div>
+      <div id="kpi-finding" class="kpi-value">0</div>
+    </div>
 
-<div class="kpi-card glass-card">
-<div class="kpi-label">PICA</div>
-<div id="kpi-pica" class="kpi-value">0</div>
-</div>
+    <div class="kpi-card glass-card">
+      <div class="kpi-label">PICA</div>
+      <div id="kpi-pica" class="kpi-value">0</div>
+    </div>
 
-<div class="kpi-card glass-card">
-<div class="kpi-label">PTW Aktif</div>
-<div id="kpi-ptw" class="kpi-value">0</div>
-</div>
+    <div class="kpi-card glass-card">
+      <div class="kpi-label">PTW Aktif</div>
+      <div id="kpi-ptw" class="kpi-value">0</div>
+    </div>
 
-</div>
+  </div>
 
-<div class="glass-card section-card">
+  <div class="glass-card section-card">
 
-<div class="section-title">Operational Zones</div>
+    <div class="section-title">Operational Zones</div>
 
-<div class="zone-grid">
+    <div class="zone-grid">
 
-${zoneCard("Pit Jaja KM10","🟢","Normal")}
-${zoneCard("Workshop","🟡","2 Finding")}
-${zoneCard("Fuel Station","🟢","Normal")}
-${zoneCard("Stockpile","🔴","PICA Overdue")}
-${zoneCard("Office","🟢","Normal")}
-${zoneCard("Jetty","🟢","Normal")}
+      ${zoneCard("Pit Jaja KM10","🟢","Normal")}
+      ${zoneCard("Workshop","🟡","2 Finding")}
+      ${zoneCard("Fuel Station","🟢","Normal")}
+      ${zoneCard("Stockpile","🔴","PICA Overdue")}
+      ${zoneCard("Office","🟢","Normal")}
+      ${zoneCard("Jetty","🟢","Normal")}
 
-</div>
+    </div>
 
-</div>
+  </div>
 
-<div class="glass-card section-card">
+  <div class="glass-card section-card">
 
-<div class="section-title">Quick Launch</div>
+    <div class="section-title">Quick Launch</div>
 
-<div class="launch-grid">
+    <div class="launch-grid">
 
-${launch("🚙","Inspection")}
-${launch("📋","PTW")}
-${launch("⚠️","Incident")}
-${launch("🛠","Audit")}
-${launch("📑","SOP")}
-${launch("📊","Analytics")}
-${launch("📂","Reports")}
-${launch("🏭","Mine Permit")}
+      ${launch("🚙","Inspection")}
+      ${launch("📋","PTW")}
+      ${launch("⚠️","Incident")}
+      ${launch("🛠","Audit")}
+      ${launch("📑","SOP")}
+      ${launch("📊","Analytics")}
+      ${launch("📂","Reports")}
+      ${launch("🏭","Mine Permit")}
 
-</div>
+    </div>
 
-</div>
+  </div>
 
-<div class="dashboard-two">
+  <div class="dashboard-two">
 
-<div class="glass-card section-card">
+    <div class="glass-card section-card">
 
-<div class="section-title">Live Activity</div>
+      <div class="section-title">Live Activity</div>
 
-<div id="live-activity">
+      <div id="live-activity">
 
-${activity("07:10","Inspection LV")}
-${activity("08:12","Hazard Report")}
-${activity("09:30","PTW Approved")}
-${activity("10:15","Safety Talk")}
+        ${activity("07:10","Inspection LV")}
+        ${activity("08:12","Hazard Report")}
+        ${activity("09:30","PTW Approved")}
+        ${activity("10:15","Safety Talk")}
 
-</div>
+      </div>
 
-</div>
+    </div>
 
-<div class="glass-card section-card">
+    <div class="glass-card section-card">
 
-<div class="section-title">Notification</div>
+      <div class="section-title">Notification</div>
 
-<div class="notif danger">PICA Stockpile overdue</div>
-<div class="notif warning">MCU bulan ini</div>
-<div class="notif info">Inspection selesai</div>
+      <div class="notif danger">PICA Stockpile overdue</div>
+      <div class="notif warning">MCU bulan ini</div>
+      <div class="notif info">Inspection selesai</div>
 
-</div>
+    </div>
 
-</div>
+  </div>
 
 </div>
 `;
 
-  startClock();
-  bindCommand();
+    startClock();
+    bindCommand();
 
-  await loadDashboardData();
+    await loadDashboardData();
+  }
 
-}
+  /* ==========================================
+     Components
+     ========================================== */
 
-/* ==========================================
-   Components
-   ========================================== */
-
-function zoneCard(name,status,desc){
-
-return `
+  function zoneCard(name,status,desc){
+    return `
 <div class="zone-card">
-<div class="zone-status">${status}</div>
-<div class="zone-name">${name}</div>
-<div class="zone-desc">${desc}</div>
+  <div class="zone-status">${status}</div>
+  <div class="zone-name">${name}</div>
+  <div class="zone-desc">${desc}</div>
 </div>`;
-}
+  }
 
-function launch(icon,title){
-
-return `
+  function launch(icon,title){
+    return `
 <div class="launch-card">
-<div class="launch-icon">${icon}</div>
-<div>${title}</div>
+  <div class="launch-icon">${icon}</div>
+  <div>${title}</div>
 </div>`;
-}
+  }
 
-function activity(time,text){
-
-return `
+  function activity(time,text){
+    return `
 <div class="activity-item">
-<span>${time}</span>
-<b>${text}</b>
+  <span>${time}</span>
+  <b>${text}</b>
 </div>`;
-}
+  }
 
-/* ==========================================
-   Clock
-   ========================================== */
+  /* ==========================================
+     Clock
+     ========================================== */
 
-function startClock(){
+  function startClock(){
 
-const el=document.getElementById("live-clock");
-if(!el) return;
+    const el=document.getElementById("live-clock");
+    if(!el) return;
 
-if(clockTimer) clearInterval(clockTimer);
+    if(clockTimer){
+      clearInterval(clockTimer);
+    }
 
-const update=()=>{
+    const update=()=>{
 
-el.textContent=new Date().toLocaleTimeString("id-ID",{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-});
+      el.textContent=new Date().toLocaleTimeString("id-ID",{
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      });
 
-};
+    };
 
-update();
+    update();
 
-clockTimer=setInterval(update,1000);
+    clockTimer=setInterval(update,1000);
 
-}
+  }
 
-/* ==========================================
-   Dashboard Data
-   ========================================== */
+  /* ==========================================
+     Dashboard Data
+     ========================================== */
 
-async function loadDashboardData(){
+  async function loadDashboardData(){
 
-try{
+    try{
 
-/* Hindari loop Dashboard ↔ DashboardLive */
+      if(window.DashboardAPI &&
+         typeof DashboardAPI.getSummary==="function"){
 
-if(window.DashboardAPI && typeof DashboardAPI.getSummary==="function"){
+        const summary=await DashboardAPI.getSummary();
 
-const summary=await DashboardAPI.getSummary();
+        DashboardState.inspection=summary.inspection||0;
+        DashboardState.finding=summary.finding||0;
+        DashboardState.pica=summary.pica||0;
+        DashboardState.ptw=summary.ptw||0;
 
-if (!kpiLoaded) {
+      }else{
 
-  DashboardState.inspection = 5;
-  DashboardState.finding = 10;
-  DashboardState.pica = 10;
-  DashboardState.ptw = 2;
+        DashboardState.inspection=5;
+        DashboardState.finding=10;
+        DashboardState.pica=10;
+        DashboardState.ptw=2;
 
-  animateCounter("kpi-inspection", DashboardState.inspection);
-  animateCounter("kpi-finding", DashboardState.finding);
-  animateCounter("kpi-pica", DashboardState.pica);
-  animateCounter("kpi-ptw", DashboardState.ptw);
+      }
 
-kpiLoaded=true;
-return;
+    }catch(err){
 
-}
+      console.error("DashboardAPI Error",err);
 
-}catch(err){
+      DashboardState.inspection=5;
+      DashboardState.finding=10;
+      DashboardState.pica=10;
+      DashboardState.ptw=2;
 
-console.log("DashboardAPI fallback",err);
+    }
 
-}
+    animateCounter("kpi-inspection",DashboardState.inspection);
+    animateCounter("kpi-finding",DashboardState.finding);
+    animateCounter("kpi-pica",DashboardState.pica);
+    animateCounter("kpi-ptw",DashboardState.ptw);
 
-/* Fallback sementara */
+    kpiLoaded=true;
 
-if(!kpiLoaded){
+  }
 
-animateCounter("kpi-inspection",5);
-animateCounter("kpi-finding",10);
-animateCounter("kpi-pica",10);
-animateCounter("kpi-ptw",2);
+  async function refresh(){
 
-kpiLoaded=true;
+    kpiLoaded=false;
+    await loadDashboardData();
 
-}
+  }
 
-}
+  /* ==========================================
+     Counter Animation
+     ========================================== */
 
-/* Dipanggil dashboard-live.js */
+  function animateCounter(id,target){
 
-async function refresh(){
+    const el=document.getElementById(id);
+    if(!el) return;
 
-kpiLoaded=false;
-await loadDashboardData();
+    let value=0;
 
-}
+    const step=Math.max(1,Math.ceil(target/30));
 
-/* ==========================================
-   Counter Animation
-   ========================================== */
+    const timer=setInterval(()=>{
 
-function animateCounter(id,target){
+      value+=step;
 
-const el=document.getElementById(id);
-if(!el) return;
+      if(value>=target){
 
-const current=Number(el.textContent)||0;
+        value=target;
+        clearInterval(timer);
 
-if(current===target){
+      }
 
-el.textContent=target;
-return;
+      el.textContent=value;
 
-}
+    },18);
 
-const step=Math.max(1,Math.ceil(target/30));
+  }
 
-let value=0;
+  /* ==========================================
+     Command Center
+     ========================================== */
 
-const timer=setInterval(()=>{
+  function bindCommand(){
 
-value+=step;
+    const input=document.getElementById("dashboard-command");
+    if(!input) return;
 
-if(value>=target){
+    input.onkeydown=e=>{
 
-value=target;
-clearInterval(timer);
+      if(e.key!=="Enter") return;
 
-}
+      const value=input.value.trim().toLowerCase();
 
-el.textContent=value;
+      switch(value){
 
-},18);
+        case "inspection":
+          if(window.Router && Router.navigate){
+            Router.navigate("inspection");
+          }
+          break;
 
-}
+        case "incident":
+          alert("Modul Incident segera aktif.");
+          break;
 
-/* ==========================================
-   Command Center
-   ========================================== */
+        case "ptw":
+          alert("Modul PTW segera aktif.");
+          break;
 
-function bindCommand(){
+        default:
+          alert("Pencarian: "+input.value);
 
-const input=document.getElementById("dashboard-command");
-if(!input) return;
+      }
 
-input.onkeydown=e=>{
+      input.value="";
 
-if(e.key!=="Enter") return;
+    };
 
-const value=input.value.trim().toLowerCase();
+  }
 
-switch(value){
+  /* ==========================================
+     Public API
+     ========================================== */
 
-case "inspection":
-
-if(window.Router){
-
-Router.navigate("inspection");
-
-}
-
-break;
-
-case "incident":
-
-alert("Modul Incident segera aktif.");
-break;
-
-case "ptw":
-
-alert("Modul PTW segera aktif.");
-break;
-
-default:
-
-alert("Pencarian: "+input.value);
-
-}
-
-input.value="";
-
-};
-
-}
-
-/* ==========================================
-   Public API
-   ========================================== */
-
-return{
-
-render,
-refresh
-
-};
+  return{
+    render,
+    refresh
+  };
 
 })();
+
 /* ==========================================
-   Legacy Compatibility (WAJIB)
-   Jangan hapus, dipakai router.js lama
+   Legacy Compatibility (router.js lama)
    ========================================== */
 
-window.renderDashboardHome = function () {
+window.renderDashboardHome=function(){
   return Dashboard.render();
 };
