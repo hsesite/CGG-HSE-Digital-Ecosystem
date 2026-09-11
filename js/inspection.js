@@ -13,9 +13,9 @@ const InspectionModule = (() => {
      Render
      ========================================== */
 
-  async function render(asModal = false) {
+  async function render(target = null) {
 
-    const view = document.getElementById("router-view");
+    const view = target || document.getElementById("router-view");
     if (!view) return;
 
     await InspectionMaster.load();
@@ -112,18 +112,7 @@ const InspectionModule = (() => {
           </button>
 
         </div>
-        if (asModal) {
-
-  const form = view.firstElementChild;
-
-  const holder = document.createElement("div");
-
-  holder.appendChild(form);
-
-  EnterpriseModal.open("Inspection", holder);
-
-}
-
+       
         <!-- ==========================================
              Quick Action Bar
              FF-00B-8
@@ -693,5 +682,16 @@ window.InspectionMaster={
     }
 
   }
+
+};
+/* ==========================================
+   Open Inspection Modal
+   ========================================== */
+
+InspectionModule.openModal = async function(){
+
+    const body = EnterpriseModal.open("Inspection");
+
+    await InspectionModule.render(body);
 
 };
