@@ -551,8 +551,8 @@ const InspectionModule = (() => {
         DashboardLive.refresh();
 
       }
-
-      render();
+      EnterpriseModal.close();
+      render(false);
 
     }catch(err){
 
