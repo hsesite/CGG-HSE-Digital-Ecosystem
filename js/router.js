@@ -121,7 +121,7 @@ if(routeName==="dashboard"){
 
 if(routeName==="inspection"){
 
-    InspectionModule.render();
+    InspectionModule.render(true);
 
     return;
 
