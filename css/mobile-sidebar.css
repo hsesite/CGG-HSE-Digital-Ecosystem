@@ -1,35 +1,57 @@
 /* ==========================================
    CGG HDOS Mobile Sidebar
-   Build 10A
+   Build 10B
    HP ONLY
-   Desktop tidak terpengaruh.
+   Desktop LOCK
    ========================================== */
 
 @media (max-width:768px){
 
-  /* Sidebar menjadi drawer */
-  #sidebar{
-    position:fixed;
-    top:0;
-    left:-280px;
-    width:280px;
-    height:100vh;
-    z-index:9999;
-    transition:left .28s ease;
-  }
+body.mobile-mode #app{
+display:block !important;
+width:100vw;
+height:100vh;
+}
 
-  /* Drawer terbuka */
-  body.sidebar-open #sidebar{
-    left:0;
-  }
+body.mobile-mode main{
+margin:0 !important;
+padding:14px !important;
+width:100vw !important;
+height:100vh;
+overflow:auto;
+box-sizing:border-box;
+}
 
-  /* Overlay */
-  body.sidebar-open::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.45);
-    z-index:9998;
-  }
+/* Drawer */
+
+body.mobile-mode #sidebar{
+position:fixed !important;
+top:0;
+left:-280px;
+width:280px;
+height:100vh;
+z-index:9999;
+transition:left .28s ease;
+}
+
+body.mobile-mode.sidebar-open #sidebar{
+left:0;
+}
+
+/* Overlay */
+
+body.mobile-mode.sidebar-open::before{
+content:"";
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.45);
+z-index:9998;
+}
+
+/* Saat drawer terbuka dashboard tetap diam */
+
+body.mobile-mode.sidebar-open main{
+transform:none;
+}
 
 }
