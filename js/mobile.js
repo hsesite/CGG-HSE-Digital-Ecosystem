@@ -43,7 +43,7 @@ const Mobile = {
       height:46px;
       border:none;
       border-radius:14px;
-      background:rgba(12,22,45,.95);
+      background:transparent(12,22,45,.95);
       color:white;
       font-size:22px;
       cursor:pointer;
