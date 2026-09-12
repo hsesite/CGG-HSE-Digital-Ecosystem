@@ -1,87 +1,67 @@
 /* ==========================================
    CGG HDOS Mobile
-   Build 10 Stable
-   FULL REPLACEMENT
+   Build 10A
+   HP ONLY
+   Desktop LOCK
    ========================================== */
 
 @media (max-width:768px){
 
-html,body{
-width:100%;
-height:100%;
-margin:0;
-overflow:hidden;
-}
+/* ===== APP ===== */
 
-/* MATIKAN GRID DESKTOP */
 #app{
-display:block !important;
-width:100vw;
+display:block;
+width:100%;
 height:100vh;
 }
 
-/* SIDEBAR JADI DRAWER */
-#sidebar{
-position:fixed !important;
-top:0;
-left:-280px;
-width:280px;
-height:100vh;
-z-index:9999;
-transition:left .28s ease;
-}
-
-/* Drawer terbuka */
-body.sidebar-open #sidebar{
-left:0;
-}
-
-/* Overlay */
-body.sidebar-open::before{
-content:"";
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.45);
-z-index:9998;
-}
-
-/* KONTEN FULL LAYAR */
 main{
-position:relative;
-margin:0 !important;
-padding:16px !important;
-width:100vw !important;
+width:100%;
 height:100vh;
-overflow:auto;
+margin:0;
+padding:14px;
 box-sizing:border-box;
+overflow:auto;
 }
 
-/* Header */
+/* ===== DASHBOARD ===== */
+
+.dashboard-shell{
+gap:16px;
+}
+
+/* ===== HEADER ===== */
+
 .executive-header{
 display:flex;
 flex-direction:column;
 align-items:flex-start;
-gap:14px;
+gap:12px;
 padding:18px;
 }
 
 .executive-left{
 display:flex;
 align-items:center;
-gap:14px;
+gap:12px;
 }
 
 .executive-left img,
 .header-logo{
-width:56px;
-height:56px;
+width:52px;
+height:52px;
 object-fit:contain;
 }
 
 .executive-left h1{
-font-size:18px;
-line-height:1.2;
 margin:0;
+font-size:22px;
+line-height:1.15;
+}
+
+.executive-left p{
+margin:0;
+font-size:13px;
 }
 
 .executive-right{
@@ -89,12 +69,19 @@ align-self:flex-end;
 font-size:18px;
 }
 
-/* Search */
+/* ===== COMMAND BAR ===== */
+
 .command-bar{
 padding:14px 16px;
+border-radius:18px;
 }
 
-/* KPI */
+.command-bar input{
+font-size:14px;
+}
+
+/* ===== KPI ===== */
+
 .dashboard-grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -102,37 +89,93 @@ gap:12px;
 }
 
 .kpi-card{
-padding:18px;
+padding:16px;
 min-height:96px;
+border-radius:20px;
+}
+
+.kpi-label{
+font-size:12px;
 }
 
 .kpi-value{
 font-size:30px;
 }
 
-/* Operational */
+/* ===== SECTION ===== */
+
+.section-card{
+padding:18px;
+border-radius:22px;
+}
+
+.section-title{
+font-size:18px;
+margin-bottom:14px;
+}
+
+/* ===== OPERATIONAL ZONE ===== */
+
 .zone-grid{
 display:grid;
 grid-template-columns:1fr;
-gap:14px;
+gap:12px;
 }
 
-/* Quick Launch */
+.zone-card{
+padding:16px;
+}
+
+/* ===== QUICK LAUNCH ===== */
+
 .launch-grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:12px;
 }
 
-/* Bottom */
+.launch-card{
+padding:18px 12px;
+}
+
+.launch-icon{
+font-size:24px;
+margin-bottom:8px;
+}
+
+/* ===== BOTTOM CARD ===== */
+
 .dashboard-two{
 display:grid;
 grid-template-columns:1fr;
-gap:16px;
+gap:14px;
 }
 
-/* Saat drawer terbuka, konten tetap diam */
-body.sidebar-open main{
-transform:none;
+.activity-item{
+padding:12px 0;
+font-size:13px;
 }
+
+.notif{
+padding:12px 14px;
+}
+
+/* ===== SIDEBAR ===== */
+
+/* Sembunyikan teks saat sidebar ditutup */
+
+body:not(.sidebar-open) .sb-brand,
+body:not(.sidebar-open) .sb-title,
+body:not(.sidebar-open) .sb-info{
+display:none;
+}
+
+/* Saat drawer terbuka tampil normal */
+
+body.sidebar-open .sb-brand,
+body.sidebar-open .sb-title,
+body.sidebar-open .sb-info{
+display:block;
+}
+
 }
