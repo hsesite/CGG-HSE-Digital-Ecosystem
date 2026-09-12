@@ -166,11 +166,13 @@ this.activate(btn.dataset.route);
 
 });
 
-document.getElementById("sb-toggle")?.onclick=()=>{
+const toggleBtn = document.getElementById("sb-toggle");
 
-this.toggle();
-
-};
+if (toggleBtn) {
+  toggleBtn.onclick = () => {
+    this.toggle();
+  };
+}
 
 },
 
