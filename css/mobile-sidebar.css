@@ -1,27 +1,35 @@
-/* Drawer hanya HP */
+/* ==========================================
+   CGG HDOS Mobile Sidebar
+   Build 10A
+   HP ONLY
+   Desktop tidak terpengaruh.
+   ========================================== */
 
 @media (max-width:768px){
 
-#sidebar{
-position:fixed;
-left:-280px;
-top:0;
-width:280px;
-height:100vh;
-transition:left .28s;
-z-index:9999;
-}
+  /* Sidebar menjadi drawer */
+  #sidebar{
+    position:fixed;
+    top:0;
+    left:-280px;
+    width:280px;
+    height:100vh;
+    z-index:9999;
+    transition:left .28s ease;
+  }
 
-body.sidebar-open #sidebar{
-left:0;
-}
+  /* Drawer terbuka */
+  body.sidebar-open #sidebar{
+    left:0;
+  }
 
-body.sidebar-open::before{
-content:"";
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.45);
-z-index:9998;
-}
+  /* Overlay */
+  body.sidebar-open::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9998;
+  }
 
 }
