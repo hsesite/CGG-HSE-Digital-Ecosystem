@@ -1220,3 +1220,54 @@ width:280px!important;
   }
 
 }
+/* ==========================================
+   BUILD 12.6
+   Dynamic Light CSS
+   HP ONLY
+========================================== */
+
+@media (max-width:768px){
+
+  .card,
+  .dashboard-card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .hero-card,
+  .dashboard-header{
+
+    --mx:50%;
+    --my:20%;
+
+    position:relative;
+    overflow:hidden;
+
+  }
+
+  .card::before,
+  .dashboard-card::before,
+  .metric-card::before,
+  .zone-card::before,
+  .quick-card::before,
+  .hero-card::before,
+  .dashboard-header::before{
+
+    background:
+      radial-gradient(
+        circle at var(--mx) var(--my),
+        rgba(255,255,255,.16),
+        transparent 42%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.04),
+        transparent 45%
+      );
+
+    transition:
+      background .15s linear,
+      opacity .25s ease;
+
+  }
+
+}
