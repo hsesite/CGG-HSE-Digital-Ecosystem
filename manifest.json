@@ -1,131 +1,24 @@
 {
-  "project": {
-    "name": "CGG HSE Digital Operating System",
-    "shortName": "CGG-HDOS",
-    "version": "10.2.0",
-    "build": "001",
-    "status": "Engineering",
-    "architecture": "Locked",
-    "design": "Apple macOS + iOS Glass"
-  },
-  "engines": {
-    "dashboard": {
-      "status": "planned",
-      "dependsOn": [
-        "api.js",
-        "dashboard-live.js",
-        "router.js"
-      ]
+  "name": "CGG HSE Digital Operating System",
+  "short_name": "CGG HDOS",
+  "description": "PT Cahaya Ginda Ganda - HSE Digital Operating System",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020612",
+  "theme_color": "#020612",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "assets/Logo/logo-cgg.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
-    "workspace": {
-      "status": "planned",
-      "dependsOn": [
-        "router.js"
-      ]
-    },
-    "workflow": {
-      "status": "planned",
-      "dependsOn": [
-        "api.js"
-      ]
-    },
-    "report": {
-      "status": "planned",
-      "dependsOn": [
-        "api.js"
-      ]
-    },
-    "notification": {
-      "status": "planned",
-      "dependsOn": [
-        "api.js"
-      ]
-    },
-    "masterData": {
-      "status": "active",
-      "dependsOn": [
-        "api.js"
-      ]
+    {
+      "src": "assets/Logo/logo-cgg.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
-  },
-  "modules": {
-    "dashboard": {
-      "status": "active",
-      "file": "js/dashboard.js"
-    },
-    "inspection": {
-      "status": "active",
-      "file": "js/inspection.js"
-    },
-    "ptw": {
-      "status": "planned",
-      "file": "js/ptw.js"
-    },
-    "incident": {
-      "status": "planned",
-      "file": "js/incident.js"
-    },
-    "minePermit": {
-      "status": "planned",
-      "file": "js/mine-permit.js"
-    },
-    "audit": {
-      "status": "planned",
-      "file": "js/audit.js"
-    },
-    "commissioning": {
-      "status": "planned",
-      "file": "js/commissioning.js"
-    },
-    "pica": {
-      "status": "engine",
-      "generated": true
-    },
-    "documents": {
-      "status": "planned",
-      "folder": "docs/"
-    }
-  },
-  "masterObjects": [
-    "Unit",
-    "Area",
-    "Contractor",
-    "User",
-    "Hazard",
-    "Finding",
-    "Incident",
-    "Permit",
-    "PICA",
-    "Document",
-    "Policy",
-    "Equipment"
-  ],
-  "loadOrder": {
-    "css": [
-      "variables.css",
-      "tokens.css",
-      "base.css",
-      "layout.css",
-      "desktop.css",
-      "mobile.css",
-      "components.css",
-      "forms.css",
-      "design-system.css",
-      "animation.css"
-    ],
-    "js": [
-      "api.js",
-      "dashboard-live.js",
-      "router.js",
-      "sidebar.js",
-      "dashboard.js",
-      "inspection.js",
-      "app.js"
-    ]
-  },
-  "locked": {
-    "api": true,
-    "appsScript": true,
-    "spreadsheetStructure": true
-  }
+  ]
 }
