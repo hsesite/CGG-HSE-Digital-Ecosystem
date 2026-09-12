@@ -1,6 +1,7 @@
 /* ==========================================
    CGG HDOS Mobile
-   FINAL FIX
+   Build 10 Stable
+   FULL REPLACEMENT
    ========================================== */
 
 @media (max-width:768px){
@@ -12,24 +13,14 @@ margin:0;
 overflow:hidden;
 }
 
-/* HAPUS GRID DESKTOP */
+/* MATIKAN GRID DESKTOP */
 #app{
 display:block !important;
 width:100vw;
 height:100vh;
 }
 
-/* KONTEN PENUH */
-main{
-margin:0 !important;
-padding:16px !important;
-width:100vw !important;
-height:100vh;
-overflow:auto;
-box-sizing:border-box;
-}
-
-/* DRAWER */
+/* SIDEBAR JADI DRAWER */
 #sidebar{
 position:fixed !important;
 top:0;
@@ -40,6 +31,7 @@ z-index:9999;
 transition:left .28s ease;
 }
 
+/* Drawer terbuka */
 body.sidebar-open #sidebar{
 left:0;
 }
@@ -53,18 +45,30 @@ background:rgba(0,0,0,.45);
 z-index:9998;
 }
 
-/* HEADER */
+/* KONTEN FULL LAYAR */
+main{
+position:relative;
+margin:0 !important;
+padding:16px !important;
+width:100vw !important;
+height:100vh;
+overflow:auto;
+box-sizing:border-box;
+}
+
+/* Header */
 .executive-header{
-padding:18px;
+display:flex;
 flex-direction:column;
 align-items:flex-start;
-gap:12px;
+gap:14px;
+padding:18px;
 }
 
 .executive-left{
 display:flex;
 align-items:center;
-gap:12px;
+gap:14px;
 }
 
 .executive-left img,
@@ -75,8 +79,9 @@ object-fit:contain;
 }
 
 .executive-left h1{
-font-size:22px;
-line-height:1.15;
+font-size:18px;
+line-height:1.2;
+margin:0;
 }
 
 .executive-right{
@@ -84,7 +89,7 @@ align-self:flex-end;
 font-size:18px;
 }
 
-/* SEARCH */
+/* Search */
 .command-bar{
 padding:14px 16px;
 }
@@ -98,23 +103,36 @@ gap:12px;
 
 .kpi-card{
 padding:18px;
-min-height:100px;
+min-height:96px;
 }
 
 .kpi-value{
-font-size:32px;
+font-size:30px;
 }
 
-/* GRID MOBILE */
+/* Operational */
 .zone-grid{
+display:grid;
 grid-template-columns:1fr;
+gap:14px;
 }
 
+/* Quick Launch */
 .launch-grid{
+display:grid;
 grid-template-columns:repeat(2,1fr);
+gap:12px;
 }
 
+/* Bottom */
 .dashboard-two{
+display:grid;
 grid-template-columns:1fr;
+gap:16px;
+}
+
+/* Saat drawer terbuka, konten tetap diam */
+body.sidebar-open main{
+transform:none;
 }
 }
