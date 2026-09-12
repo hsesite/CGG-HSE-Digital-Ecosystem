@@ -1,97 +1,110 @@
 /* ==========================================
    CGG HDOS Service Worker
-   Build 1.1
-   Offline Cache Engine
+   Build 1.2
+   Offline Navigation Fix
    ========================================== */
 
-const CACHE_NAME = "cgg-hdos-v1.1";
+const CACHE_NAME = "cgg-hdos-v1.2";
 
-const CORE_ASSETS = [
+const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-
-  "./assets/Logo/logo-cgg.png",
-
-  "./css/desktop.css",
-  "./css/mobile.css",
-  "./css/mobile-sidebar.css",
-  "./css/mobile-performance.css",
-
-  "./js/app.js",
-  "./js/router.js",
-  "./js/sidebar.js",
-  "./js/mobile-engine.js"
+  "./assets/Logo/logo-cgg.png"
 ];
 
-/* Install */
+/* INSTALL */
 
 self.addEventListener("install", event => {
-
   event.waitUntil(
+    caches.open(CACHE_NAME).then(async cache => {
 
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(CORE_ASSETS))
+      for (const file of APP_SHELL) {
+        try {
+          await cache.add(file);
+        } catch (e) {
+          console.warn("Cache gagal:", file);
+        }
+      }
 
+    })
   );
 
   self.skipWaiting();
-
 });
 
-/* Activate */
+/* ACTIVATE */
 
 self.addEventListener("activate", event => {
-
   event.waitUntil(
-
     caches.keys().then(keys =>
-
       Promise.all(
-
         keys
           .filter(key => key !== CACHE_NAME)
           .map(key => caches.delete(key))
-
       )
-
     )
-
   );
 
   self.clients.claim();
-
 });
 
-/* Fetch */
+/* FETCH */
 
 self.addEventListener("fetch", event => {
 
-  if(event.request.method !== "GET") return;
+  if (event.request.method !== "GET") return;
+
+  /* Navigasi halaman */
+  if (event.request.mode === "navigate") {
+
+    event.respondWith(
+
+      fetch(event.request)
+        .then(response => {
+
+          const copy = response.clone();
+
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put("./index.html", copy);
+          });
+
+          return response;
+
+        })
+        .catch(async () => {
+
+          return await caches.match("./index.html");
+
+        })
+
+    );
+
+    return;
+  }
+
+  /* Asset biasa */
 
   event.respondWith(
 
     caches.match(event.request).then(cached => {
 
-      if(cached) return cached;
+      if (cached) return cached;
 
-      return fetch(event.request).then(response => {
+      return fetch(event.request)
+        .then(response => {
 
-        const copy = response.clone();
+          if (!response || response.status !== 200) return response;
 
-        caches.open(CACHE_NAME).then(cache => {
+          const copy = response.clone();
 
-          cache.put(event.request, copy);
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, copy);
+          });
+
+          return response;
 
         });
-
-        return response;
-
-      }).catch(() => {
-
-        return caches.match("./index.html");
-
-      });
 
     })
 
