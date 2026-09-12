@@ -1,81 +1,84 @@
 /* ==========================================
-   CGG HDOS Sidebar Enterprise V2
-   Architecture Lock V1.1
-   Compatible with App Build 8
+   CGG HDOS Sidebar Enterprise V3
+   Build 10 Stable
    ========================================== */
 
 (() => {
 "use strict";
 
+/* ========= MENU ========= */
+
 const MENU = [
-{
-group:"Dashboard",
-items:[
-{id:"dashboard",icon:"grid",label:"Dashboard"}
-]
-},
-{
-group:"Safety",
-items:[
-{id:"inspection",icon:"clipboard",label:"Inspection"},
-{id:"hazard",icon:"alert",label:"Hazard"},
-{id:"incident",icon:"shield",label:"Incident"},
-{id:"ptw",icon:"file",label:"PTW"},
-{id:"mine-permit",icon:"landmark",label:"Mine Permit"},
-{id:"commissioning",icon:"check",label:"Commissioning"},
-{id:"audit",icon:"list",label:"Audit"}
-]
-},
-{
-group:"Environment",
-items:[
-{id:"waste",icon:"recycle",label:"Waste B3"},
-{id:"spill",icon:"droplet",label:"Spill Report"},
-{id:"dust",icon:"wind",label:"Dust"},
-{id:"water",icon:"waves",label:"Water"},
-{id:"noise",icon:"volume",label:"Noise"},
-{id:"emission",icon:"cloud",label:"Emission"},
-{id:"flora",icon:"leaf",label:"Flora & Fauna"},
-{id:"housekeeping",icon:"home",label:"Housekeeping"}
-]
-},
-{
-group:"Medical",
-items:[
-{id:"first-aid",icon:"cross",label:"First Aid"},
-{id:"clinic",icon:"hospital",label:"Clinic Register"},
-{id:"mcu",icon:"heart",label:"MCU"},
-{id:"fatigue",icon:"moon",label:"Fatigue Management"},
-{id:"fit-work",icon:"activity",label:"Fit to Work"},
-{id:"emergency",icon:"siren",label:"Emergency Response"}
-]
-},
-{
-group:"PICA",
-items:[
-{id:"pica",icon:"wrench",label:"PICA Engine"}
-]
-},
-{
-group:"Kebijakan",
-items:[
-{id:"policy",icon:"book",label:"Policy Center"}
-]
-},
-{
-group:"Analytics",
-items:[
-{id:"analytics",icon:"chart",label:"Analytics"},
-{id:"reports",icon:"report",label:"Reports"}
-]
-},
-{
-group:"Settings",
-items:[
-{id:"settings",icon:"settings",label:"Settings"}
-]
-}
+  {
+    group:"Dashboard",
+    items:[
+      {id:"dashboard",icon:"grid",label:"Dashboard"}
+    ]
+  },
+  {
+    group:"Safety",
+    items:[
+      {id:"inspection",icon:"clipboard",label:"Inspection"},
+      {id:"hazard",icon:"alert",label:"Hazard"},
+      {id:"incident",icon:"shield",label:"Incident"},
+      {id:"ptw",icon:"file",label:"PTW"},
+      {id:"mine-permit",icon:"landmark",label:"Mine Permit"},
+      {id:"commissioning",icon:"check",label:"Commissioning"},
+      {id:"audit",icon:"list",label:"Audit"}
+    ]
+  },
+  {
+    group:"Environment",
+    items:[
+      {id:"waste",icon:"recycle",label:"Waste B3"},
+      {id:"spill",icon:"droplet",label:"Spill Report"},
+      {id:"dust",icon:"wind",label:"Dust"},
+      {id:"water",icon:"waves",label:"Water"},
+      {id:"noise",icon:"volume",label:"Noise"},
+      {id:"emission",icon:"cloud",label:"Emission"},
+      {id:"flora",icon:"leaf",label:"Flora & Fauna"},
+      {id:"housekeeping",icon:"home",label:"Housekeeping"}
+    ]
+  },
+  {
+    group:"Medical",
+    items:[
+      {id:"first-aid",icon:"cross",label:"First Aid"},
+      {id:"clinic",icon:"hospital",label:"Clinic Register"},
+      {id:"mcu",icon:"heart",label:"MCU"},
+      {id:"fatigue",icon:"moon",label:"Fatigue Management"},
+      {id:"fit-work",icon:"activity",label:"Fit to Work"},
+      {id:"emergency",icon:"siren",label:"Emergency Response"}
+    ]
+  },
+  {
+    group:"PICA",
+    items:[
+      {id:"pica",icon:"wrench",label:"PICA Engine"}
+    ]
+  },
+  {
+    group:"Kebijakan",
+    items:[
+      {id:"policy",icon:"book",label:"Policy Center"}
+    ]
+  },
+  {
+    group:"Analytics",
+    items:[
+      {id:"analytics",icon:"chart",label:"Analytics"},
+      {id:"reports",icon:"report",label:"Reports"}
+    ]
+  },
+  {
+    group:"Settings",
+    items:[
+      {id:"settings",icon:"settings",label:"Settings"}
+    ]
+  }
 ];
+
+/* ========= ICON ========= */
 
 const SVG={
 
@@ -135,6 +138,8 @@ settings:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 1
 
 };
 
+/* ========= ENGINE ========= */
+
 const Sidebar={
 
 collapsed:false,
@@ -154,51 +159,47 @@ this.activate("dashboard");
 
 bind(){
 
-bind(){
+document.querySelectorAll(".sb-item").forEach(btn=>{
 
-  document.querySelectorAll(".sb-item").forEach(btn=>{
+btn.onclick=()=>{
 
-    btn.onclick=()=>{
+window.Router?.navigate(btn.dataset.route);
 
-      window.Router?.navigate(btn.dataset.route);
+this.activate(btn.dataset.route);
 
-      this.activate(btn.dataset.route);
+if(window.innerWidth<=768){
 
-      // Tutup drawer setelah memilih menu di HP
-      if(window.innerWidth<=768){
-        document.body.classList.remove("sidebar-open");
-      }
+document.body.classList.remove("sidebar-open");
 
-    };
+}
 
-  });
+};
 
-  const toggleBtn=document.getElementById("sb-toggle");
+});
 
-  if(toggleBtn){
-    toggleBtn.onclick=()=>{
-      this.toggle();
-    };
-  }
+const toggleBtn=document.getElementById("sb-toggle");
+
+if(toggleBtn){
+
+toggleBtn.onclick=()=>this.toggle();
+
+}
 
 },
-toggle(){
 
 toggle(){
 
-  // Mobile = drawer
-  if(window.innerWidth<=768){
+if(window.innerWidth<=768){
 
-    document.body.classList.toggle("sidebar-open");
+document.body.classList.toggle("sidebar-open");
 
-    return;
+return;
 
-  }
+}
 
-  // Desktop = collapse
-  this.collapsed=!this.collapsed;
+this.collapsed=!this.collapsed;
 
-  document.body.classList.toggle("sidebar-collapsed",this.collapsed);
+document.body.classList.toggle("sidebar-collapsed",this.collapsed);
 
 },
 
@@ -223,11 +224,15 @@ return`
 <button id="sb-toggle" class="sb-toggle">☰</button>
 
 <img src="/CGG-HSE-Digital-Ecosystem/assets/Logo/logo-cgg.png"
-     alt="CGG Logo"
-     onerror="this.src='assets/Logo/logo-cgg.png'">
+alt="CGG Logo"
+onerror="this.src='assets/Logo/logo-cgg.png'">
+
 <div class="sb-brand">
+
 <b>CGG HDOS</b>
+
 <span>Digital Operating System</span>
+
 </div>
 
 </div>
@@ -243,9 +248,7 @@ ${MENU.map(group=>`
 ${group.items.map(item=>`
 
 <button class="sb-item"
-
 data-route="${item.id}"
-
 title="${item.label}">
 
 ${SVG[item.icon]}
