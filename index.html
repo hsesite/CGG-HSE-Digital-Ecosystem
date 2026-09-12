@@ -204,19 +204,23 @@ Loading Command Center...
 
 <script>
 
+<script>
+
 /* ==========================================
-   Splash Controller
+   Splash Controller (Safe Version)
    ========================================== */
 
-window.addEventListener("load",()=>{
+window.addEventListener("load", () => {
 
-setTimeout(()=>{
+  setTimeout(() => {
 
-document
-.getElementById("splash-screen")
-.classList.add("fade-out");
+    const splash = document.getElementById("splash-screen");
 
-},1200);
+    if (splash) {
+      splash.classList.add("fade-out");
+    }
+
+  }, 1200);
 
 });
 
