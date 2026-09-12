@@ -48,12 +48,9 @@ const Mobile = {
       font-size:22px;
       cursor:pointer;
       z-index:10001;
-       box-shadow:none;
-       backdrop-filter:none;
-       display:flex;
-       align-items:center;
-       justify-content:center;
-       transition:.25s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.35)
+      backdrop-filter:blur(20px);
+      transition:.25s ease;
    ;
 
     btn.onclick=(e)=>{
