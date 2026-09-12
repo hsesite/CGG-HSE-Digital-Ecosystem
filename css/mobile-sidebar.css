@@ -1271,3 +1271,54 @@ width:280px!important;
   }
 
 }
+/* ==========================================
+   PERFORMANCE PATCH
+   Apple Smooth Motion
+   HP ONLY
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* Blur dikurangi */
+
+  .card,
+  .dashboard-card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .hero-card,
+  .dashboard-header{
+
+    backdrop-filter:blur(14px) !important;
+    -webkit-backdrop-filter:blur(14px) !important;
+
+    box-shadow:
+      0 8px 20px rgba(0,0,0,.20),
+      inset 0 1px rgba(255,255,255,.04) !important;
+
+    will-change:transform;
+
+  }
+
+  /* Animasi hanya transform & opacity */
+
+  .card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .sb-item{
+
+    transition:
+      transform .22s cubic-bezier(.22,1,.36,1),
+      opacity .22s ease,
+      background-color .22s ease !important;
+
+  }
+
+  /* Glow SVG lebih ringan */
+
+  .sb-item svg{
+    filter:none !important;
+  }
+
+}
