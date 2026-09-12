@@ -154,33 +154,51 @@ this.activate("dashboard");
 
 bind(){
 
-document.querySelectorAll(".sb-item").forEach(btn=>{
+bind(){
 
-btn.onclick=()=>{
+  document.querySelectorAll(".sb-item").forEach(btn=>{
 
-window.Router?.navigate(btn.dataset.route);
+    btn.onclick=()=>{
 
-this.activate(btn.dataset.route);
+      window.Router?.navigate(btn.dataset.route);
 
-};
+      this.activate(btn.dataset.route);
 
-});
+      // Tutup drawer setelah memilih menu di HP
+      if(window.innerWidth<=768){
+        document.body.classList.remove("sidebar-open");
+      }
 
-const toggleBtn = document.getElementById("sb-toggle");
+    };
 
-if (toggleBtn) {
-  toggleBtn.onclick = () => {
-    this.toggle();
-  };
-}
+  });
+
+  const toggleBtn=document.getElementById("sb-toggle");
+
+  if(toggleBtn){
+    toggleBtn.onclick=()=>{
+      this.toggle();
+    };
+  }
 
 },
+toggle(){
 
 toggle(){
 
-this.collapsed=!this.collapsed;
+  // Mobile = drawer
+  if(window.innerWidth<=768){
 
-document.body.classList.toggle("sidebar-collapsed",this.collapsed);
+    document.body.classList.toggle("sidebar-open");
+
+    return;
+
+  }
+
+  // Desktop = collapse
+  this.collapsed=!this.collapsed;
+
+  document.body.classList.toggle("sidebar-collapsed",this.collapsed);
 
 },
 
