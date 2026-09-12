@@ -1,6 +1,6 @@
 /* ==========================================
    CGG HDOS Mobile Engine
-   Build 10D
+   Build 10E
    HP ONLY
    Desktop LOCK
    ========================================== */
@@ -21,7 +21,7 @@ const Mobile = {
     this.bindOverlay();
     this.bindResize();
 
-    console.log("✓ Mobile Engine");
+    console.log("✓ Mobile Engine 10E");
 
   },
 
@@ -32,26 +32,38 @@ const Mobile = {
     const btn=document.createElement("button");
 
     btn.id="mobile-menu-btn";
-
     btn.innerHTML="☰";
 
     btn.style.cssText=`
       position:fixed;
-      top:16px;
-      left:16px;
+      top:12px;
+      left:12px;
       width:42px;
       height:42px;
       border:none;
-      border-radius:50%;
       background:transparent;
-      color:white;
-      font-size:22px;
+      color:#fff;
+      font-size:24px;
+      font-weight:600;
       cursor:pointer;
-      z-index:10001;
-      box-shadow:0 10px 30px rgba(0,0,0,.35)
-      backdrop-filter:blur(20px);
-      transition:.25s ease;
-   ;
+      z-index:10002;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:
+        transform .25s ease,
+        color .25s ease;
+      -webkit-tap-highlight-color:transparent;
+    `;
+
+    const updateButton=()=>{
+
+      const open=document.body.classList.contains("sidebar-open");
+
+      btn.innerHTML=open?"✕":"☰";
+      btn.style.transform=open?"rotate(90deg)":"rotate(0deg)";
+
+    };
 
     btn.onclick=(e)=>{
 
@@ -59,28 +71,33 @@ const Mobile = {
 
       document.body.classList.toggle("sidebar-open");
 
+      updateButton();
+
+    };
+
+    btn.onpointerdown=()=>{
+
+      btn.style.transform+=" scale(.90)";
+
+    };
+
+    btn.onpointerup=()=>{
+
+      updateButton();
+
+    };
+
+    btn.onpointerleave=()=>{
+
+      updateButton();
+
     };
 
     document.body.appendChild(btn);
 
+    updateButton();
+
   },
-  const updateButton = () => {
-  btn.style.background = document.body.classList.contains("sidebar-open")
-    ? "rgba(8,18,38,.85)"
-    : "transparent";
-};
-
-btn.onclick = (e) => {
-  e.stopPropagation();
-  document.body.classList.toggle("sidebar-open");
-  updateButton();
-};
-
-document.addEventListener("click", () => {
-  setTimeout(updateButton, 10);
-});
-
-updateButton();
 
   bindOverlay(){
 
@@ -129,6 +146,15 @@ updateButton();
   closeSidebar(){
 
     document.body.classList.remove("sidebar-open");
+
+    const btn=document.getElementById("mobile-menu-btn");
+
+    if(btn){
+
+      btn.innerHTML="☰";
+      btn.style.transform="rotate(0deg)";
+
+    }
 
   }
 
