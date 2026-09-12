@@ -37,20 +37,24 @@ const Mobile = {
 
     btn.style.cssText=`
       position:fixed;
-      top:16px;
-      left:16px;
-      width:46px;
-      height:46px;
+      top:14px;
+      left:14px;
+      width:42px;
+      height:42px;
       border:none;
-      border-radius:14px;
-      background:transparent(12,22,45,.95);
+      border-radius:50%;
+      background:transparent;
       color:white;
       font-size:22px;
       cursor:pointer;
       z-index:10001;
-      box-shadow:0 10px 30px rgba(0,0,0,.35);
-      backdrop-filter:blur(20px);
-    `;
+       box-shadow:none;
+       backdrop-filter:none;
+       display:flex;
+       align-items:center;
+       justify-content:center;
+       transition:.25s ease;
+   ;
 
     btn.onclick=(e)=>{
 
@@ -63,6 +67,23 @@ const Mobile = {
     document.body.appendChild(btn);
 
   },
+  const updateButton = () => {
+  btn.style.background = document.body.classList.contains("sidebar-open")
+    ? "rgba(8,18,38,.85)"
+    : "transparent";
+};
+
+btn.onclick = (e) => {
+  e.stopPropagation();
+  document.body.classList.toggle("sidebar-open");
+  updateButton();
+};
+
+document.addEventListener("click", () => {
+  setTimeout(updateButton, 10);
+});
+
+updateButton();
 
   bindOverlay(){
 
