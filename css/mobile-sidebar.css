@@ -1,361 +1,432 @@
 /* ==========================================
    CGG HDOS Mobile Sidebar
-   Build 11.2 (Fixed & Refined Layout)
-   HP ONLY (< 768px)
+   Build 12 Stable
+   HP ONLY (<768px)
+   Desktop LOCK
    ========================================== */
 
-@media (max-width: 768px) {
+@media (max-width:768px){
 
-  /* ================= Layout Reset ================= */
+/* ================= Layout ================= */
 
-  #app {
-    display: block !important;
-    width: 100% !important;
-    position: relative;
-  }
+#app{
+display:block!important;
+width:100%!important;
+position:relative;
+}
 
-  main {
-    margin: 0 !important;
-    width: 100% !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden;
-  }
+main{
+margin:0!important;
+width:100%!important;
+padding:16px!important;
+box-sizing:border-box!important;
+overflow-x:hidden;
+}
 
-  /* ================= Floating Sidebar ================= */
+/* ================= Floating Sidebar ================= */
 
-  #sidebar {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    width: 280px;
-    max-width: 85vw; 
-    height: 100vh;
-    height: 100dvh; /* Support browser HP modern */
-    
-    z-index: 10000;
+#sidebar{
 
-    /* Sembunyikan penuh ke kiri */
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+position:fixed!important;
+top:0;
+left:0;
 
-    background: rgba(8, 18, 38, 0.96);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+width:280px;
+max-width:85vw;
+height:100dvh;
 
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+transform:translateX(-100%);
+transition:transform .3s cubic-bezier(.4,0,.2,1);
 
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+z-index:10000;
 
-  /* Ketiak class sidebar-open aktif pada body */
-  body.sidebar-open {
-    overflow: hidden; /* Prevent background scroll saat sidebar terbuka */
-  }
+background:rgba(8,18,38,.96);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
 
-  body.sidebar-open #sidebar {
-    transform: translateX(0);
-  }
+border-right:1px solid rgba(255,255,255,.08);
+box-shadow:10px 0 30px rgba(0,0,0,.45);
 
-  /* Overlay Backdrop Karpet Hitam */
-  body.sidebar-open::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 9999;
-    animation: fadeIn 0.25s ease forwards;
-  }
+display:flex;
+flex-direction:column;
+overflow:hidden;
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+}
 
-  /* ================= Header ================= */
+body.sidebar-open{
+overflow:hidden;
+}
 
-  .sb-shell {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-  }
+body.sidebar-open #sidebar{
+transform:translateX(0);
+}
 
-  .sb-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 18px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    flex-shrink: 0;
-  }
+/* Overlay */
 
-  .sb-header img {
-    width: 38px;
-    height: 38px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
+body.sidebar-open::before{
 
-  .sb-brand {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1;
-  }
+content:"";
+position:fixed;
+inset:0;
 
-  .sb-brand b {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+background:rgba(0,0,0,.55);
+backdrop-filter:blur(3px);
+-webkit-backdrop-filter:blur(3px);
 
-  .sb-brand span {
-    color: #9DB3D3;
-    font-size: 11px;
-    line-height: 1.2;
-    margin-top: 2px;
-  }
+z-index:9999;
 
-  .sb-toggle {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
+animation:fadeIn .25s ease;
 
-  /* ================= Scroll Area ================= */
+}
 
-  .sb-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 14px 12px;
-    -webkit-overflow-scrolling: touch;
-  }
+@keyframes fadeIn{
 
-  .sb-group {
-    margin-bottom: 20px;
-  }
+from{opacity:0;}
+to{opacity:1;}
 
-  .sb-title {
-    color: #6F86A8;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    margin: 0 8px 8px;
-  }
+}
 
-  /* ================= Menu Items ================= */
+/* ================= Sidebar Structure ================= */
+
+.sb-shell{
+display:flex;
+flex-direction:column;
+height:100%;
+}
+
+.sb-header{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+padding:18px 16px;
+
+border-bottom:1px solid rgba(255,255,255,.08);
+
+flex-shrink:0;
+
+}
+
+.sb-toggle{
+
+width:34px;
+height:34px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+border-radius:10px;
+
+color:#fff;
+font-size:22px;
+
+cursor:pointer;
+
+flex-shrink:0;
+
+transition:.2s ease;
+
+}
+
+.sb-toggle:active{
+
+transform:scale(.94);
+background:rgba(255,255,255,.12);
+
+}
+
+.sb-header img{
+
+width:40px;
+height:40px;
+object-fit:contain;
+flex-shrink:0;
+
+}
+
+.sb-brand{
+
+display:flex;
+flex-direction:column;
+min-width:0;
+flex:1;
+
+}
+
+.sb-brand b{
+
+color:#fff;
+font-size:16px;
+font-weight:700;
+line-height:1.15;
+
+}
+
+.sb-brand span{
+
+color:#9DB3D3;
+font-size:11px;
+margin-top:2px;
+
+}
+
+/* ================= Scroll ================= */
+
+.sb-scroll{
+
+flex:1;
+overflow-y:auto;
+padding:12px;
+
+-webkit-overflow-scrolling:touch;
+
+}
+
+.sb-scroll::-webkit-scrollbar{
+width:4px;
+}
+
+.sb-scroll::-webkit-scrollbar-thumb{
+background:#00E676;
+border-radius:99px;
+}
+
+.sb-group{
+margin-bottom:18px;
+}
+
+.sb-title{
+
+margin:0 8px 10px;
+
+font-size:10px;
+font-weight:700;
+letter-spacing:1.2px;
+text-transform:uppercase;
+
+color:#6F86A8;
+
+}
+
+/* ================= Menu ================= */
 
 .sb-item{
-  width:100%;
-  min-height:58px;
 
-  display:grid;
-  grid-template-columns:24px minmax(0,1fr);
-  grid-template-rows:auto auto;
+width:100%;
+min-height:58px;
 
-  column-gap:12px;
-  row-gap:3px;
+display:grid!important;
+grid-template-columns:22px minmax(0,1fr);
 
-  align-items:center;
+column-gap:12px;
+align-items:center;
 
-  padding:12px 16px;
-  box-sizing:border-box;
+padding:12px 14px;
 
-  border:none;
-  background:transparent;
-  color:#fff;
-  border-radius:12px;
+border:none;
+border-radius:12px;
 
-  text-align:left;
-  position:relative;
+background:transparent;
+
+text-align:left;
+
+transition:.22s ease;
+
+box-sizing:border-box;
+
 }
 
-  .sb-item:active {
-    transform: scale(0.98);
-  }
+.sb-item:active{
+transform:scale(.98);
+}
 
-  .sb-item svg {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    width: 22px;
-    height: 22px;
-    stroke: #D7E3F8;
-    stroke-width: 1.8;
-    fill: none;
-    align-self: center;
-  }
+.sb-item svg{
+
+width:22px;
+height:22px;
+
+stroke:#D7E3F8;
+stroke-width:1.8;
+fill:none;
+
+}
+
+/* ===== Judul + Deskripsi ===== */
 
 .sb-item span{
-  grid-column:2;
-  grid-row:1;
 
-  display:block !important;
+display:flex!important;
+flex-direction:column;
 
-  font-size:14px;
-  font-weight:600;
-  color:#fff;
+min-width:0;
 
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+font-size:14px;
+font-weight:600;
+line-height:1.15;
+
+color:#fff;
+
 }
 
-  /* ---------- Deskripsi Otomatis (::after) ---------- */
+.sb-item span::after{
 
-.sb-item::after{
-  grid-column:2;
-  grid-row:2;
+display:block;
+margin-top:2px;
 
-  display:block !important;
+font-size:11px;
+font-weight:400;
+line-height:1.2;
 
-  font-size:11px;
-  color:#8FA5C6;
-  line-height:1.2;
+color:#8FA5C6;
 
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+
 }
 
-  .sb-item[data-route="dashboard"]::after    { content: "Dashboard HSE"; }
-  .sb-item[data-route="inspection"]::after   { content: "Inspeksi"; }
-  .sb-item[data-route="hazard"]::after       { content: "Laporan potensi bahaya"; }
+/* ===== Deskripsi per Modul ===== */
 
-   /* ===== Override Desktop Collapse (HP ONLY) ===== */
+.sb-item[data-route="dashboard"] span::after{content:"Dashboard HSE";}
+.sb-item[data-route="inspection"] span::after{content:"Inspeksi kendaraan & area";}
+.sb-item[data-route="hazard"] span::after{content:"Laporan potensi bahaya";}
+.sb-item[data-route="incident"] span::after{content:"Pelaporan insiden";}
+.sb-item[data-route="ptw"] span::after{content:"Permit To Work";}
+.sb-item[data-route="mine-permit"] span::after{content:"Izin operasional tambang";}
+.sb-item[data-route="commissioning"] span::after{content:"Pemeriksaan sebelum operasi";}
+.sb-item[data-route="audit"] span::after{content:"Audit & verifikasi";}
 
+.sb-item[data-route="waste"] span::after{content:"Pengelolaan limbah B3";}
+.sb-item[data-route="spill"] span::after{content:"Pelaporan tumpahan";}
+.sb-item[data-route="dust"] span::after{content:"Pemantauan debu";}
+.sb-item[data-route="water"] span::after{content:"Monitoring kualitas air";}
+.sb-item[data-route="noise"] span::after{content:"Monitoring kebisingan";}
+.sb-item[data-route="emission"] span::after{content:"Pemantauan emisi";}
+.sb-item[data-route="flora"] span::after{content:"Flora & fauna";}
+.sb-item[data-route="housekeeping"] span::after{content:"Kebersihan area";}
+
+.sb-item[data-route="first-aid"] span::after{content:"Pertolongan pertama";}
+.sb-item[data-route="clinic"] span::after{content:"Register klinik";}
+.sb-item[data-route="mcu"] span::after{content:"Medical Check Up";}
+.sb-item[data-route="fatigue"] span::after{content:"Manajemen kelelahan";}
+.sb-item[data-route="fit-work"] span::after{content:"Kelayakan bekerja";}
+.sb-item[data-route="emergency"] span::after{content:"Tanggap darurat";}
+
+.sb-item[data-route="pica"] span::after{content:"Corrective Action";}
+.sb-item[data-route="policy"] span::after{content:"Kebijakan perusahaan";}
+.sb-item[data-route="analytics"] span::after{content:"Analisis data";}
+.sb-item[data-route="reports"] span::after{content:"Laporan HSE";}
+.sb-item[data-route="settings"] span::after{content:"Pengaturan sistem";}
+
+/* ================= Active ================= */
+
+.sb-item:hover{
+
+background:rgba(255,255,255,.05);
+
+}
+
+.sb-item.active{
+
+background:linear-gradient(
+90deg,
+rgba(0,230,118,.16),
+rgba(0,230,118,.05)
+);
+
+box-shadow:inset 3px 0 #00E676;
+
+}
+
+.sb-item.active svg{
+stroke:#00E676;
+}
+
+.sb-item.active span{
+color:#fff;
+}
+
+.sb-item.active span::after{
+color:#00E676;
+}
+
+/* ================= Footer ================= */
+
+.sb-footer{
+
+padding:14px 16px;
+
+border-top:1px solid rgba(255,255,255,.08);
+
+background:rgba(0,0,0,.12);
+
+}
+
+.sb-user{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+}
+
+.sb-avatar{
+
+width:42px;
+height:42px;
+
+border-radius:50%;
+
+background:#00E676;
+color:#00151F;
+
+font-size:15px;
+font-weight:700;
+
+display:grid;
+place-items:center;
+
+}
+
+.sb-info{
+
+display:flex;
+flex-direction:column;
+min-width:0;
+
+}
+
+.sb-info b{
+
+color:#fff;
+font-size:14px;
+
+}
+
+.sb-info span{
+
+color:#8EA4C8;
+font-size:11px;
+margin-top:2px;
+
+}
+
+/* ===== Proteksi dari CSS Desktop ===== */
+
+body.sidebar-collapsed .sb-title,
 body.sidebar-collapsed .sb-item span,
-body.sidebar-collapsed .sb-item::after,
-body.sidebar-collapsed .sb-title{
-  display:block !important;
+body.sidebar-collapsed .sb-item span::after{
+
+display:block!important;
+
 }
 
 body.sidebar-collapsed #sidebar{
-  width:280px !important;
+width:280px!important;
 }
-
-body.sidebar-collapsed .sb-item{
-  grid-template-columns:24px minmax(0,1fr) !important;
-}
-  .sb-item[data-route="incident"]::after     { content: "Pelaporan insiden"; }
-  .sb-item[data-route="ptw"]::after          { content: "Permit To Work"; }
-  .sb-item[data-route="mine-permit"]::after  { content: "ID Mine Permit"; }
-  .sb-item[data-route="commissioning"]::after{ content: "Commissioning"; }
-  .sb-item[data-route="audit"]::after        { content: "Audit & verifikasi"; }
-  .sb-item[data-route="waste"]::after        { content: "Limbah B3"; }
-  .sb-item[data-route="spill"]::after        { content: "Pelaporan tumpahan"; }
-  .sb-item[data-route="dust"]::after         { content: "Pemantauan debu"; }
-  .sb-item[data-route="water"]::after        { content: "Monitoring kualitas air"; }
-  .sb-item[data-route="noise"]::after        { content: "Monitoring kebisingan"; }
-  .sb-item[data-route="emission"]::after     { content: "Pemantauan emisi"; }
-  .sb-item[data-route="flora"]::after        { content: "Flora & fauna"; }
-  .sb-item[data-route="housekeeping"]::after { content: "Kebersihan area"; }
-  .sb-item[data-route="first-aid"]::after    { content: "Pertolongan pertama"; }
-  .sb-item[data-route="clinic"]::after       { content: "Register klinik"; }
-  .sb-item[data-route="mcu"]::after          { content: "Medical Check Up"; }
-  .sb-item[data-route="fatigue"]::after      { content: "Manajemen kelelahan"; }
-  .sb-item[data-route="fit-work"]::after     { content: "Kelayakan bekerja"; }
-  .sb-item[data-route="emergency"]::after    { content: "Tanggap darurat"; }
-  .sb-item[data-route="pica"]::after         { content: "Corrective Action"; }
-  .sb-item[data-route="policy"]::after       { content: "Kebijakan perusahaan"; }
-  .sb-item[data-route="analytics"]::after    { content: "Analisis data"; }
-  .sb-item[data-route="reports"]::after      { content: "Laporan HSE"; }
-  .sb-item[data-route="settings"]::after     { content: "Pengaturan sistem"; }
-
-  /* ================= Item States ================= */
-
-  .sb-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .sb-item.active {
-    background: linear-gradient(
-      90deg,
-      rgba(0, 230, 118, 0.16),
-      rgba(0, 230, 118, 0.04)
-    );
-    border-left: 3px solid #00E676;
-    border-radius: 4px 12px 12px 4px;
-  }
-
-  .sb-item.active svg {
-    stroke: #00E676;
-  }
-
-  .sb-item.active span {
-    color: #FFFFFF;
-    font-weight: 700;
-  }
-
-  .sb-item.active::after {
-    color: #00E676;
-  }
-
-  /* ================= Footer ================= */
-
-  .sb-footer {
-    padding: 14px 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.15);
-    flex-shrink: 0;
-  }
-
-  .sb-user {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .sb-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #00E676;
-    color: #00151F;
-    font-weight: 700;
-    font-size: 15px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-  }
-
-  .sb-info {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .sb-info b {
-    color: #fff;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .sb-info span {
-    color: #8EA4C8;
-    font-size: 11px;
-    margin-top: 2px;
-  }
 
 }
