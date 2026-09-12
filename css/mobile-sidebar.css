@@ -1,57 +1,56 @@
 /* ==========================================
    CGG HDOS Mobile Sidebar
-   Build 10B
+   Build 10C
    HP ONLY
    Desktop LOCK
    ========================================== */
 
 @media (max-width:768px){
 
-body.mobile-mode #app{
-display:block !important;
-width:100vw;
-height:100vh;
-}
+  /* Mobile tidak ikut grid desktop */
+  #app{
+    display:block !important;
+    width:100vw;
+    height:100vh;
+  }
 
-body.mobile-mode main{
-margin:0 !important;
-padding:14px !important;
-width:100vw !important;
-height:100vh;
-overflow:auto;
-box-sizing:border-box;
-}
+  main{
+    margin:0 !important;
+    padding:14px !important;
+    width:100vw !important;
+    height:100vh;
+    overflow:auto;
+    box-sizing:border-box;
+  }
 
-/* Drawer */
+  /* Drawer */
+  #sidebar{
+    position:fixed !important;
+    top:0;
+    left:-280px;
+    width:280px;
+    height:100vh;
+    z-index:9999;
+    transition:left .28s ease;
+  }
 
-body.mobile-mode #sidebar{
-position:fixed !important;
-top:0;
-left:-280px;
-width:280px;
-height:100vh;
-z-index:9999;
-transition:left .28s ease;
-}
+  /* Drawer terbuka */
+  body.sidebar-open #sidebar{
+    left:0;
+  }
 
-body.mobile-mode.sidebar-open #sidebar{
-left:0;
-}
+  /* Overlay */
+  body.sidebar-open::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9998;
+  }
 
-/* Overlay */
-
-body.mobile-mode.sidebar-open::before{
-content:"";
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.45);
-z-index:9998;
-}
-
-/* Saat drawer terbuka dashboard tetap diam */
-
-body.mobile-mode.sidebar-open main{
-transform:none;
-}
+  /* Konten tidak ikut bergeser */
+  body.sidebar-open main{
+    transform:none;
+  }
 
 }
