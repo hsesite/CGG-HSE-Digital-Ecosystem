@@ -165,26 +165,30 @@
 
   /* ================= Menu Items ================= */
 
-  .sb-item {
-    width: 100%;
-    min-height: 52px;
-    display: grid;
-    grid-template-columns: 24px 1fr;
-    grid-template-rows: auto auto;
-    column-gap: 12px;
-    row-gap: 2px;
-    align-items: center;
-    padding: 12px 16px;
-    border: none;
-    background: transparent;
-    color: #fff;
-    border-radius: 12px;
-    transition: background 0.2s ease, transform 0.1s ease;
-    position: relative;
-    text-align: left;
-    box-sizing: border-box;
-    text-decoration: none;
-  }
+.sb-item{
+  width:100%;
+  min-height:58px;
+
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr);
+  grid-template-rows:auto auto;
+
+  column-gap:12px;
+  row-gap:3px;
+
+  align-items:center;
+
+  padding:12px 16px;
+  box-sizing:border-box;
+
+  border:none;
+  background:transparent;
+  color:#fff;
+  border-radius:12px;
+
+  text-align:left;
+  position:relative;
+}
 
   .sb-item:active {
     transform: scale(0.98);
@@ -201,33 +205,57 @@
     align-self: center;
   }
 
-  .sb-item span {
-    grid-column: 2;
-    grid-row: 1;
-    font-size: 14px;
-    font-weight: 600;
-    color: #FFFFFF;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.sb-item span{
+  grid-column:2;
+  grid-row:1;
+
+  display:block !important;
+
+  font-size:14px;
+  font-weight:600;
+  color:#fff;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
   /* ---------- Deskripsi Otomatis (::after) ---------- */
 
-  .sb-item::after {
-    grid-column: 2;
-    grid-row: 2;
-    font-size: 11px;
-    color: #8FA5C6;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.sb-item::after{
+  grid-column:2;
+  grid-row:2;
+
+  display:block !important;
+
+  font-size:11px;
+  color:#8FA5C6;
+  line-height:1.2;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
   .sb-item[data-route="dashboard"]::after    { content: "Dashboard HSE"; }
   .sb-item[data-route="inspection"]::after   { content: "Inspeksi"; }
   .sb-item[data-route="hazard"]::after       { content: "Laporan potensi bahaya"; }
+
+   /* ===== Override Desktop Collapse (HP ONLY) ===== */
+
+body.sidebar-collapsed .sb-item span,
+body.sidebar-collapsed .sb-item::after,
+body.sidebar-collapsed .sb-title{
+  display:block !important;
+}
+
+body.sidebar-collapsed #sidebar{
+  width:280px !important;
+}
+
+body.sidebar-collapsed .sb-item{
+  grid-template-columns:24px minmax(0,1fr) !important;
+}
   .sb-item[data-route="incident"]::after     { content: "Pelaporan insiden"; }
   .sb-item[data-route="ptw"]::after          { content: "Permit To Work"; }
   .sb-item[data-route="mine-permit"]::after  { content: "ID Mine Permit"; }
