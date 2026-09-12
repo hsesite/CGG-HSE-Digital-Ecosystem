@@ -1322,3 +1322,2022 @@ width:280px!important;
   }
 
 }
+/* ==========================================
+   CGG HDOS Mobile Sidebar
+   Build 12 Stable
+   HP ONLY (<768px)
+   Desktop LOCK
+   ========================================== */
+
+@media (max-width:768px){
+
+/* ================= Layout ================= */
+
+#app{
+display:block!important;
+width:100%!important;
+position:relative;
+}
+
+main{
+margin:0!important;
+width:100%!important;
+padding:16px!important;
+box-sizing:border-box!important;
+overflow-x:hidden;
+}
+
+/* ================= Floating Sidebar ================= */
+
+#sidebar{
+
+position:fixed!important;
+top:0;
+left:0;
+
+width:68vw !important;      /* sekitar 68% layar */
+min-width:240px;            /* HP kecil tetap nyaman */
+max-width:320px;            /* HP besar tidak berlebihan */
+
+
+transform:translateX(-100%);
+transition:transform .3s cubic-bezier(.4,0,.2,1);
+
+z-index:10000;
+
+background:rgba(8,18,38,.96);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+
+border-right:1px solid rgba(255,255,255,.08);
+box-shadow:10px 0 30px rgba(0,0,0,.45);
+
+display:flex;
+flex-direction:column;
+overflow:hidden;
+
+}
+
+body.sidebar-open{
+overflow:hidden;
+}
+
+body.sidebar-open #sidebar{
+transform:translateX(0);
+}
+
+/* Overlay */
+
+body.sidebar-open::before{
+
+content:"";
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.55);
+backdrop-filter:blur(3px);
+-webkit-backdrop-filter:blur(3px);
+
+z-index:9999;
+
+animation:fadeIn .25s ease;
+
+}
+
+@keyframes fadeIn{
+
+from{opacity:0;}
+to{opacity:1;}
+
+}
+
+/* ================= Sidebar Structure ================= */
+
+.sb-shell{
+display:flex;
+flex-direction:column;
+height:100%;
+}
+
+.sb-header{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+padding:18px 16px;
+
+border-bottom:1px solid rgba(255,255,255,.08);
+
+flex-shrink:0;
+
+}
+
+.sb-toggle{
+
+width:34px;
+height:34px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+border-radius:10px;
+
+color:#fff;
+font-size:22px;
+
+cursor:pointer;
+
+flex-shrink:0;
+
+transition:.2s ease;
+
+}
+
+.sb-toggle:active{
+
+transform:scale(.94);
+background:rgba(255,255,255,.12);
+
+}
+
+.sb-header img{
+
+width:40px;
+height:40px;
+object-fit:contain;
+flex-shrink:0;
+
+}
+
+.sb-brand{
+
+display:flex;
+flex-direction:column;
+min-width:0;
+flex:1;
+
+}
+
+.sb-brand b{
+
+color:#fff;
+font-size:16px;
+font-weight:700;
+line-height:1.15;
+
+}
+
+.sb-brand span{
+
+color:#9DB3D3;
+font-size:11px;
+margin-top:2px;
+
+}
+
+/* ================= Scroll ================= */
+
+.sb-scroll{
+
+flex:1;
+overflow-y:auto;
+padding:12px;
+
+-webkit-overflow-scrolling:touch;
+
+}
+
+.sb-scroll::-webkit-scrollbar{
+width:4px;
+}
+
+.sb-scroll::-webkit-scrollbar-thumb{
+background:#00E676;
+border-radius:99px;
+}
+
+.sb-group{
+margin-bottom:18px;
+}
+
+.sb-title{
+
+margin:0 8px 10px;
+
+font-size:10px;
+font-weight:700;
+letter-spacing:1.2px;
+text-transform:uppercase;
+
+color:#6F86A8;
+
+}
+
+/* ================= Menu ================= */
+
+.sb-item{
+
+width:100%;
+min-height:58px;
+
+display:grid!important;
+grid-template-columns:22px minmax(0,1fr);
+
+column-gap:12px;
+align-items:center;
+
+padding:12px 14px;
+
+border:none;
+border-radius:12px;
+
+background:transparent;
+
+text-align:left;
+
+transition:.22s ease;
+
+box-sizing:border-box;
+
+}
+
+.sb-item:active{
+transform:scale(.98);
+}
+
+.sb-item svg{
+
+width:22px;
+height:22px;
+
+stroke:#D7E3F8;
+stroke-width:1.8;
+fill:none;
+
+}
+
+/* ===== Judul + Deskripsi ===== */
+
+.sb-item span{
+
+display:flex!important;
+flex-direction:column;
+
+min-width:0;
+
+font-size:14px;
+font-weight:600;
+line-height:1.15;
+
+color:#fff;
+
+}
+
+.sb-item span::after{
+
+display:block;
+margin-top:2px;
+
+font-size:11px;
+font-weight:400;
+line-height:1.2;
+
+color:#8FA5C6;
+
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+
+}
+
+/* ===== Deskripsi per Modul ===== */
+
+.sb-item[data-route="dashboard"] span::after{content:"Dashboard HSE";}
+.sb-item[data-route="inspection"] span::after{content:"Inspeksi kendaraan & area";}
+.sb-item[data-route="hazard"] span::after{content:"Laporan potensi bahaya";}
+.sb-item[data-route="incident"] span::after{content:"Pelaporan insiden";}
+.sb-item[data-route="ptw"] span::after{content:"Permit To Work";}
+.sb-item[data-route="mine-permit"] span::after{content:"Izin operasional tambang";}
+.sb-item[data-route="commissioning"] span::after{content:"Pemeriksaan sebelum operasi";}
+.sb-item[data-route="audit"] span::after{content:"Audit & verifikasi";}
+
+.sb-item[data-route="waste"] span::after{content:"Pengelolaan limbah B3";}
+.sb-item[data-route="spill"] span::after{content:"Pelaporan tumpahan";}
+.sb-item[data-route="dust"] span::after{content:"Pemantauan debu";}
+.sb-item[data-route="water"] span::after{content:"Monitoring kualitas air";}
+.sb-item[data-route="noise"] span::after{content:"Monitoring kebisingan";}
+.sb-item[data-route="emission"] span::after{content:"Pemantauan emisi";}
+.sb-item[data-route="flora"] span::after{content:"Flora & fauna";}
+.sb-item[data-route="housekeeping"] span::after{content:"Kebersihan area";}
+
+.sb-item[data-route="first-aid"] span::after{content:"Pertolongan pertama";}
+.sb-item[data-route="clinic"] span::after{content:"Register klinik";}
+.sb-item[data-route="mcu"] span::after{content:"Medical Check Up";}
+.sb-item[data-route="fatigue"] span::after{content:"Manajemen kelelahan";}
+.sb-item[data-route="fit-work"] span::after{content:"Kelayakan bekerja";}
+.sb-item[data-route="emergency"] span::after{content:"Tanggap darurat";}
+
+.sb-item[data-route="pica"] span::after{content:"Corrective Action";}
+.sb-item[data-route="policy"] span::after{content:"Kebijakan perusahaan";}
+.sb-item[data-route="analytics"] span::after{content:"Analisis data";}
+.sb-item[data-route="reports"] span::after{content:"Laporan HSE";}
+.sb-item[data-route="settings"] span::after{content:"Pengaturan sistem";}
+
+/* ================= Active ================= */
+
+.sb-item:hover{
+
+background:rgba(255,255,255,.05);
+
+}
+
+.sb-item.active{
+
+background:linear-gradient(
+90deg,
+rgba(0,230,118,.16),
+rgba(0,230,118,.05)
+);
+
+box-shadow:inset 3px 0 #00E676;
+
+}
+
+.sb-item.active svg{
+stroke:#00E676;
+}
+
+.sb-item.active span{
+color:#fff;
+}
+
+.sb-item.active span::after{
+color:#00E676;
+}
+
+/* ================= Footer ================= */
+
+.sb-footer{
+
+padding:14px 16px;
+
+border-top:1px solid rgba(255,255,255,.08);
+
+background:rgba(0,0,0,.12);
+
+}
+
+.sb-user{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+}
+
+.sb-avatar{
+
+width:42px;
+height:42px;
+
+border-radius:50%;
+
+background:#00E676;
+color:#00151F;
+
+font-size:15px;
+font-weight:700;
+
+display:grid;
+place-items:center;
+
+}
+
+.sb-info{
+
+display:flex;
+flex-direction:column;
+min-width:0;
+
+}
+
+.sb-info b{
+
+color:#fff;
+font-size:14px;
+
+}
+
+.sb-info span{
+
+color:#8EA4C8;
+font-size:11px;
+margin-top:2px;
+
+}
+
+/* ===== Proteksi dari CSS Desktop ===== */
+
+body.sidebar-collapsed .sb-title,
+body.sidebar-collapsed .sb-item span,
+body.sidebar-collapsed .sb-item span::after{
+
+display:block!important;
+
+}
+
+body.sidebar-collapsed #sidebar{
+width:280px!important;
+}
+
+}
+/* ==========================================
+   MOBILE UI POLISH V1
+   Aman untuk Desktop
+========================================== */
+
+@media (max-width:768px){
+
+  /* ruang atas agar tidak tertutup tombol */
+  main{
+    padding-top:72px !important;
+  }
+
+  /* jarak antar section */
+  .page-header,
+  .search-box,
+  .dashboard-search,
+  .stats-grid,
+  .zones-section,
+  .quick-launch,
+  .live-activity,
+  .notification-panel{
+    margin-bottom:18px !important;
+  }
+
+  /* semua card konsisten */
+  .card,
+  .widget,
+  .dashboard-card{
+    border-radius:18px !important;
+  }
+
+}
+@media (max-width:768px){
+
+.page-header{
+  padding:18px !important;
+  border-radius:22px !important;
+}
+
+.page-header img{
+  width:44px !important;
+  height:44px !important;
+}
+
+.page-header h1{
+  font-size:19px !important;
+  line-height:1.2;
+}
+
+.page-header p{
+  font-size:13px !important;
+  opacity:.9;
+}
+
+.page-header .clock{
+  font-size:16px !important;
+  margin-top:6px;
+}
+
+}
+@media (max-width:768px){
+
+.dashboard-search,
+.search-box{
+
+  height:48px !important;
+
+  padding:0 16px !important;
+
+  border-radius:16px !important;
+
+  font-size:15px;
+
+}
+
+.dashboard-search input,
+.search-box input{
+
+  font-size:15px !important;
+
+}
+
+}
+@media (max-width:768px){
+
+.stats-grid{
+
+  display:grid;
+
+  grid-template-columns:repeat(2,1fr);
+
+  gap:14px;
+
+}
+
+.stats-grid .card{
+
+  min-height:122px !important;
+
+  padding:18px !important;
+
+}
+
+.stats-grid h4{
+
+  font-size:11px !important;
+
+  letter-spacing:1px;
+
+}
+
+.stats-grid .value{
+
+  font-size:34px !important;
+
+  margin-top:18px;
+
+}
+
+}
+@media (max-width:768px){
+
+.zone-card{
+
+  padding:16px !important;
+
+  min-height:84px !important;
+
+}
+
+.zone-card h4{
+
+  font-size:18px !important;
+
+}
+
+.zone-card p{
+
+  font-size:13px !important;
+
+}
+
+}
+/* ==========================================
+   PATCH BUILD 11.4
+   Operational Zones 2 Kolom (HP ONLY)
+   Desktop Aman
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* Grid Operational Zones */
+  .zones-grid,
+  .zone-grid,
+  .operational-grid,
+  .operational-zones-grid{
+
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:12px !important;
+
+  }
+
+  /* Card Zona */
+  .zone-card,
+  .zone-item,
+  .operational-card{
+
+    min-height:110px !important;
+    padding:14px !important;
+    border-radius:18px !important;
+
+  }
+
+  /* Ikon status */
+  .zone-card .status-dot,
+  .zone-item .status-dot,
+  .operational-card .status-dot{
+
+    width:18px !important;
+    height:18px !important;
+    margin-bottom:10px !important;
+
+  }
+
+  /* Nama Area */
+  .zone-card h3,
+  .zone-item h3,
+  .operational-card h3{
+
+    font-size:15px !important;
+    line-height:1.25;
+    margin-bottom:4px;
+
+  }
+
+  /* Status */
+  .zone-card p,
+  .zone-item p,
+  .operational-card p{
+
+    font-size:12px !important;
+    line-height:1.3;
+
+  }
+
+}
+/* ==========================================
+   BUILD 12.1
+   Apple Glass Foundation
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Aurora Background ===== */
+
+  body{
+
+    background:
+      radial-gradient(circle at 15% 10%, rgba(0,255,170,.07), transparent 32%),
+      radial-gradient(circle at 90% 18%, rgba(0,140,255,.08), transparent 30%),
+      radial-gradient(circle at 50% 100%, rgba(0,255,120,.04), transparent 45%),
+      #020612 !important;
+
+  }
+
+  /* ===== Glass Material ===== */
+
+  .card,
+  .dashboard-card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .hero-card,
+  .dashboard-header,
+  .search-box{
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(22,33,56,.70),
+        rgba(8,15,30,.82)
+      ) !important;
+
+    backdrop-filter:blur(26px);
+    -webkit-backdrop-filter:blur(26px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.05),
+      inset 0 -1px rgba(0,0,0,.12),
+      0 12px 28px rgba(0,0,0,.28);
+
+    transition:
+      transform .35s cubic-bezier(.22,1,.36,1),
+      box-shadow .35s ease,
+      border-color .35s ease;
+
+  }
+
+  /* ===== Lift Effect ===== */
+
+  .card:hover,
+  .metric-card:hover,
+  .zone-card:hover,
+  .quick-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.06),
+      0 18px 40px rgba(0,0,0,.35);
+
+  }
+
+  /* ===== Touch Effect ala iOS ===== */
+
+  .card:active,
+  .metric-card:active,
+  .zone-card:active,
+  .quick-card:active{
+
+    transform:scale(.985);
+
+    transition:transform .12s ease;
+
+  }
+
+}
+/* ==========================================
+   BUILD 12.2
+   Real 3D Lighting
+   HP ONLY
+   Struktur Tidak Berubah
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Lapisan cahaya di atas card ===== */
+
+  .card,
+  .dashboard-card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .hero-card,
+  .dashboard-header{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  .card::before,
+  .dashboard-card::before,
+  .metric-card::before,
+  .zone-card::before,
+  .quick-card::before,
+  .hero-card::before,
+  .dashboard-header::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background:
+      radial-gradient(circle at 20% 10%,
+        rgba(255,255,255,.10),
+        transparent 38%),
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.05),
+        transparent 55%);
+
+    opacity:.9;
+    transition:opacity .35s ease, transform .35s ease;
+  }
+
+  /* ===== Efek saat disentuh ===== */
+
+  .card:active::before,
+  .dashboard-card:active::before,
+  .metric-card:active::before,
+  .zone-card:active::before,
+  .quick-card:active::before{
+    opacity:1;
+    transform:translateY(2px);
+  }
+
+  /* ===== Glow lembut di sudut ===== */
+
+  .card::after,
+  .dashboard-card::after,
+  .metric-card::after,
+  .zone-card::after,
+  .quick-card::after{
+    content:"";
+    position:absolute;
+    width:120px;
+    height:120px;
+    right:-40px;
+    top:-40px;
+    pointer-events:none;
+
+    background:
+      radial-gradient(circle,
+        rgba(0,230,118,.08),
+        transparent 70%);
+
+    filter:blur(18px);
+    opacity:.55;
+    transition:opacity .35s ease;
+  }
+
+  .card:hover::after,
+  .dashboard-card:hover::after,
+  .metric-card:hover::after,
+  .zone-card:hover::after,
+  .quick-card:hover::after{
+    opacity:.9;
+  }
+
+}
+/* ==========================================
+   BUILD 12.3
+   Apple Dock & Icon Skin
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Logo ala macOS Dock ===== */
+
+  .sb-header img,
+  .hero-card img,
+  .dashboard-header img{
+
+    width:48px;
+    height:48px;
+
+    padding:8px;
+
+    border-radius:18px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.02)
+      );
+
+    border:1px solid rgba(255,255,255,.10);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.08),
+      0 8px 24px rgba(0,0,0,.28);
+
+    transition:all .35s cubic-bezier(.22,1,.36,1);
+
+  }
+
+  .sb-header img:active,
+  .hero-card img:active{
+    transform:scale(.96);
+  }
+
+  /* ===== Search Bar ala Spotlight ===== */
+
+  .search-box,
+  .search-container,
+  .search-input{
+
+    border-radius:22px !important;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(24,36,60,.68),
+        rgba(10,18,36,.82)
+      ) !important;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(24px);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.04),
+      0 10px 24px rgba(0,0,0,.20);
+
+    transition:.3s ease;
+
+  }
+
+  .search-box:focus-within,
+  .search-container:focus-within{
+
+    border-color:rgba(52,211,153,.35);
+
+    box-shadow:
+      0 0 24px rgba(52,211,153,.12),
+      inset 0 1px rgba(255,255,255,.06);
+
+  }
+
+  /* ===== Hamburger ala Control Center ===== */
+
+  #mobile-menu-btn,
+  .sb-toggle{
+
+    border-radius:14px !important;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.02)
+      ) !important;
+
+    border:1px solid rgba(255,255,255,.10);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.08),
+      0 8px 22px rgba(0,0,0,.25);
+
+    transition:
+      transform .25s cubic-bezier(.22,1,.36,1),
+      box-shadow .25s ease;
+
+  }
+
+  #mobile-menu-btn:active,
+  .sb-toggle:active{
+
+    transform:scale(.90);
+
+    box-shadow:
+      0 0 18px rgba(52,211,153,.18);
+
+  }
+
+  /* ===== Ikon Sidebar ===== */
+
+  .sb-item svg{
+
+    transition:
+      transform .28s cubic-bezier(.22,1,.36,1),
+      filter .28s ease;
+
+  }
+
+  .sb-item:hover svg{
+
+    transform:scale(1.08);
+
+    filter:drop-shadow(0 0 6px rgba(52,211,153,.18));
+
+  }
+
+  .sb-item.active svg{
+
+    transform:scale(1.10);
+
+    filter:drop-shadow(0 0 8px rgba(52,211,153,.28));
+
+  }
+
+}
+/* ==========================================
+   BUILD 12.4
+   Apple Liquid Glass Animation
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Card menjadi lapisan kaca ===== */
+
+  .card,
+  .dashboard-card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .hero-card,
+  .dashboard-header{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  /* ===== Pantulan kaca ===== */
+
+  .card::before,
+  .dashboard-card::before,
+  .metric-card::before,
+  .zone-card::before,
+  .quick-card::before,
+  .hero-card::before,
+  .dashboard-header::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-140%;
+    left:-70%;
+
+    width:90%;
+    height:260%;
+
+    pointer-events:none;
+
+    background:
+      linear-gradient(
+        115deg,
+        transparent 0%,
+        rgba(255,255,255,.05) 42%,
+        rgba(255,255,255,.14) 50%,
+        rgba(255,255,255,.05) 58%,
+        transparent 100%
+      );
+
+    transform:rotate(18deg);
+
+    transition:
+      transform .65s cubic-bezier(.22,1,.36,1),
+      opacity .35s ease;
+
+    opacity:.35;
+
+    filter:blur(.3px);
+
+  }
+
+  /* ===== Sweep saat disentuh ===== */
+
+  .card:active::before,
+  .dashboard-card:active::before,
+  .metric-card:active::before,
+  .zone-card:active::before,
+  .quick-card:active::before{
+
+    transform:
+      translateX(220%)
+      rotate(18deg);
+
+    opacity:.9;
+
+  }
+
+  /* ===== Cahaya pinggir ===== */
+
+  .card::after,
+  .dashboard-card::after,
+  .metric-card::after,
+  .zone-card::after,
+  .quick-card::after{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    border-radius:inherit;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.05),
+        transparent 28%
+      );
+
+    mix-blend-mode:screen;
+
+    opacity:.7;
+
+  }
+
+}
+/* ==========================================
+   BUILD 12.5
+   Spring Animation & Micro Interaction
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Kurva animasi ala Apple ===== */
+
+  :root{
+    --apple-spring:cubic-bezier(.175,.885,.32,1.275);
+  }
+
+  /* ===== Semua tombol memiliki spring ===== */
+
+  button,
+  .sb-item,
+  .quick-card,
+  .zone-card,
+  .metric-card,
+  .card{
+
+    transition:
+      transform .35s var(--apple-spring),
+      box-shadow .35s ease,
+      background .35s ease;
+
+    transform-origin:center;
+
+  }
+
+  /* ===== Bounce saat ditekan ===== */
+
+  button:active,
+  .sb-item:active,
+  .quick-card:active,
+  .zone-card:active,
+  .metric-card:active,
+  .card:active{
+
+    animation:appleBounce .28s var(--apple-spring);
+
+  }
+
+  @keyframes appleBounce{
+
+    0%{
+      transform:scale(1);
+    }
+
+    40%{
+      transform:scale(.93);
+    }
+
+    70%{
+      transform:scale(1.03);
+    }
+
+    100%{
+      transform:scale(.985);
+    }
+
+  }
+
+  /* ===== Sidebar Item ===== */
+
+  .sb-item{
+
+    border-radius:16px;
+
+  }
+
+  .sb-item:hover{
+
+    background:rgba(255,255,255,.06);
+
+  }
+
+  .sb-item.active{
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(52,211,153,.16),
+        rgba(52,211,153,.05)
+      );
+
+    box-shadow:
+      inset 3px 0 #34D399,
+      0 0 22px rgba(52,211,153,.12);
+
+  }
+
+  /* ===== Ikon Sidebar ===== */
+
+  .sb-item svg{
+
+    transition:
+      transform .35s var(--apple-spring),
+      filter .35s ease;
+
+  }
+
+  .sb-item:active svg{
+
+    transform:scale(1.18) rotate(-4deg);
+
+  }
+
+  .sb-item.active svg{
+
+    filter:drop-shadow(0 0 8px rgba(52,211,153,.35));
+
+  }
+
+  /* ===== Search Bar Focus ===== */
+
+  .search-box:focus-within,
+  .search-container:focus-within{
+
+    transform:scale(1.01);
+
+  }
+
+  /* ===== Hamburger Button ===== */
+
+  #mobile-menu-btn,
+  .sb-toggle{
+
+    transition:
+      transform .35s var(--apple-spring),
+      box-shadow .35s ease;
+
+  }
+
+  #mobile-menu-btn:active,
+  .sb-toggle:active{
+
+    transform:scale(.88) rotate(-8deg);
+
+  }
+
+}
+/* ==========================================
+   BUILD 12.6
+   Dynamic Light CSS
+   HP ONLY
+========================================== */
+
+@media (max-width:768px){
+
+  .card,
+  .dashboard-card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .hero-card,
+  .dashboard-header{
+
+    --mx:50%;
+    --my:20%;
+
+    position:relative;
+    overflow:hidden;
+
+  }
+
+  .card::before,
+  .dashboard-card::before,
+  .metric-card::before,
+  .zone-card::before,
+  .quick-card::before,
+  .hero-card::before,
+  .dashboard-header::before{
+
+    background:
+      radial-gradient(
+        circle at var(--mx) var(--my),
+        rgba(255,255,255,.16),
+        transparent 42%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.04),
+        transparent 45%
+      );
+
+    transition:
+      background .15s linear,
+      opacity .25s ease;
+
+  }
+
+}
+/* ==========================================
+   PERFORMANCE PATCH
+   Apple Smooth Motion
+   HP ONLY
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* Blur dikurangi */
+
+  .card,
+  .dashboard-card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .hero-card,
+  .dashboard-header{
+
+    backdrop-filter:blur(14px) !important;
+    -webkit-backdrop-filter:blur(14px) !important;
+
+    box-shadow:
+      0 8px 20px rgba(0,0,0,.20),
+      inset 0 1px rgba(255,255,255,.04) !important;
+
+    will-change:transform;
+
+  }
+
+  /* Animasi hanya transform & opacity */
+
+  .card,
+  .metric-card,
+  .zone-card,
+  .quick-card,
+  .sb-item{
+
+    transition:
+      transform .22s cubic-bezier(.22,1,.36,1),
+      opacity .22s ease,
+      background-color .22s ease !important;
+
+  }
+
+  /* Glow SVG lebih ringan */
+
+  .sb-item svg{
+    filter:none !important;
+  }
+
+}
+/* ==========================================
+   BUILD 12.7
+   Apple Typography (SF Pro Feel)
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Global Typography ===== */
+
+  body{
+
+    font-family:
+      Inter,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+
+    letter-spacing:-0.01em;
+
+  }
+
+  /* ===== Dashboard Title ===== */
+
+  .hero-card h1,
+  .dashboard-header h1{
+
+    font-size:24px !important;
+    font-weight:700 !important;
+    line-height:1.15;
+
+    letter-spacing:-0.04em;
+
+  }
+
+  /* ===== Subtitle ===== */
+
+  .hero-card p,
+  .dashboard-header p{
+
+    font-size:13px !important;
+    font-weight:500;
+    line-height:1.35;
+
+    color:#A8B8D3;
+
+  }
+
+  /* ===== KPI Number ===== */
+
+  .metric-card .value,
+  .kpi-value{
+
+    font-size:34px !important;
+    font-weight:700;
+
+    letter-spacing:-0.05em;
+    line-height:1;
+
+  }
+
+  /* ===== KPI Label ===== */
+
+  .metric-card h4,
+  .kpi-label{
+
+    font-size:11px !important;
+    font-weight:600;
+
+    text-transform:uppercase;
+    letter-spacing:.12em;
+
+    color:#8FA5C6;
+
+  }
+
+  /* ===== Zone Title ===== */
+
+  .zone-card h3{
+
+    font-size:15px !important;
+    font-weight:600;
+    line-height:1.25;
+
+  }
+
+  /* ===== Zone Status ===== */
+
+  .zone-card p{
+
+    font-size:12px !important;
+    font-weight:500;
+    line-height:1.3;
+
+    color:#A8B8D3;
+
+  }
+
+  /* ===== Sidebar Menu ===== */
+
+  .sb-item span{
+
+    font-size:14px !important;
+    font-weight:600;
+
+    letter-spacing:-0.01em;
+
+  }
+
+  .sb-item span::after{
+
+    font-size:11px !important;
+    font-weight:400;
+
+    color:#8FA5C6;
+
+  }
+
+  /* ===== Quick Launch ===== */
+
+  .quick-card{
+
+    text-align:center;
+
+  }
+
+  .quick-card h4{
+
+    font-size:12px !important;
+    font-weight:600;
+
+    margin-top:8px;
+
+  }
+
+}
+/* ==========================================
+   BUILD 12.8
+   Apple KPI Widget Skin
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== KPI Widget ===== */
+
+  .metric-card,
+  .kpi-card{
+
+    position:relative;
+    overflow:hidden;
+
+    border-radius:28px !important;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(24,36,60,.74),
+        rgba(8,16,32,.88)
+      ) !important;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.05),
+      0 10px 28px rgba(0,0,0,.24);
+
+  }
+
+  /* ===== Cahaya Atas Widget ===== */
+
+  .metric-card::before,
+  .kpi-card::before{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    border-radius:inherit;
+
+    pointer-events:none;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.08),
+        transparent 42%
+      );
+
+  }
+
+  /* ===== Glow Status ===== */
+
+  .metric-card::after,
+  .kpi-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:-24px;
+    right:-24px;
+
+    width:90px;
+    height:90px;
+
+    background:
+      radial-gradient(
+        circle,
+        rgba(52,211,153,.18),
+        transparent 72%
+      );
+
+    filter:blur(18px);
+
+    pointer-events:none;
+
+  }
+
+  /* ===== Angka KPI ===== */
+
+  .metric-card .value,
+  .kpi-card .value,
+  .kpi-value{
+
+    font-size:36px !important;
+    font-weight:700;
+    letter-spacing:-0.05em;
+
+    text-shadow:
+      0 2px 12px rgba(255,255,255,.08);
+
+  }
+
+  /* ===== Label KPI ===== */
+
+  .metric-card h4,
+  .kpi-card h4,
+  .kpi-label{
+
+    color:#AFC4DF !important;
+
+    font-size:10px !important;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:600;
+
+  }
+
+  /* ===== Widget Press ===== */
+
+  .metric-card:active,
+  .kpi-card:active{
+
+    transform:
+      translateY(-2px)
+      scale(.985);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.07),
+      0 18px 36px rgba(0,0,0,.30);
+
+  }
+
+}
+/* ==========================================
+   BUILD 12.9
+   macOS Spotlight Search
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Search Container ===== */
+
+  .search-box,
+  .search-container,
+  .dashboard-search{
+
+    position:relative;
+    overflow:hidden;
+
+    border-radius:22px !important;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(24,36,60,.68),
+        rgba(10,18,36,.84)
+      ) !important;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.05),
+      0 8px 22px rgba(0,0,0,.22);
+
+    transition:
+      transform .25s cubic-bezier(.22,1,.36,1),
+      box-shadow .25s ease,
+      border-color .25s ease;
+
+  }
+
+  /* ===== Cahaya Kaca ===== */
+
+  .search-box::before,
+  .search-container::before,
+  .dashboard-search::before{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    border-radius:inherit;
+
+    pointer-events:none;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.06),
+        transparent 38%
+      );
+
+  }
+
+  /* ===== Focus ala Spotlight ===== */
+
+  .search-box:focus-within,
+  .search-container:focus-within,
+  .dashboard-search:focus-within{
+
+    transform:scale(1.015);
+
+    border-color:rgba(52,211,153,.35);
+
+    box-shadow:
+      0 0 26px rgba(52,211,153,.12),
+      inset 0 1px rgba(255,255,255,.08);
+
+  }
+
+  /* ===== Input ===== */
+
+  .search-box input,
+  .search-container input,
+  .dashboard-search input{
+
+    background:transparent !important;
+    border:none !important;
+    outline:none;
+
+    color:#F5F7FA !important;
+
+    font-size:15px;
+    font-weight:500;
+
+    letter-spacing:-0.01em;
+
+  }
+
+  /* ===== Placeholder ===== */
+
+  .search-box input::placeholder,
+  .search-container input::placeholder,
+  .dashboard-search input::placeholder{
+
+    color:#8FA5C6;
+    transition:.25s ease;
+
+  }
+
+  .search-box:focus-within input::placeholder,
+  .search-container:focus-within input::placeholder,
+  .dashboard-search:focus-within input::placeholder{
+
+    opacity:.55;
+    transform:translateX(4px);
+
+  }
+
+}
+/* ==========================================
+   BUILD 13.0
+   Apple Dynamic Status
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Status Capsule ===== */
+
+  .status-pill,
+  .online-status,
+  .status-online{
+
+    display:inline-flex !important;
+    align-items:center;
+    gap:8px;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(28,40,64,.72),
+        rgba(12,20,38,.88)
+      ) !important;
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.05),
+      0 8px 22px rgba(0,0,0,.22);
+
+    color:#F4F7FB;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+
+    transition:
+      transform .28s cubic-bezier(.22,1,.36,1),
+      box-shadow .28s ease;
+
+  }
+
+  /* ===== Titik Hijau ===== */
+
+  .status-pill::before,
+  .online-status::before,
+  .status-online::before{
+
+    content:"";
+
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:#34D399;
+
+    box-shadow:
+      0 0 6px rgba(52,211,153,.55),
+      0 0 14px rgba(52,211,153,.28);
+
+    animation:applePulse 2.2s infinite;
+
+  }
+
+  /* ===== Sentuhan ===== */
+
+  .status-pill:active,
+  .online-status:active,
+  .status-online:active{
+
+    transform:scale(.96);
+
+  }
+
+  /* ===== Pulse Apple ===== */
+
+  @keyframes applePulse{
+
+    0%,100%{
+
+      transform:scale(1);
+      opacity:1;
+
+    }
+
+    50%{
+
+      transform:scale(1.28);
+      opacity:.72;
+
+    }
+
+  }
+
+}
+/* ==========================================
+   BUILD 13.1
+   Apple Control Center Icon Skin
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Capsule untuk ikon Sidebar ===== */
+
+  .sb-item svg{
+
+    padding:7px;
+
+    width:36px;
+    height:36px;
+
+    border-radius:12px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.02)
+      );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.05),
+      0 4px 12px rgba(0,0,0,.18);
+
+    transition:
+      transform .28s cubic-bezier(.22,1,.36,1),
+      box-shadow .28s ease,
+      background .28s ease;
+
+  }
+
+  /* Hover ringan */
+
+  .sb-item:hover svg{
+
+    transform:translateY(-1px) scale(1.05);
+
+  }
+
+  /* Aktif */
+
+  .sb-item.active svg{
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(52,211,153,.22),
+        rgba(52,211,153,.08)
+      );
+
+    border-color:rgba(52,211,153,.22);
+
+    box-shadow:
+      0 0 18px rgba(52,211,153,.18),
+      inset 0 1px rgba(255,255,255,.06);
+
+  }
+
+  /* Tekan */
+
+  .sb-item:active svg{
+
+    transform:scale(.92);
+
+  }
+
+  /* ===== Quick Launch ===== */
+
+  .quick-card .launch-icon,
+  .quick-card svg{
+
+    width:46px;
+    height:46px;
+
+    padding:10px;
+
+    border-radius:16px;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.03)
+      );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.05),
+      0 6px 18px rgba(0,0,0,.20);
+
+    transition:.28s cubic-bezier(.22,1,.36,1);
+
+  }
+
+  .quick-card:active .launch-icon,
+  .quick-card:active svg{
+
+    transform:scale(.92);
+
+  }
+
+}
+/* ==========================================
+   BUILD 13.2
+   Apple Motion
+   HP ONLY - Struktur Tetap
+   ========================================== */
+
+@media (max-width:768px){
+
+  /* ===== Spring Sidebar ===== */
+
+  #sidebar{
+    transition:
+      transform .42s cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  /* ===== Card Entrance ===== */
+
+  @keyframes appleFadeUp{
+
+    from{
+      opacity:0;
+      transform:translateY(18px) scale(.98);
+    }
+
+    to{
+      opacity:1;
+      transform:translateY(0) scale(1);
+    }
+
+  }
+
+  .hero-card,
+  .dashboard-header{
+    animation:appleFadeUp .35s cubic-bezier(.22,1,.36,1);
+  }
+
+  /* KPI */
+
+  .metric-card,
+  .kpi-card{
+    opacity:0;
+    animation:appleFadeUp .38s cubic-bezier(.22,1,.36,1) forwards;
+  }
+
+  .metric-card:nth-child(1),
+  .kpi-card:nth-child(1){animation-delay:.05s;}
+
+  .metric-card:nth-child(2),
+  .kpi-card:nth-child(2){animation-delay:.10s;}
+
+  .metric-card:nth-child(3),
+  .kpi-card:nth-child(3){animation-delay:.15s;}
+
+  .metric-card:nth-child(4),
+  .kpi-card:nth-child(4){animation-delay:.20s;}
+
+  /* Operational Zones */
+
+  .zone-card{
+    opacity:0;
+    animation:appleFadeUp .36s cubic-bezier(.22,1,.36,1) forwards;
+  }
+
+  .zone-card:nth-child(1){animation-delay:.24s;}
+  .zone-card:nth-child(2){animation-delay:.28s;}
+  .zone-card:nth-child(3){animation-delay:.32s;}
+  .zone-card:nth-child(4){animation-delay:.36s;}
+  .zone-card:nth-child(5){animation-delay:.40s;}
+  .zone-card:nth-child(6){animation-delay:.44s;}
+
+  /* Quick Launch */
+
+  .quick-card{
+    opacity:0;
+    animation:appleFadeUp .34s cubic-bezier(.22,1,.36,1) forwards;
+  }
+
+  .quick-card:nth-child(1){animation-delay:.48s;}
+  .quick-card:nth-child(2){animation-delay:.52s;}
+  .quick-card:nth-child(3){animation-delay:.56s;}
+  .quick-card:nth-child(4){animation-delay:.60s;}
+
+  /* ===== Scroll Feeling ===== */
+
+  html{
+    scroll-behavior:smooth;
+  }
+
+}
