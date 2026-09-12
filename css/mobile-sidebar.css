@@ -1,13 +1,14 @@
 /* ==========================================
    CGG HDOS Mobile Sidebar
-   Build 11
+   Build 11.1
    HP ONLY
-   Desktop Tidak Tersentuh
+   Desktop LOCK
    ========================================== */
 
 @media (max-width:768px){
 
-  /* Jangan ubah layout desktop */
+  /* ================= Layout ================= */
+
   #app{
     display:block !important;
   }
@@ -19,13 +20,12 @@
     overflow-x:hidden;
   }
 
-  /* ===== Sidebar Floating ===== */
+  /* ================= Floating Sidebar ================= */
 
   #sidebar{
-
     position:fixed !important;
     top:0;
-    left:-280px;          /* sembunyi */
+    left:-280px;
     width:280px;
     height:100vh;
 
@@ -39,26 +39,21 @@
     border-right:1px solid rgba(255,255,255,.08);
 
     overflow:hidden;
-
   }
 
   body.sidebar-open #sidebar{
     left:0;
   }
 
-  /* Overlay gelap */
-
   body.sidebar-open::before{
-
     content:"";
     position:fixed;
     inset:0;
     background:rgba(0,0,0,.42);
     z-index:9999;
-
   }
 
-  /* ===== Struktur Sidebar ===== */
+  /* ================= Header ================= */
 
   .sb-shell{
     display:flex;
@@ -70,8 +65,8 @@
     display:flex;
     align-items:center;
     gap:12px;
-    padding:18px;
-    border-bottom:1px solid rgba(255,255,255,.06);
+    padding:18px 14px;
+    border-bottom:1px solid rgba(255,255,255,.08);
   }
 
   .sb-header img{
@@ -81,17 +76,41 @@
     flex-shrink:0;
   }
 
+  .sb-brand{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    flex:1;
+  }
+
   .sb-brand b{
-    display:block;
     color:#fff;
-    font-size:18px;
+    font-size:16px;
+    font-weight:700;
     line-height:1.1;
   }
 
   .sb-brand span{
-    color:#8EA4C8;
-    font-size:12px;
+    color:#9DB3D3;
+    font-size:11px;
+    line-height:1.2;
+    margin-top:3px;
   }
+
+  .sb-toggle{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:none;
+    color:#fff;
+    font-size:28px;
+    flex-shrink:0;
+  }
+
+  /* ================= Scroll ================= */
 
   .sb-scroll{
     flex:1;
@@ -108,21 +127,25 @@
     font-size:11px;
     letter-spacing:1px;
     text-transform:uppercase;
-    margin:0 10px 8px;
+    margin:0 10px 10px;
   }
 
-  /* ===== Menu HP ===== */
+  /* ================= Menu ================= */
 
   .sb-item{
 
     width:100%;
-    min-height:48px;
+    min-height:56px;
 
-    display:flex;
+    display:grid;
+    grid-template-columns:22px 1fr;
+    grid-template-rows:auto auto;
+
+    column-gap:14px;
+
     align-items:center;
-    gap:14px;
 
-    padding:12px 14px;
+    padding:10px 14px;
 
     border:none;
     background:transparent;
@@ -130,14 +153,16 @@
 
     border-radius:14px;
 
-    transition:all .22s ease;
+    transition:.22s ease;
 
-    font-size:16px;
-    font-weight:500;
+    position:relative;
 
   }
 
   .sb-item svg{
+
+    grid-column:1;
+    grid-row:1 / span 2;
 
     width:22px;
     height:22px;
@@ -146,13 +171,62 @@
     stroke-width:1.8;
     fill:none;
 
-    flex-shrink:0;
-
   }
 
   .sb-item span{
+
+    grid-column:2;
+    grid-row:1;
+
+    font-size:15px;
+    font-weight:600;
+
     white-space:nowrap;
+
   }
+
+  /* ---------- Deskripsi otomatis ---------- */
+
+  .sb-item::after{
+
+    grid-column:2;
+    grid-row:2;
+
+    font-size:11px;
+    color:#8FA5C6;
+    line-height:1.2;
+
+  }
+
+  .sb-item[data-route="dashboard"]::after{content:"Ringkasan aktivitas HSE";}
+  .sb-item[data-route="inspection"]::after{content:"Inspeksi kendaraan & area";}
+  .sb-item[data-route="hazard"]::after{content:"Laporan potensi bahaya";}
+  .sb-item[data-route="incident"]::after{content:"Pelaporan insiden";}
+  .sb-item[data-route="ptw"]::after{content:"Permit To Work";}
+  .sb-item[data-route="mine-permit"]::after{content:"Izin operasional tambang";}
+  .sb-item[data-route="commissioning"]::after{content:"Pemeriksaan sebelum operasi";}
+  .sb-item[data-route="audit"]::after{content:"Audit & verifikasi";}
+  .sb-item[data-route="waste"]::after{content:"Pengelolaan limbah B3";}
+  .sb-item[data-route="spill"]::after{content:"Pelaporan tumpahan";}
+  .sb-item[data-route="dust"]::after{content:"Pemantauan debu";}
+  .sb-item[data-route="water"]::after{content:"Monitoring kualitas air";}
+  .sb-item[data-route="noise"]::after{content:"Monitoring kebisingan";}
+  .sb-item[data-route="emission"]::after{content:"Pemantauan emisi";}
+  .sb-item[data-route="flora"]::after{content:"Flora & fauna";}
+  .sb-item[data-route="housekeeping"]::after{content:"Kebersihan area";}
+  .sb-item[data-route="first-aid"]::after{content:"Pertolongan pertama";}
+  .sb-item[data-route="clinic"]::after{content:"Register klinik";}
+  .sb-item[data-route="mcu"]::after{content:"Medical Check Up";}
+  .sb-item[data-route="fatigue"]::after{content:"Manajemen kelelahan";}
+  .sb-item[data-route="fit-work"]::after{content:"Kelayakan bekerja";}
+  .sb-item[data-route="emergency"]::after{content:"Tanggap darurat";}
+  .sb-item[data-route="pica"]::after{content:"Corrective Action";}
+  .sb-item[data-route="policy"]::after{content:"Kebijakan perusahaan";}
+  .sb-item[data-route="analytics"]::after{content:"Analisis data";}
+  .sb-item[data-route="reports"]::after{content:"Laporan HSE";}
+  .sb-item[data-route="settings"]::after{content:"Pengaturan sistem";}
+
+  /* ================= State ================= */
 
   .sb-item:hover{
     background:rgba(255,255,255,.05);
@@ -174,7 +248,11 @@
     stroke:#00E676;
   }
 
-  /* Footer */
+  .sb-item.active::after{
+    color:#BFEBD2;
+  }
+
+  /* ================= Footer ================= */
 
   .sb-footer{
     padding:16px;
@@ -206,67 +284,6 @@
   .sb-info span{
     color:#8EA4C8;
     font-size:12px;
-  }
-
-}
-/* ==========================================
-   MOBILE SIDEBAR HEADER FIX
-   Tidak mempengaruhi Desktop
-========================================== */
-
-@media (max-width:768px){
-
-  /* Header sidebar */
-  .sb-header{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:18px 14px;
-    border-bottom:1px solid rgba(255,255,255,.08);
-  }
-
-  /* Logo */
-  .sb-header img{
-    width:42px;
-    height:42px;
-    object-fit:contain;
-    flex-shrink:0;
-  }
-
-  /* Nama aplikasi */
-  .sb-brand{
-    display:flex !important;
-    flex-direction:column;
-    min-width:0;
-    flex:1;
-  }
-
-  .sb-brand b{
-    color:#fff;
-    font-size:16px;
-    font-weight:700;
-    line-height:1.1;
-  }
-
-  .sb-brand span{
-    color:#9DB3D3;
-    font-size:11px;
-    line-height:1.2;
-    margin-top:3px;
-  }
-
-  /* Tombol X tetap di kiri */
-  .sb-toggle{
-    width:34px;
-    height:34px;
-    flex-shrink:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#fff;
-    background:transparent;
-    border:none;
-    font-size:28px;
   }
 
 }
