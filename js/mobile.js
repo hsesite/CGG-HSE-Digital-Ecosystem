@@ -37,8 +37,8 @@ const Mobile = {
 
     btn.style.cssText=`
       position:fixed;
-      top:14px;
-      left:14px;
+      top:16px;
+      left:16px;
       width:42px;
       height:42px;
       border:none;
