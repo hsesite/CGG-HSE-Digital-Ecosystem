@@ -431,3 +431,146 @@ width:280px!important;
 }
 
 }
+/* ==========================================
+   MOBILE UI POLISH V1
+   Aman untuk Desktop
+========================================== */
+
+@media (max-width:768px){
+
+  /* ruang atas agar tidak tertutup tombol */
+  main{
+    padding-top:72px !important;
+  }
+
+  /* jarak antar section */
+  .page-header,
+  .search-box,
+  .dashboard-search,
+  .stats-grid,
+  .zones-section,
+  .quick-launch,
+  .live-activity,
+  .notification-panel{
+    margin-bottom:18px !important;
+  }
+
+  /* semua card konsisten */
+  .card,
+  .widget,
+  .dashboard-card{
+    border-radius:18px !important;
+  }
+
+}
+@media (max-width:768px){
+
+.page-header{
+  padding:18px !important;
+  border-radius:22px !important;
+}
+
+.page-header img{
+  width:44px !important;
+  height:44px !important;
+}
+
+.page-header h1{
+  font-size:19px !important;
+  line-height:1.2;
+}
+
+.page-header p{
+  font-size:13px !important;
+  opacity:.9;
+}
+
+.page-header .clock{
+  font-size:16px !important;
+  margin-top:6px;
+}
+
+}
+@media (max-width:768px){
+
+.dashboard-search,
+.search-box{
+
+  height:48px !important;
+
+  padding:0 16px !important;
+
+  border-radius:16px !important;
+
+  font-size:15px;
+
+}
+
+.dashboard-search input,
+.search-box input{
+
+  font-size:15px !important;
+
+}
+
+}
+@media (max-width:768px){
+
+.stats-grid{
+
+  display:grid;
+
+  grid-template-columns:repeat(2,1fr);
+
+  gap:14px;
+
+}
+
+.stats-grid .card{
+
+  min-height:122px !important;
+
+  padding:18px !important;
+
+}
+
+.stats-grid h4{
+
+  font-size:11px !important;
+
+  letter-spacing:1px;
+
+}
+
+.stats-grid .value{
+
+  font-size:34px !important;
+
+  margin-top:18px;
+
+}
+
+}
+@media (max-width:768px){
+
+.zone-card{
+
+  padding:16px !important;
+
+  min-height:84px !important;
+
+}
+
+.zone-card h4{
+
+  font-size:18px !important;
+
+}
+
+.zone-card p{
+
+  font-size:13px !important;
+
+}
+
+}
