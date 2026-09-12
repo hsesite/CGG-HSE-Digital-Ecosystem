@@ -25,8 +25,8 @@
   #sidebar{
     position:fixed !important;
     top:0;
-    left:-320px;
-    width:320px;
+    left:-420px;
+    width:420px;
     height:100vh;
 
     z-index:10000;
