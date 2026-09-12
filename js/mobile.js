@@ -16,6 +16,8 @@ const Mobile = {
 
     if(window.innerWidth > this.breakpoint) return;
 
+    document.body.classList.add("mobile-mode");
+
     this.closeSidebar();
 
     this.bindToggle();
@@ -68,19 +70,24 @@ const Mobile = {
 
   },
 
-  bindResize(){
+ bindResize(){
 
-    window.addEventListener("resize",()=>{
+  window.addEventListener("resize",()=>{
 
-      if(window.innerWidth>this.breakpoint){
+    if(window.innerWidth>this.breakpoint){
 
-        this.closeSidebar();
+      document.body.classList.remove("mobile-mode");
+      this.closeSidebar();
 
-      }
+    }else{
 
-    });
+      document.body.classList.add("mobile-mode");
 
-  },
+    }
+
+  });
+
+}
 
   closeSidebar(){
 
