@@ -106,18 +106,26 @@ main.appendChild(view);
 
 async initModules(){
 
-await this.safe("Sidebar",()=>window.Sidebar?.init?.());
+  await this.safe("Window Manager",()=>window.WindowManager?.init?.());
 
-await this.safe("Window Manager",()=>window.WindowManager?.init?.());
+  await this.safe("Command Center",()=>window.CommandCenter?.init?.());
 
-await this.safe("Command Center",()=>window.CommandCenter?.init?.());
+  await this.safe("Dashboard Live",()=>window.DashboardLive?.start?.());
 
-await this.safe("Dashboard Live",()=>window.DashboardLive?.start?.());
+  await this.safe("Router",()=>window.Router?.init?.());
 
-await this.safe("Router",()=>window.Router?.init?.());
+  // Render sidebar setelah Router siap
+  if(window.Sidebar?.init){
+
+    window.Sidebar.init();
+
+    const root=document.getElementById("sidebar");
+
+    console.log("Sidebar HTML:",root.innerHTML.length);
+
+  }
 
 },
-
 /* Safe */
 
 async safe(name,fn){
