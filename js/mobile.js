@@ -76,13 +76,6 @@ const Mobile = {
 
     if(window.innerWidth>this.breakpoint){
 
-      document.body.classList.remove("mobile-mode");
-      this.closeSidebar();
-
-    }else{
-
-      document.body.classList.add("mobile-mode");
-
     }
 
   });
