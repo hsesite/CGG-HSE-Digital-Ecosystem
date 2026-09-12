@@ -36,9 +36,10 @@ window.Dashboard = (() => {
 <div class="executive-left">
 
 <div class="logo-circle">
-<img src="assets/img/logo-cgg.png"
-class="cgg-logo"
-alt="CGG Logo">
+<img src="/CGG-HSE-Digital-Ecosystem/assets/Logo/logo-cgg.png"
+     alt="CGG Logo"
+     class="header-logo"
+     onerror="this.src='assets/Logo/logo-cgg.png'">
 </div>
 
 <div>
