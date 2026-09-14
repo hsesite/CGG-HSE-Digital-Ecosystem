@@ -103,12 +103,11 @@ window.CGGConfig = {
 
 CGGLoader.modules = async function(){
 
-  const endpoint = localStorage.getItem("CGG_ENDPOINT")
-    || CGGConfig.endpoint;
+  const endpoint =
+    localStorage.getItem("CGG_ENDPOINT") ||
+    CGGConfig.endpoint;
 
-  const url = `${endpoint}?action=registry`;
-
-  const res = await fetch(url);
+  const res = await fetch(`${endpoint}?action=registry`);
 
   const json = await res.json();
 
