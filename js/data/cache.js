@@ -1,21 +1,24 @@
-
 /* ==========================================
    CGG HDOS Cache Engine
-   Build 15.1
-   Persistent Config Cache
+   Build 15.5 Production
+   Core Foundation (Frozen)
    ========================================== */
 
 (() => {
 "use strict";
 
+/* ==========================================
+   Database Configuration
+   ========================================== */
+
 const DB_NAME = "CGG_HDOS_DB";
-const DB_VERSION = 3; // naik dari v1 agar store "config" dibuat
+const DB_VERSION = 4;
 
 let dbPromise = null;
 
-/* ==========================
+/* ==========================================
    Open Database
-   ========================== */
+   ========================================== */
 
 function openDB(){
 
@@ -29,6 +32,8 @@ function openDB(){
 
       const db = e.target.result;
 
+      /* ---------- Config Store ---------- */
+
       if(!db.objectStoreNames.contains("config")){
 
         const store = db.createObjectStore("config",{
@@ -38,22 +43,42 @@ function openDB(){
         store.createIndex("updatedAt","updatedAt");
 
       }
+
+      /* ---------- System Log ---------- */
+
       if(!db.objectStoreNames.contains("systemlog")){
-         
-         const log=db.createObjectStore("systemlog",{
-            keyPath:"id",
-            autoIncrement:true
-         });
-         
-         log.createIndex("time","time");
-      
+
+        const log = db.createObjectStore("systemlog",{
+          keyPath:"id",
+          autoIncrement:true
+        });
+
+        log.createIndex("time","time");
+
+      }
+
+      /* ---------- Universal Queue ---------- */
+
+      if(!db.objectStoreNames.contains("queue")){
+
+        const queue = db.createObjectStore("queue",{
+          keyPath:"id"
+        });
+
+        queue.createIndex("status","status");
+        queue.createIndex("module","module");
+        queue.createIndex("createdAt","createdAt");
+        queue.createIndex("priority","priority");
+        queue.createIndex("tenant","tenant");
+        queue.createIndex("company","company");
+
       }
 
     };
 
-    req.onsuccess=()=>resolve(req.result);
+    req.onsuccess = ()=>resolve(req.result);
 
-    req.onerror=()=>reject(req.error);
+    req.onerror = ()=>reject(req.error);
 
   });
 
@@ -61,17 +86,17 @@ function openDB(){
 
 }
 
-/* ==========================
-   Save Config
-   ========================== */
+/* ==========================================
+   CONFIG STORE
+   ========================================== */
 
 async function save(key,data,version=1){
 
-  const db=await openDB();
+  const db = await openDB();
 
   return new Promise((resolve,reject)=>{
 
-    const tx=db.transaction("config","readwrite");
+    const tx = db.transaction("config","readwrite");
 
     tx.objectStore("config").put({
 
@@ -82,116 +107,119 @@ async function save(key,data,version=1){
 
     });
 
-    tx.oncomplete=()=>resolve(true);
+    tx.oncomplete = ()=>resolve(true);
 
-    tx.onerror=()=>reject(tx.error);
+    tx.onerror = ()=>reject(tx.error);
 
   });
 
 }
 
-/* ==========================
-   Load Config
-   ========================== */
-
 async function load(key){
 
-  const db=await openDB();
+  const db = await openDB();
 
   return new Promise((resolve,reject)=>{
 
-    const req=db
+    const req = db
       .transaction("config")
       .objectStore("config")
       .get(key);
 
-    req.onsuccess=()=>resolve(req.result||null);
+    req.onsuccess = ()=>resolve(req.result || null);
 
-    req.onerror=()=>reject(req.error);
+    req.onerror = ()=>reject(req.error);
 
   });
 
 }
-
-/* ==========================
-   Delete Config
-   ========================== */
 
 async function remove(key){
 
-  const db=await openDB();
+  const db = await openDB();
 
   return new Promise((resolve,reject)=>{
 
-    const tx=db.transaction("config","readwrite");
+    const tx = db.transaction("config","readwrite");
 
     tx.objectStore("config").delete(key);
 
-    tx.oncomplete=()=>resolve(true);
+    tx.oncomplete = ()=>resolve(true);
 
-    tx.onerror=()=>reject(tx.error);
+    tx.onerror = ()=>reject(tx.error);
 
   });
 
 }
-
-/* ==========================
-   Clear All
-   ========================== */
 
 async function clear(){
 
-  const db=await openDB();
+  const db = await openDB();
 
   return new Promise((resolve,reject)=>{
 
-    const tx=db.transaction("config","readwrite");
+    const tx = db.transaction("config","readwrite");
 
     tx.objectStore("config").clear();
 
-    tx.oncomplete=()=>resolve(true);
+    tx.oncomplete = ()=>resolve(true);
 
-    tx.onerror=()=>reject(tx.error);
+    tx.onerror = ()=>reject(tx.error);
 
   });
 
 }
 
-/* ==========================
-   List All
-   ========================== */
-
 async function list(){
 
-  const db=await openDB();
+  const db = await openDB();
 
   return new Promise((resolve,reject)=>{
 
-    const req=db
+    const req = db
       .transaction("config")
       .objectStore("config")
       .getAll();
 
-    req.onsuccess=()=>resolve(req.result);
+    req.onsuccess = ()=>resolve(req.result);
 
-    req.onerror=()=>reject(req.error);
+    req.onerror = ()=>reject(req.error);
 
   });
 
 }
 
-/* ==========================
-   Public API
-   ========================== */
+/* ==========================================
+   Health Check
+   ========================================== */
 
-window.CGGCache={
+async function health(){
+
+  const db = await openDB();
+
+  return {
+    name: db.name,
+    version: db.version,
+    stores: [...db.objectStoreNames]
+  };
+
+}
+
+/* ==========================================
+   Public API
+   ========================================== */
+
+window.CGGCache = {
 
   openDB,
+
   save,
   load,
   remove,
   clear,
-  list
+  list,
+
+  health
 
 };
 
