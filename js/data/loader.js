@@ -82,8 +82,6 @@ window.CGGConfig = {
 
 };
 
-})();
-
 /* ==========================================
    Dynamic Module Loader
    Build 18.2
@@ -105,3 +103,5 @@ CGGLoader.modules = async function(){
   return json.modules;
 
 };
+   
+})();
