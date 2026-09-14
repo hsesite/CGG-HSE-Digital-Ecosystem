@@ -38,6 +38,16 @@ function openDB(){
         store.createIndex("updatedAt","updatedAt");
 
       }
+      if(!db.objectStoreNames.contains("systemlog")){
+         
+         const log=db.createObjectStore("systemlog",{
+            keyPath:"id",
+            autoIncrement:true
+         });
+         
+         log.createIndex("time","time");
+      
+      }
 
     };
 
