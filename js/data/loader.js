@@ -23,9 +23,20 @@ const DEFAULT_ENDPOINT =
 "https://script.google.com/macros/s/AKfycbxI1I0jxW14JY_H4gwqoVYkxdpCY635lm-LAPZVdh0-zwN9vK_yalQSLjAFkiho6Tkp9g/exec";
 
 /* Ambil endpoint aktif */
+   
 function getEndpoint(){
 
-  return localStorage.getItem("CGG_ENDPOINT") || DEFAULT_ENDPOINT;
+  let endpoint = localStorage.getItem("CGG_ENDPOINT");
+
+  if(!endpoint){
+
+    endpoint = DEFAULT_ENDPOINT;
+
+    localStorage.setItem("CGG_ENDPOINT",endpoint);
+
+  }
+
+  return endpoint;
 
 }
 
