@@ -83,3 +83,21 @@ window.CGGConfig = {
 };
 
 })();
+/* ==========================================
+   Dynamic Module Loader
+   Build 18.2
+   ========================================== */
+
+CGGLoader.modules = async function(){
+
+  const url = `${CGGConfig.endpoint}?action=registry`;
+
+  const res = await fetch(url);
+
+  const json = await res.json();
+
+  if(!json.success) return [];
+
+  return json.modules;
+
+};
