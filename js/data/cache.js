@@ -9,7 +9,7 @@
 "use strict";
 
 const DB_NAME = "CGG_HDOS_DB";
-const DB_VERSION = 2; // naik dari v1 agar store "config" dibuat
+const DB_VERSION = 3; // naik dari v1 agar store "config" dibuat
 
 let dbPromise = null;
 
