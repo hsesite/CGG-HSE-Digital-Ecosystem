@@ -1,3 +1,16 @@
+/* ==========================================
+   CGG HDOS Loader Engine
+   Build 18.2
+   ========================================== */
+
+(function(){
+
+"use strict";
+
+/* Namespace Loader */
+window.CGGLoader = window.CGGLoader || {};
+
+})();
 
 /* ==========================================
    CGG HDOS Config Loader
@@ -81,6 +94,7 @@ window.CGGConfig = {
   clear
 
 };
+})();
 
 /* ==========================================
    Dynamic Module Loader
@@ -104,4 +118,4 @@ CGGLoader.modules = async function(){
 
 };
    
-})();
+
