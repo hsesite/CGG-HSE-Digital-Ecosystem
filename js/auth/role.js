@@ -1,12 +1,15 @@
 
 /* ==========================================
    CGG HDOS Role Engine
-   Build 15.7 Phase 1
-   Session Passport
+   Build 15.7 Production
+   C-009 Session Passport
+   C-010 Dual Session
    ========================================== */
 
 (() => {
 "use strict";
+
+const SESSION_KEY="CGG_SESSION";
 
 /* ==========================================
    Scope Resolver
@@ -17,23 +20,18 @@ function resolveScope(role,company,parent){
   switch(role){
 
     case "Admin":
-
       return ["CGG","SLS","VIP","SUBCON"];
 
     case "CGG":
-
       return ["CGG","SLS","VIP","SUBCON"];
 
     case "Contractor":
-
       return [company,"SUBCON_"+company];
 
     case "Subcon":
-
       return [company];
 
     default:
-
       return [];
 
   }
@@ -41,10 +39,29 @@ function resolveScope(role,company,parent){
 }
 
 /* ==========================================
+   Save Session
+   ========================================== */
+
+async function saveSession(passport){
+
+  localStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify(passport)
+  );
+
+  await CGGCache.save(
+    SESSION_KEY,
+    passport,
+    1
+  );
+
+}
+
+/* ==========================================
    Create Passport
    ========================================== */
 
-function create(user){
+async function create(user){
 
   const passport={
 
@@ -70,36 +87,62 @@ function create(user){
 
   };
 
-  localStorage.setItem(
-    "CGG_SESSION",
-    JSON.stringify(passport)
-  );
+  await saveSession(passport);
 
   return passport;
 
 }
 
 /* ==========================================
-   Read Passport
+   Restore Session
    ========================================== */
 
-function current(){
+async function restore(){
 
-  const raw=localStorage.getItem("CGG_SESSION");
+  const local=localStorage.getItem(SESSION_KEY);
 
-  if(!raw) return null;
+  if(local){
 
-  const passport=JSON.parse(raw);
+    const passport=JSON.parse(local);
 
-  if(new Date(passport.expires)<new Date()){
+    if(new Date(passport.expires)>new Date()){
 
-    logout();
+      return passport;
 
-    return null;
+    }
 
   }
 
-  return passport;
+  const cache=await CGGCache.load(SESSION_KEY);
+
+  if(cache?.data){
+
+    const passport=cache.data;
+
+    if(new Date(passport.expires)>new Date()){
+
+      localStorage.setItem(
+        SESSION_KEY,
+        JSON.stringify(passport)
+      );
+
+      return passport;
+
+    }
+
+  }
+
+  return null;
+
+}
+
+/* ==========================================
+   Current Session
+   ========================================== */
+
+async function current(){
+
+  return await restore();
 
 }
 
@@ -107,9 +150,9 @@ function current(){
    Permission Checker
    ========================================== */
 
-function canView(company){
+async function canView(company){
 
-  const passport=current();
+  const passport=await current();
 
   if(!passport) return false;
 
@@ -118,9 +161,11 @@ function canView(company){
 
 }
 
-function isAdmin(){
+async function isAdmin(){
 
-  return current()?.role==="Admin";
+  const passport=await current();
+
+  return passport?.role==="Admin";
 
 }
 
@@ -128,9 +173,35 @@ function isAdmin(){
    Logout
    ========================================== */
 
-function logout(){
+async function logout(){
 
-  localStorage.removeItem("CGG_SESSION");
+  localStorage.removeItem(SESSION_KEY);
+
+  await CGGCache.remove(SESSION_KEY);
+
+}
+
+/* ==========================================
+   Health
+   ========================================== */
+
+async function health(){
+
+  const passport=await current();
+
+  return{
+
+    loggedIn:!!passport,
+
+    email:passport?.email||null,
+
+    role:passport?.role||null,
+
+    company:passport?.company||null,
+
+    scope:passport?.scope||[]
+
+  };
 
 }
 
@@ -142,9 +213,11 @@ window.CGGRole={
 
   create,
   current,
+  restore,
   canView,
   isAdmin,
-  logout
+  logout,
+  health
 
 };
 
