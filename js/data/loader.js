@@ -83,6 +83,7 @@ window.CGGConfig = {
 };
 
 })();
+
 /* ==========================================
    Dynamic Module Loader
    Build 18.2
@@ -90,7 +91,10 @@ window.CGGConfig = {
 
 CGGLoader.modules = async function(){
 
-  const url = `${CGGConfig.endpoint}?action=registry`;
+  const endpoint = localStorage.getItem("CGG_ENDPOINT")
+    || CGGConfig.endpoint;
+
+  const url = `${endpoint}?action=registry`;
 
   const res = await fetch(url);
 
