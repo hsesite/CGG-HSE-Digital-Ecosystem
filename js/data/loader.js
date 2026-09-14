@@ -1,39 +1,46 @@
 /* ==========================================
    CGG HDOS Loader Engine
-   Build 18.2
-   ========================================== */
-
-(function(){
-
-"use strict";
-
-/* Namespace Loader */
-window.CGGLoader = window.CGGLoader || {};
-
-})();
-
-/* ==========================================
-   CGG HDOS Config Loader
-   Build 15.0
-   Core Foundation
+   Build 18.2.1 Production
+   C-039 Endpoint Registry Constitution
    ========================================== */
 
 (() => {
+
 "use strict";
 
-/* Endpoint akan dipindahkan ke Settings nanti */
-let API_URL = "";
-
-/* Cache sementara di memory */
-const memoryCache = new Map();
-
 /* ==========================
-   Set Endpoint
+   Namespace
    ========================== */
 
-function setEndpoint(url){
-  API_URL = url;
+window.CGGLoader = window.CGGLoader || {};
+
+/* ==========================
+   Endpoint Registry
+   ========================== */
+
+/* Default backend (boleh diganti admin nanti) */
+const DEFAULT_ENDPOINT =
+"https://script.google.com/macros/s/AKfycbxI1I0jxW14JY_H4gwqoVYkxdpCY635lm-LAPZVdh0-zwN9vK_yalQSLjAFkiho6Tkp9g/exec";
+
+/* Ambil endpoint aktif */
+function getEndpoint(){
+
+  return localStorage.getItem("CGG_ENDPOINT") || DEFAULT_ENDPOINT;
+
 }
+
+/* Simpan endpoint */
+function setEndpoint(url){
+
+  localStorage.setItem("CGG_ENDPOINT",url);
+
+}
+
+/* ==========================
+   Memory Cache
+   ========================== */
+
+const memoryCache=new Map();
 
 /* ==========================
    Load Sheet
@@ -42,22 +49,26 @@ function setEndpoint(url){
 async function load(sheet){
 
   if(memoryCache.has(sheet)){
+
     return memoryCache.get(sheet);
+
   }
 
-  if(!API_URL){
-    throw new Error("API endpoint belum diset.");
-  }
+  const endpoint=getEndpoint();
 
-  const res = await fetch(
-    `${API_URL}?action=get&sheet=${encodeURIComponent(sheet)}`
+  const res=await fetch(
+
+    `${endpoint}?action=get&sheet=${encodeURIComponent(sheet)}`
+
   );
 
   if(!res.ok){
+
     throw new Error(`Gagal mengambil sheet ${sheet}`);
+
   }
 
-  const data = await res.json();
+  const data=await res.json();
 
   memoryCache.set(sheet,data);
 
@@ -84,37 +95,92 @@ function clear(sheet=null){
 }
 
 /* ==========================
-   Public API
+   Public Config API
    ========================== */
 
-window.CGGConfig = {
+window.CGGConfig={
 
   setEndpoint,
+
+  get endpoint(){
+
+    return getEndpoint();
+
+  },
+
   load,
+
   clear
 
 };
-})();
 
 /* ==========================================
    Dynamic Module Loader
-   Build 18.2
+   Build 18.2.1
    ========================================== */
 
-CGGLoader.modules = async function(){
+CGGLoader.modules=async function(){
 
-  const endpoint =
-    localStorage.getItem("CGG_ENDPOINT") ||
-    CGGConfig.endpoint;
+  const endpoint=CGGConfig.endpoint;
 
-  const res = await fetch(`${endpoint}?action=registry`);
+  const res=await fetch(
 
-  const json = await res.json();
+    `${endpoint}?action=registry`
 
-  if(!json.success) return [];
+  );
+
+  if(!res.ok){
+
+    throw new Error(`Registry gagal (${res.status})`);
+
+  }
+
+  const json=await res.json();
+
+  if(!json.success){
+
+    return [];
+
+  }
 
   return json.modules;
 
 };
-   
 
+/* ==========================================
+   Dynamic Schema Loader
+   ========================================== */
+
+CGGLoader.schema=async function(sheet){
+
+  const endpoint=CGGConfig.endpoint;
+
+  const res=await fetch(
+
+    `${endpoint}?action=schema&sheet=${encodeURIComponent(sheet)}`
+
+  );
+
+  return res.json();
+
+};
+
+/* ==========================================
+   Health Check
+   ========================================== */
+
+CGGLoader.health=async function(){
+
+  const endpoint=CGGConfig.endpoint;
+
+  const res=await fetch(
+
+    `${endpoint}?action=ping`
+
+  );
+
+  return res.json();
+
+};
+
+})();
