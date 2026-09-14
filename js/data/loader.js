@@ -31,8 +31,7 @@ function getEndpoint(){
   if(!endpoint){
 
     endpoint = DEFAULT_ENDPOINT;
-
-    localStorage.setItem("CGG_ENDPOINT",endpoint);
+    localStorage.setItem("CGG_ENDPOINT", endpoint);
 
   }
 
