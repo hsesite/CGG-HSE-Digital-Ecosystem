@@ -1,81 +1,96 @@
 /* ==========================================
    CGG HSE Digital Operating System
    App Bootstrap
-   Build 16.2 Foundation
+   Build 16.3 Stable
+   Safe Boot Sequence
    ========================================== */
 
 (() => {
 
 "use strict";
 
+async function waitRegistry(retry = 5){
+
+  for(let i = 1; i <= retry; i++){
+
+    try{
+
+      const modules = await CGGLoader.modules();
+
+      if(Array.isArray(modules) && modules.length){
+
+        console.log(`✓ Registry Ready (${modules.length} modules)`);
+
+        return modules;
+
+      }
+
+    }catch(err){
+
+      console.warn(`Registry percobaan ${i}/${retry} gagal`);
+
+      if(i < retry){
+
+        await new Promise(r => setTimeout(r,300));
+
+      }
+
+    }
+
+  }
+
+  console.warn("Registry gagal setelah retry.");
+
+  return [];
+
+}
+
 async function boot(){
 
-console.log("CGG HDOS Boot Starting...");
+  console.log("CGG HDOS Boot Starting...");
 
-try{
+  try{
 
-/* Sidebar harus selesai dulu */
-if(window.Sidebar){
+    /* 1. Tunggu registry siap */
+    await waitRegistry();
 
-await Sidebar.init();
+    /* 2. Sidebar */
+    if(window.Sidebar){
 
-console.log("✓ Sidebar Ready");
+      await Sidebar.init();
 
-}
+      console.log("✓ Sidebar Ready");
 
-/* Router setelah sidebar */
-if(window.Router){
+    }
 
-await Router.init();
+    /* 3. Router */
+    if(window.Router){
 
-console.log("✓ Router Ready");
+      await Router.init();
 
-}
+      console.log("✓ Router Ready");
 
-/* Dashboard Live */
-if(window.DashboardLive?.start){
+    }
 
-DashboardLive.start();
+    /* 4. Dashboard Live */
+    if(window.DashboardLive?.init){
 
-console.log("✓ Dashboard Live");
+      DashboardLive.init();
 
-}
+      console.log("✓ Dashboard Live");
 
-/* Command Center */
-if(window.CommandCenter?.init){
+    }
 
-CommandCenter.init();
+    console.log("CGG HDOS Boot Complete");
 
-console.log("✓ Command Center");
+  }catch(err){
 
-}
+    console.error("Boot Error:", err);
 
-/* Window Manager */
-if(window.WindowManager?.init){
-
-WindowManager.init();
-
-console.log("✓ Window Manager");
+  }
 
 }
 
-/* Warmup cache schema */
-if(window.CGGWarmup){
-
-setTimeout(CGGWarmup,300);
-
-}
-
-console.log("CGG HDOS Boot Complete");
-
-}catch(err){
-
-console.error("Boot Error:",err);
-
-}
-
-}
-
-window.addEventListener("load",boot);
+window.addEventListener("load", boot);
 
 })();
