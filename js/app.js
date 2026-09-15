@@ -159,3 +159,36 @@ document.addEventListener("DOMContentLoaded",()=>Boot.start());
 window.CGG.boot=Boot;
 
 })();
+/* ==========================================
+   Manifest Warmup Engine
+   Build 23.4
+   ========================================== */
+
+CGGWarmup = async function(){
+
+  if(!window.CGGLoader) return;
+
+  const modules=[
+    "hazard",
+    "inspection",
+    "incident",
+    "ptw"
+  ];
+
+  for(const module of modules){
+
+    try{
+
+      await CGGLoader.schema(module);
+
+      console.log(`✓ Warmup ${module}`);
+
+    }catch(e){
+
+      console.warn(`Warmup gagal: ${module}`);
+
+    }
+
+  }
+
+};
