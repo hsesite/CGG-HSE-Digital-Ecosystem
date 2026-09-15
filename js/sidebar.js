@@ -1,6 +1,6 @@
 /* ==========================================
    CGG HDOS Sidebar Enterprise
-   Build 25.1 Stable
+   Build 25.2 LTS
    Registry Driven + Enterprise UI
    ========================================== */
 
@@ -9,8 +9,16 @@
 "use strict";
 
 /* ==========================================
-   Category Title
+   Category Order (Tetap)
    ========================================== */
+
+const CATEGORY_ORDER=[
+"operational",
+"environment",
+"medical",
+"admin",
+"custom"
+];
 
 const CATEGORY_TITLE={
 
@@ -23,7 +31,7 @@ custom:"Custom"
 };
 
 /* ==========================================
-   SVG Icon
+   SVG Icons
    ========================================== */
 
 const SVG={
@@ -84,10 +92,6 @@ settings:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 1
 
 };
 
-/* ==========================================
-   Icon Mapping Registry
-   ========================================== */
-
 const ICON_MAP={
 
 dashboard:"grid",
@@ -114,18 +118,23 @@ users:"grid"
 const Sidebar={
 
 collapsed:false,
+cache:null,
 
 async init(){
 
 const root=document.getElementById("sidebar");
-
 if(!root) return;
 
 root.innerHTML=await this.template();
-
 this.bind();
-
 this.activate(location.hash.replace("#","")||"dashboard");
+
+},
+
+async refresh(){
+
+this.cache=null;
+await this.init();
 
 },
 
@@ -135,8 +144,7 @@ document.querySelectorAll(".sb-item").forEach(btn=>{
 
 btn.onclick=()=>{
 
-window.Router?.navigate(btn.dataset.route);
-
+Router?.navigate(btn.dataset.route);
 this.activate(btn.dataset.route);
 
 if(window.innerWidth<=768){
@@ -164,40 +172,56 @@ toggle(){
 if(window.innerWidth<=768){
 
 document.body.classList.toggle("sidebar-open");
-
 return;
 
 }
 
 this.collapsed=!this.collapsed;
 
-document.body.classList.toggle("sidebar-collapsed",this.collapsed);
+document.body.classList.toggle(
+"sidebar-collapsed",
+this.collapsed
+);
 
 },
 
 activate(route){
 
-document.querySelectorAll(".sb-item").forEach(btn=>{
+document.querySelectorAll(".sb-item")
+.forEach(btn=>{
 
-btn.classList.toggle("active",btn.dataset.route===route);
+btn.classList.toggle(
+"active",
+btn.dataset.route===route
+);
 
 });
 
 },
 
-async template(){
+async loadRegistry(){
 
-let modules=[];
+if(this.cache) return this.cache;
 
 try{
 
-modules=await CGGLoader.modules();
+this.cache=await CGGLoader.modules();
 
 }catch(e){
 
-console.warn("Registry gagal dimuat.");
+console.warn("Registry gagal dimuat.",e);
+
+this.cache=[];
 
 }
+
+return this.cache;
+
+},
+
+async template(){
+
+const modules=await this.loadRegistry();
 
 const visible=[];
 
@@ -221,11 +245,9 @@ const groups={};
 
 visible.forEach(m=>{
 
-const key=m.category||"custom";
+const cat=m.category||"custom";
 
-if(!groups[key]) groups[key]=[];
-
-groups[key].push(m);
+(groups[cat]??=[]).push(m);
 
 });
 
@@ -256,8 +278,7 @@ onerror="this.src='assets/Logo/logo-cgg.png'">
 
 <div class="sb-title">Dashboard</div>
 
-<button class="sb-item"
-data-route="dashboard">
+<button class="sb-item" data-route="dashboard">
 
 ${SVG.grid}
 
@@ -269,7 +290,11 @@ ${SVG.grid}
 
 `;
 
-Object.keys(groups).forEach(cat=>{
+CATEGORY_ORDER.forEach(cat=>{
+
+const list=groups[cat];
+
+if(!list?.length) return;
 
 html+=`
 
@@ -277,24 +302,24 @@ html+=`
 
 <div class="sb-title">
 
-${CATEGORY_TITLE[cat]||cat}
+${CATEGORY_TITLE[cat]}
 
 </div>
 
 `;
 
-groups[cat].forEach(m=>{
+list.forEach(m=>{
 
-const iconName=ICON_MAP[m.module]||"grid";
+const iconName=ICON_MAP[m.module]||m.icon||"grid";
 
 html+=`
 
 <button class="sb-item"
-data-route="${m.route.replace("#","")}">
+data-route="${(m.route||("#"+m.module)).replace("#","")}">
 
 ${SVG[iconName]||SVG.grid}
 
-<span>${m.title}</span>
+<span>${m.title||m.module}</span>
 
 </button>
 
@@ -320,7 +345,7 @@ html+=`
 
 <b>Foreman Safety</b>
 
-<span>CGG HDOS v25.1</span>
+<span>CGG HDOS v25.2 LTS</span>
 
 </div>
 
