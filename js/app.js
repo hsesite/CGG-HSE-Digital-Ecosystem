@@ -62,6 +62,12 @@ async function boot(){
       console.log("✓ Sidebar Ready");
 
     }
+      await Sidebar.refresh();
+
+      console.log("✓ Sidebar Ready");
+
+    }
+
 
     /* 3. Router */
     if(window.Router){
