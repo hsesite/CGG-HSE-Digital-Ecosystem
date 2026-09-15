@@ -3,8 +3,232 @@
    Build 10 Stable
    ========================================== */
 
+/* ==========================================
+   CGG HSE Digital Operating System
+   Dynamic Sidebar Constitution
+   Build 25.0 Stable
+   ========================================== */
+
 (() => {
+
 "use strict";
+
+const ICONS={
+
+dashboard:"▦",
+inspection:"☑",
+finding:"⌕",
+pica:"✓",
+hazard:"⚠",
+incident:"🛡",
+ptw:"📄",
+audit:"☰",
+sop:"📘",
+policy:"📜",
+contractor:"👥",
+notification:"🔔",
+master:"⚙",
+users:"👤"
+
+};
+
+const CATEGORY_TITLE={
+
+operational:"SAFETY",
+environment:"ENVIRONMENT",
+admin:"ADMINISTRATION",
+custom:"CUSTOM"
+
+};
+
+async function render(){
+
+const sidebar=document.getElementById("sidebar");
+
+if(!sidebar) return;
+
+const modules=await CGGLoader.modules();
+
+const visible=[];
+
+for(const m of modules){
+
+if(window.CGGRole?.canView){
+
+const ok=await CGGRole.canView(m.module);
+
+if(!ok) continue;
+
+}
+
+visible.push(m);
+
+}
+
+visible.sort((a,b)=>(a.order||999)-(b.order||999));
+
+const groups={};
+
+visible.forEach(m=>{
+
+const key=m.category||"custom";
+
+if(!groups[key]) groups[key]=[];
+
+groups[key].push(m);
+
+});
+
+let html=`
+
+<div class="sidebar-header">
+
+<button class="menu-toggle" id="sidebar-toggle">☰</button>
+
+<div class="brand">
+
+<img src="assets/Logo/logo-cgg.png" alt="CGG">
+
+<div>
+
+<h3>CGG HDOS</h3>
+
+<small>Digital Operating System</small>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="sidebar-scroll">
+
+`;
+
+html+=`
+
+<div class="sidebar-section">
+
+<div class="sidebar-title">DASHBOARD</div>
+
+<a class="sidebar-item"
+data-route="dashboard">
+
+<span>▦</span>
+
+Dashboard
+
+</a>
+
+</div>
+
+`;
+
+Object.keys(groups).forEach(cat=>{
+
+html+=`
+
+<div class="sidebar-section">
+
+<div class="sidebar-title">
+
+${CATEGORY_TITLE[cat]||cat.toUpperCase()}
+
+</div>
+
+`;
+
+groups[cat].forEach(m=>{
+
+const icon=ICONS[m.module]||m.icon||"•";
+
+html+=`
+
+<a class="sidebar-item"
+data-route="${m.route.replace("#","")}">
+
+<span>${icon}</span>
+
+${m.title}
+
+</a>
+
+`;
+
+});
+
+html+=`</div>`;
+
+});
+
+html+=`
+
+</div>
+
+<div class="sidebar-footer">
+
+<div class="user-card">
+
+<div class="avatar">FS</div>
+
+<div>
+
+<div class="name">Foreman Safety</div>
+
+<small>CGG HDOS v25.0</small>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+sidebar.innerHTML=html;
+
+activate(location.hash.replace("#","")||"dashboard");
+
+bindToggle();
+
+}
+
+function activate(route){
+
+document.querySelectorAll(".sidebar-item")
+.forEach(el=>{
+
+el.classList.toggle(
+"active",
+el.dataset.route===route
+);
+
+});
+
+}
+
+function bindToggle(){
+
+const btn=document.getElementById("sidebar-toggle");
+
+if(!btn) return;
+
+btn.onclick=()=>{
+
+document.body.classList.toggle("sidebar-open");
+
+};
+
+}
+
+window.Sidebar={
+
+render,
+activate
+
+};
+
+})();
 
 /* ========= MENU ========= */
 
