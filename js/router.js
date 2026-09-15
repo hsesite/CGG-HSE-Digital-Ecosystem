@@ -123,9 +123,17 @@ view.innerHTML=`
 
 <p>Dynamic Schema Renderer</p>
 
-<div id="dynamic-form"></div>
-
-</div>
+<div id="dynamic-form">
+  <div class="form-group">
+    <div class="skeleton-input"></div>
+  </div>
+  <div class="form-group">
+    <div class="skeleton-input"></div>
+  </div>
+  <div class="form-group">
+    <div class="skeleton-input"></div>
+  </div>
+</div>>
 
 `;
 
