@@ -95,7 +95,7 @@ CGGRenderer.render=function(schema){
    Build 23.1
    ========================================== */
 
-CGGRenderer.mount = function(container,schema){
+CGGRenderer.mount=function(container,schema){
 
   if(typeof container==="string"){
 
