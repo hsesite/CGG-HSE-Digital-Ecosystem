@@ -1,13 +1,16 @@
 /* ==========================================
    CGG HSE Digital Operating System
    App Bootstrap
-   Build 16.3 Stable
-   Safe Boot Sequence
+   Build 16.3.1 LTS Recovery
    ========================================== */
 
 (() => {
 
 "use strict";
+
+/* ==========================================
+   Registry Warmup
+   ========================================== */
 
 async function waitRegistry(retry = 5){
 
@@ -45,16 +48,20 @@ async function waitRegistry(retry = 5){
 
 }
 
+/* ==========================================
+   Main Boot Sequence
+   ========================================== */
+
 async function boot(){
 
   console.log("CGG HDOS Boot Starting...");
 
   try{
 
-    /* 1. Tunggu registry siap */
+    /* 1. Pastikan registry siap */
     await waitRegistry();
 
-    /* 2. Sidebar */
+    /* 2. Sidebar (sekali saja) */
     if(window.Sidebar){
 
       await Sidebar.init();
@@ -62,12 +69,6 @@ async function boot(){
       console.log("✓ Sidebar Ready");
 
     }
-      await Sidebar.refresh();
-
-      console.log("✓ Sidebar Ready");
-
-    }
-
 
     /* 3. Router */
     if(window.Router){
@@ -96,6 +97,10 @@ async function boot(){
   }
 
 }
+
+/* ==========================================
+   Start
+   ========================================== */
 
 window.addEventListener("load", boot);
 
