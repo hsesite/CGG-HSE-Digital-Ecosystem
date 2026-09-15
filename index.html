@@ -176,6 +176,11 @@ Loading Command Center...
 
 </div>
 
+<div id="renderer-test" style="display:none;padding:20px;">
+  <h2>HDOS Dynamic Form Test</h2>
+  <div id="dynamic-form"></div>
+</div>
+
 <!-- ==========================================
      JS Engine
      ========================================== -->
@@ -245,6 +250,20 @@ if ("serviceWorker" in navigator) {
 <script src="js/auth/identity.js"></script>
 <script src="js/auth/role.js"></script>
 <script src="js/data/sync.js"></script>
+
+<script>
+(async()=>{
+
+  if(location.hash!=="#renderer-test") return;
+
+  document.getElementById("renderer-test").style.display="block";
+
+  const data=await CGGLoader.schema("hazard");
+
+  CGGRenderer.mount("#dynamic-form",data.schema);
+
+})();
+</script>
    
 </body>
 </html>
