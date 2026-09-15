@@ -1,8 +1,7 @@
 /* ==========================================
    CGG HSE Digital Operating System
    App Bootstrap
-   Build 16.3 Stable (Locked)
-   Original Boot Sequence Recovery
+   Build 16.3 Stable (Locked Recovery)
    ========================================== */
 
 (() => {
@@ -59,7 +58,10 @@ async function boot(){
 
   try{
 
-    /* 1. Sidebar langsung dibuat (shell muncul dulu) */
+    /* 1. Registry harus siap dulu */
+    await waitRegistry();
+
+    /* 2. Sidebar */
     if(window.Sidebar){
 
       await Sidebar.init();
@@ -68,7 +70,7 @@ async function boot(){
 
     }
 
-    /* 2. Router langsung aktif */
+    /* 3. Router */
     if(window.Router){
 
       await Router.init();
@@ -77,17 +79,7 @@ async function boot(){
 
     }
 
-    /* 3. Registry dimuat di belakang layar */
-    const modules = await waitRegistry();
-
-    /* 4. Kalau registry berhasil, refresh isi sidebar */
-    if(modules.length && window.Sidebar?.refresh){
-
-      await Sidebar.refresh();
-
-    }
-
-    /* 5. Dashboard Live */
+    /* 4. Dashboard Live */
     if(window.DashboardLive?.init){
 
       DashboardLive.init();
