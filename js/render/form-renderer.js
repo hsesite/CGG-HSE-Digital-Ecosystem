@@ -90,4 +90,29 @@ CGGRenderer.render=function(schema){
 
 };
 
+/* ==========================================
+   Live Mount Engine
+   Build 23.1
+   ========================================== */
+
+CGGRenderer.mount = function(container,schema){
+
+  if(typeof container==="string"){
+
+    container=document.querySelector(container);
+
+  }
+
+  if(!container){
+
+    throw new Error("Container tidak ditemukan.");
+
+  }
+
+  container.innerHTML=CGGRenderer.render(schema);
+
+  return true;
+
+};
+
 })();
