@@ -209,9 +209,9 @@ this.cache=await CGGLoader.modules();
 
 }catch(e){
 
-console.warn("Registry gagal dimuat.",e);
+console.warn("Sidebar menggunakan cache lokal.");
 
-this.cache=[];
+modules=[];
 
 }
 
