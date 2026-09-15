@@ -154,7 +154,7 @@ async function canView(company){
 
   const passport=await current();
 
-  if(!passport) return false;
+  if(!passport) return true; // belum login = jangan blok sidebar
 
   return passport.scope.includes(company)
       || passport.scope.includes("SUBCON");
