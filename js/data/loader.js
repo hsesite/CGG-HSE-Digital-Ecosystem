@@ -1,8 +1,7 @@
 /* ==========================================
    CGG HDOS Loader Engine
-   Build 18.3 Production
-   Foundation Lock
-   Compatible with Build 16.2
+   Build 18.3.1 Recovery
+   Registry Conflict Fix
    ========================================== */
 
 (() => {
@@ -29,7 +28,7 @@ function getEndpoint(){
   if(!endpoint){
 
     endpoint = DEFAULT_ENDPOINT;
-    localStorage.setItem("CGG_ENDPOINT",endpoint);
+    localStorage.setItem("CGG_ENDPOINT", endpoint);
 
   }
 
@@ -39,7 +38,7 @@ function getEndpoint(){
 
 function setEndpoint(url){
 
-  localStorage.setItem("CGG_ENDPOINT",url);
+  localStorage.setItem("CGG_ENDPOINT", url);
 
 }
 
@@ -54,17 +53,17 @@ let registryCache = null;
    Generic Fetch JSON
    ========================== */
 
-async function fetchJSON(action,params={}){
+async function fetchJSON(action, params = {}){
 
-  const endpoint=getEndpoint();
+  const endpoint = getEndpoint();
 
-  const query=new URLSearchParams({
+  const query = new URLSearchParams({
     action,
     ...params,
-    _:Date.now()
+    _: Date.now()
   });
 
-  const res=await fetch(`${endpoint}?${query.toString()}`,{
+  const res = await fetch(`${endpoint}?${query.toString()}`,{
     method:"GET",
     cache:"no-store",
     redirect:"follow"
@@ -92,7 +91,7 @@ async function load(sheet){
 
   }
 
-  const data=await fetchJSON("get",{sheet});
+  const data = await fetchJSON("get",{sheet});
 
   memoryCache.set(sheet,data);
 
@@ -109,13 +108,12 @@ function clear(sheet=null){
   if(sheet){
 
     memoryCache.delete(sheet);
-
     return;
 
   }
 
   memoryCache.clear();
-  registryCache=null;
+  registryCache = null;
 
 }
 
@@ -123,7 +121,7 @@ function clear(sheet=null){
    Public Config API
    ========================== */
 
-window.CGGConfig={
+window.CGGConfig = {
 
   setEndpoint,
 
@@ -141,11 +139,10 @@ window.CGGConfig={
 
 /* ==========================================
    Dynamic Module Loader
-   Build 18.3
-   Memory Registry Cache
+   Build 18.3.1 Recovery
    ========================================== */
 
-CGGLoader.modules=async function(force=false){
+CGGLoader.modules = async function(force=false){
 
   if(registryCache && !force){
 
@@ -153,15 +150,32 @@ CGGLoader.modules=async function(force=false){
 
   }
 
-  const json=await fetchJSON("registry");
+  const endpoint = getEndpoint();
 
-  if(!json.success){
+  const url =
+    `${endpoint}?action=registry&t=${Date.now()}`;
 
-    throw new Error(json.message||"Registry gagal.");
+  const res = await fetch(url,{
+    method:"GET",
+    cache:"no-store",
+    redirect:"follow"
+  });
+
+  if(!res.ok){
+
+    throw new Error(`Registry gagal (${res.status})`);
 
   }
 
-  registryCache=json.modules||[];
+  const json = await res.json();
+
+  if(!json.success){
+
+    throw new Error(json.message || "Registry gagal.");
+
+  }
+
+  registryCache = json.modules || [];
 
   return registryCache;
 
@@ -169,30 +183,25 @@ CGGLoader.modules=async function(force=false){
 
 /* ==========================================
    Module Manifest Loader
-   Build 18.3
    ========================================== */
 
-CGGLoader.manifest=async function(module){
+CGGLoader.manifest = async function(module){
 
-  const json=await fetchJSON("manifest",{module});
-
-  return json;
+  return await fetchJSON("manifest",{module});
 
 };
 
 /* ==========================================
    Dynamic Schema Loader
-   Build 18.3
-   Smart Cache
    ========================================== */
 
-CGGLoader.schema=async function(module){
+CGGLoader.schema = async function(module){
 
-  const cacheKey=`schema_${module}`;
+  const cacheKey = `schema_${module}`;
 
   if(window.CGGCache){
 
-    const cached=await CGGCache.load(cacheKey);
+    const cached = await CGGCache.load(cacheKey);
 
     if(cached?.data){
 
@@ -204,7 +213,7 @@ CGGLoader.schema=async function(module){
 
   }
 
-  const json=await fetchJSON("schema",{sheet:module});
+  const json = await fetchJSON("schema",{sheet:module});
 
   if(json.success && window.CGGCache){
 
@@ -224,7 +233,7 @@ async function refreshSchema(module,cacheKey){
 
   try{
 
-    const json=await fetchJSON("schema",{sheet:module});
+    const json = await fetchJSON("schema",{sheet:module});
 
     if(json.success && window.CGGCache){
 
@@ -244,7 +253,7 @@ async function refreshSchema(module,cacheKey){
    Health Check
    ========================================== */
 
-CGGLoader.health=async function(){
+CGGLoader.health = async function(){
 
   return await fetchJSON("ping");
 
