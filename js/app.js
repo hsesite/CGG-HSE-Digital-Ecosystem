@@ -160,34 +160,44 @@ window.CGG.boot=Boot;
 
 })();
 /* ==========================================
-   Manifest Warmup Engine
-   Build 23.4
+   Registry Warmup Engine
+   Build 24.0
    ========================================== */
 
-CGGWarmup = async function(){
+window.CGGWarmup=async function(){
 
   if(!window.CGGLoader) return;
 
-  const modules=[
-    "hazard",
-    "inspection",
-    "incident",
-    "ptw"
-  ];
+  try{
 
-  for(const module of modules){
+    const modules=await CGGLoader.modules();
 
-    try{
+    const operational=modules.filter(m=>
 
-      await CGGLoader.schema(module);
+      m.category==="operational" &&
+      m.status==="active"
 
-      console.log(`✓ Warmup ${module}`);
+    );
 
-    }catch(e){
+    for(const module of operational){
 
-      console.warn(`Warmup gagal: ${module}`);
+      try{
+
+        await CGGLoader.schema(module.module);
+
+        console.log(`✓ Warmup ${module.module}`);
+
+      }catch(e){
+
+        console.warn(`Warmup gagal: ${module.module}`);
+
+      }
 
     }
+
+  }catch(err){
+
+    console.error("Warmup Registry:",err);
 
   }
 
