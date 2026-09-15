@@ -1,6 +1,6 @@
 /* ==========================================
    CGG HDOS Sidebar Enterprise
-   Build 25.2 LTS
+   Build 25.2.1 LTS Recovery
    Registry Driven + Enterprise UI
    ========================================== */
 
@@ -9,32 +9,30 @@
 "use strict";
 
 /* ==========================================
-   Category Order (Tetap)
+   Category Order
    ========================================== */
 
-const CATEGORY_ORDER=[
-"operational",
-"environment",
-"medical",
-"admin",
-"custom"
+const CATEGORY_ORDER = [
+  "operational",
+  "environment",
+  "medical",
+  "admin",
+  "custom"
 ];
 
-const CATEGORY_TITLE={
-
-operational:"Safety",
-environment:"Environment",
-medical:"Medical",
-admin:"Administration",
-custom:"Custom"
-
+const CATEGORY_TITLE = {
+  operational: "Safety",
+  environment: "Environment",
+  medical: "Medical",
+  admin: "Administration",
+  custom: "Custom"
 };
 
 /* ==========================================
    SVG Icons
    ========================================== */
 
-const SVG={
+const SVG = {
 
 grid:`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>`,
 
@@ -92,170 +90,171 @@ settings:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 1
 
 };
 
-const ICON_MAP={
+/* ==========================================
+   Icon Mapping
+   ========================================== */
 
-dashboard:"grid",
-inspection:"clipboard",
-finding:"list",
-pica:"wrench",
-hazard:"alert",
-incident:"shield",
-ptw:"file",
-audit:"list",
-sop:"book",
-policy:"book",
-contractor:"grid",
-notification:"grid",
-master:"settings",
-users:"grid"
-
+const ICON_MAP = {
+  dashboard:"grid",
+  inspection:"clipboard",
+  finding:"list",
+  pica:"wrench",
+  hazard:"alert",
+  incident:"shield",
+  ptw:"file",
+  audit:"list",
+  sop:"book",
+  policy:"book",
+  contractor:"grid",
+  notification:"grid",
+  master:"settings",
+  users:"grid"
 };
 
 /* ==========================================
    Sidebar Engine
    ========================================== */
 
-const Sidebar={
+const Sidebar = {
 
-collapsed:false,
-cache:null,
+  collapsed:false,
+  cache:null,
 
-async init(){
+  async init(){
 
-const root=document.getElementById("sidebar");
-if(!root) return;
+    const root=document.getElementById("sidebar");
+    if(!root) return;
 
-root.innerHTML=await this.template();
-this.bind();
-this.activate(location.hash.replace("#","")||"dashboard");
+    root.innerHTML=await this.template();
 
-},
+    this.bind();
+    this.activate(location.hash.replace("#","")||"dashboard");
 
-async refresh(){
+  },
 
-this.cache=null;
-await this.init();
+  async refresh(){
 
-},
+    this.cache=null;
+    await this.init();
 
-bind(){
+  },
 
-document.querySelectorAll(".sb-item").forEach(btn=>{
+  bind(){
 
-btn.onclick=()=>{
+    document.querySelectorAll(".sb-item").forEach(btn=>{
 
-Router?.navigate(btn.dataset.route);
-this.activate(btn.dataset.route);
+      btn.onclick=()=>{
 
-if(window.innerWidth<=768){
+        window.Router?.navigate(btn.dataset.route);
+        this.activate(btn.dataset.route);
 
-document.body.classList.remove("sidebar-open");
+        if(window.innerWidth<=768){
 
-}
+          document.body.classList.remove("sidebar-open");
 
-};
+        }
 
-});
+      };
 
-const toggle=document.getElementById("sb-toggle");
+    });
 
-if(toggle){
+    const toggle=document.getElementById("sb-toggle");
 
-toggle.onclick=()=>this.toggle();
+    if(toggle){
 
-}
+      toggle.onclick=()=>this.toggle();
 
-},
+    }
 
-toggle(){
+  },
 
-if(window.innerWidth<=768){
+  toggle(){
 
-document.body.classList.toggle("sidebar-open");
-return;
+    if(window.innerWidth<=768){
 
-}
+      document.body.classList.toggle("sidebar-open");
+      return;
 
-this.collapsed=!this.collapsed;
+    }
 
-document.body.classList.toggle(
-"sidebar-collapsed",
-this.collapsed
-);
+    this.collapsed=!this.collapsed;
 
-},
+    document.body.classList.toggle(
+      "sidebar-collapsed",
+      this.collapsed
+    );
 
-activate(route){
+  },
 
-document.querySelectorAll(".sb-item")
-.forEach(btn=>{
+  activate(route){
 
-btn.classList.toggle(
-"active",
-btn.dataset.route===route
-);
+    document.querySelectorAll(".sb-item").forEach(btn=>{
 
-});
+      btn.classList.toggle(
+        "active",
+        btn.dataset.route===route
+      );
 
-},
+    });
 
-async loadRegistry(){
+  },
 
-  if(Array.isArray(this.cache) && this.cache.length){
+  async loadRegistry(){
+
+    if(Array.isArray(this.cache) && this.cache.length){
+
+      return this.cache;
+
+    }
+
+    try{
+
+      this.cache=await window.CGGLoader.modules();
+
+    }catch(e){
+
+      console.warn("Sidebar menggunakan cache lokal.");
+      this.cache=[];
+
+    }
 
     return this.cache;
 
-  }
+  },
 
-  try{
+  async template(){
 
-    this.cache=await CGGLoader.modules();
+    const modules=await this.loadRegistry();
 
-  }catch(e){
+    const visible=[];
 
-    console.warn("Sidebar menggunakan cache lokal.");
+    for(const m of modules){
 
-    this.cache=[];
+      if(window.CGGRole?.canView){
 
-  }
+        const ok=await window.CGGRole.canView(m.module);
 
-  return this.cache;
+        if(!ok) continue;
 
-}
+      }
 
-async template(){
+      visible.push(m);
 
-const modules=await this.loadRegistry();
+    }
 
-const visible=[];
+    visible.sort((a,b)=>(a.order||999)-(b.order||999));
 
-for(const m of modules){
+    const groups={};
 
-if(window.CGGRole?.canView){
+    visible.forEach(m=>{
 
-const ok=await CGGRole.canView(m.module);
+      const cat=m.category||"custom";
 
-if(!ok) continue;
+      (groups[cat]??=[]).push(m);
 
-}
+    });
 
-visible.push(m);
-
-}
-
-visible.sort((a,b)=>(a.order||999)-(b.order||999));
-
-const groups={};
-
-visible.forEach(m=>{
-
-const cat=m.category||"custom";
-
-(groups[cat]??=[]).push(m);
-
-});
-
-let html=`
+    let html=`
 
 <div class="sb-shell">
 
@@ -294,13 +293,13 @@ ${SVG.grid}
 
 `;
 
-CATEGORY_ORDER.forEach(cat=>{
+    CATEGORY_ORDER.forEach(cat=>{
 
-const list=groups[cat];
+      const list=groups[cat];
 
-if(!list?.length) return;
+      if(!list?.length) return;
 
-html+=`
+      html+=`
 
 <div class="sb-group">
 
@@ -312,11 +311,11 @@ ${CATEGORY_TITLE[cat]}
 
 `;
 
-list.forEach(m=>{
+      list.forEach(m=>{
 
-const iconName=ICON_MAP[m.module]||m.icon||"grid";
+        const iconName=ICON_MAP[m.module]||m.icon||"grid";
 
-html+=`
+        html+=`
 
 <button class="sb-item"
 data-route="${(m.route||("#"+m.module)).replace("#","")}">
@@ -329,13 +328,13 @@ ${SVG[iconName]||SVG.grid}
 
 `;
 
-});
+      });
 
-html+=`</div>`;
+      html+=`</div>`;
 
-});
+    });
 
-html+=`
+    html+=`
 
 </div>
 
@@ -349,7 +348,7 @@ html+=`
 
 <b>Foreman Safety</b>
 
-<span>CGG HDOS v25.2 LTS</span>
+<span>CGG HDOS v25.2.1 LTS</span>
 
 </div>
 
@@ -361,9 +360,9 @@ html+=`
 
 `;
 
-return html;
+    return html;
 
-}
+  }
 
 };
 
