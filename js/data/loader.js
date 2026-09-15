@@ -1,7 +1,8 @@
 /* ==========================================
    CGG HDOS Loader Engine
-   Build 18.2.1 Production
-   C-039 Endpoint Registry Constitution
+   Build 18.3 Production
+   Foundation Lock
+   Compatible with Build 16.2
    ========================================== */
 
 (() => {
@@ -18,12 +19,9 @@ window.CGGLoader = window.CGGLoader || {};
    Endpoint Registry
    ========================== */
 
-/* Default backend (boleh diganti admin nanti) */
 const DEFAULT_ENDPOINT =
 "https://script.google.com/macros/s/AKfycbxI1I0jxW14JY_H4gwqoVYkxdpCY635lm-LAPZVdh0-zwN9vK_yalQSLjAFkiho6Tkp9g/exec";
 
-/* Ambil endpoint aktif */
-   
 function getEndpoint(){
 
   let endpoint = localStorage.getItem("CGG_ENDPOINT");
@@ -31,7 +29,7 @@ function getEndpoint(){
   if(!endpoint){
 
     endpoint = DEFAULT_ENDPOINT;
-    localStorage.setItem("CGG_ENDPOINT", endpoint);
+    localStorage.setItem("CGG_ENDPOINT",endpoint);
 
   }
 
@@ -39,7 +37,6 @@ function getEndpoint(){
 
 }
 
-/* Simpan endpoint */
 function setEndpoint(url){
 
   localStorage.setItem("CGG_ENDPOINT",url);
@@ -50,7 +47,38 @@ function setEndpoint(url){
    Memory Cache
    ========================== */
 
-const memoryCache=new Map();
+const memoryCache = new Map();
+let registryCache = null;
+
+/* ==========================
+   Generic Fetch JSON
+   ========================== */
+
+async function fetchJSON(action,params={}){
+
+  const endpoint=getEndpoint();
+
+  const query=new URLSearchParams({
+    action,
+    ...params,
+    _:Date.now()
+  });
+
+  const res=await fetch(`${endpoint}?${query.toString()}`,{
+    method:"GET",
+    cache:"no-store",
+    redirect:"follow"
+  });
+
+  if(!res.ok){
+
+    throw new Error(`${action} gagal (${res.status})`);
+
+  }
+
+  return await res.json();
+
+}
 
 /* ==========================
    Load Sheet
@@ -64,21 +92,7 @@ async function load(sheet){
 
   }
 
-  const endpoint=getEndpoint();
-
-  const res=await fetch(
-
-    `${endpoint}?action=get&sheet=${encodeURIComponent(sheet)}`
-
-  );
-
-  if(!res.ok){
-
-    throw new Error(`Gagal mengambil sheet ${sheet}`);
-
-  }
-
-  const data=await res.json();
+  const data=await fetchJSON("get",{sheet});
 
   memoryCache.set(sheet,data);
 
@@ -101,6 +115,7 @@ function clear(sheet=null){
   }
 
   memoryCache.clear();
+  registryCache=null;
 
 }
 
@@ -126,56 +141,62 @@ window.CGGConfig={
 
 /* ==========================================
    Dynamic Module Loader
-   Build 18.2.1
+   Build 18.3
+   Memory Registry Cache
    ========================================== */
 
-CGGLoader.modules=async function(){
+CGGLoader.modules=async function(force=false){
 
-  const endpoint=CGGConfig.endpoint;
+  if(registryCache && !force){
 
-  const res=await fetch(
-
-    `${endpoint}?action=registry`
-
-  );
-
-  if(!res.ok){
-
-    throw new Error(`Registry gagal (${res.status})`);
+    return registryCache;
 
   }
 
-  const json=await res.json();
+  const json=await fetchJSON("registry");
 
   if(!json.success){
 
-    return [];
+    throw new Error(json.message||"Registry gagal.");
 
   }
 
-  return json.modules;
+  registryCache=json.modules||[];
+
+  return registryCache;
+
+};
+
+/* ==========================================
+   Module Manifest Loader
+   Build 18.3
+   ========================================== */
+
+CGGLoader.manifest=async function(module){
+
+  const json=await fetchJSON("manifest",{module});
+
+  return json;
 
 };
 
 /* ==========================================
    Dynamic Schema Loader
-   Build 23.3
+   Build 18.3
    Smart Cache
    ========================================== */
 
-CGGLoader.schema = async function(module){
+CGGLoader.schema=async function(module){
 
-  const cacheKey = `schema_${module}`;
+  const cacheKey=`schema_${module}`;
 
-  // 1. Coba ambil dari IndexedDB dulu
   if(window.CGGCache){
 
-    const cached = await CGGCache.load(cacheKey);
+    const cached=await CGGCache.load(cacheKey);
 
     if(cached?.data){
 
-      // Refresh ke server di background
-      refreshSchema(module, cacheKey);
+      refreshSchema(module,cacheKey);
 
       return cached.data;
 
@@ -183,18 +204,11 @@ CGGLoader.schema = async function(module){
 
   }
 
-  // 2. Kalau belum ada cache, ambil dari server
-  const endpoint =
-    localStorage.getItem("CGG_ENDPOINT") ||
-    CGGConfig.endpoint;
-
-  const res = await fetch(`${endpoint}?action=schema&sheet=${module}`);
-
-  const json = await res.json();
+  const json=await fetchJSON("schema",{sheet:module});
 
   if(json.success && window.CGGCache){
 
-    await CGGCache.save(cacheKey, json);
+    await CGGCache.save(cacheKey,json);
 
   }
 
@@ -206,27 +220,21 @@ CGGLoader.schema = async function(module){
    Background Refresh
    ========================================== */
 
-async function refreshSchema(module, cacheKey){
+async function refreshSchema(module,cacheKey){
 
   try{
 
-    const endpoint =
-      localStorage.getItem("CGG_ENDPOINT") ||
-      CGGConfig.endpoint;
+    const json=await fetchJSON("schema",{sheet:module});
 
-    const res = await fetch(`${endpoint}?action=schema&sheet=${module}`);
+    if(json.success && window.CGGCache){
 
-    const json = await res.json();
-
-    if(json.success){
-
-      await CGGCache.save(cacheKey, json);
+      await CGGCache.save(cacheKey,json);
 
     }
 
-  }catch(e){
+  }catch(err){
 
-    console.warn("Schema refresh gagal:", e);
+    console.warn(`Schema refresh ${module} gagal`,err);
 
   }
 
@@ -238,15 +246,7 @@ async function refreshSchema(module, cacheKey){
 
 CGGLoader.health=async function(){
 
-  const endpoint=CGGConfig.endpoint;
-
-  const res=await fetch(
-
-    `${endpoint}?action=ping`
-
-  );
-
-  return res.json();
+  return await fetchJSON("ping");
 
 };
 
