@@ -201,23 +201,27 @@ btn.dataset.route===route
 
 async loadRegistry(){
 
-if(this.cache) return this.cache;
+  if(Array.isArray(this.cache) && this.cache.length){
 
-try{
+    return this.cache;
 
-this.cache=await CGGLoader.modules();
+  }
 
-}catch(e){
+  try{
 
-console.warn("Sidebar menggunakan cache lokal.");
+    this.cache=await CGGLoader.modules();
 
-modules=[];
+  }catch(e){
+
+    console.warn("Sidebar menggunakan cache lokal.");
+
+    this.cache=[];
+
+  }
+
+  return this.cache;
 
 }
-
-return this.cache;
-
-},
 
 async template(){
 
