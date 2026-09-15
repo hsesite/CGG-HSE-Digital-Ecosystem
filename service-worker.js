@@ -1,71 +1,121 @@
 /* ==========================================
    CGG HDOS Service Worker
-   Build 1.3
-   Minimal Offline Foundation
+   Build 1.4 LTS
+   Stable Cache + Auto Update
    ========================================== */
 
-const CACHE = "cgg-hdos-core-v1";
+const CACHE_NAME = "cgg-hdos-v25-2";
 
-const FILES = [
+const APP_SHELL = [
   "/CGG-HSE-Digital-Ecosystem/",
   "/CGG-HSE-Digital-Ecosystem/index.html",
   "/CGG-HSE-Digital-Ecosystem/manifest.json",
   "/CGG-HSE-Digital-Ecosystem/assets/Logo/logo-cgg.png"
 ];
 
+/* ==========================================
+   Install
+   ========================================== */
+
 self.addEventListener("install", event => {
+
   event.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(FILES))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
   );
+
   self.skipWaiting();
+
 });
 
+/* ==========================================
+   Activate
+   ========================================== */
+
 self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
+
+  event.waitUntil((async()=>{
+
+    const keys = await caches.keys();
+
+    await Promise.all(
+      keys
+        .filter(key => key !== CACHE_NAME)
+        .map(key => caches.delete(key))
+    );
+
+    await self.clients.claim();
+
+  })());
+
 });
+
+/* ==========================================
+   Fetch Strategy
+   Navigation : Network First
+   Assets     : Cache First
+   ========================================== */
 
 self.addEventListener("fetch", event => {
 
-  if (event.request.mode === "navigate") {
+  const req = event.request;
 
-    event.respondWith(
+  if (req.method !== "GET") return;
 
-      fetch(event.request).catch(() =>
-        caches.match("/CGG-HSE-Digital-Ecosystem/index.html")
-      )
+  /* HTML */
 
-    );
+  if (req.mode === "navigate") {
+
+    event.respondWith((async()=>{
+
+      try{
+
+        const fresh = await fetch(req);
+
+        const cache = await caches.open(CACHE_NAME);
+
+        cache.put(req, fresh.clone());
+
+        return fresh;
+
+      }catch{
+
+        return (
+          await caches.match(req) ||
+          await caches.match("/CGG-HSE-Digital-Ecosystem/index.html")
+        );
+
+      }
+
+    })());
 
     return;
+
   }
 
-  event.respondWith(
-    caches.match(event.request).then(r => r || fetch(event.request))
-  );
+  /* Static Assets */
 
-});
-self.addEventListener("install", event=>{
+  event.respondWith((async()=>{
 
-self.skipWaiting();
+    const cached = await caches.match(req);
 
-});
+    if(cached) return cached;
 
-self.addEventListener("activate", event=>{
+    try{
 
-event.waitUntil((async()=>{
+      const fresh = await fetch(req);
 
-const keys=await caches.keys();
+      const cache = await caches.open(CACHE_NAME);
 
-await Promise.all(
+      cache.put(req, fresh.clone());
 
-keys
-.filter(k=>k!==CACHE_NAME)
-.map(k=>caches.delete(k))
+      return fresh;
 
-);
+    }catch{
 
-await self.clients.claim();
+      return cached;
 
-})());
+    }
+
+  })());
 
 });
