@@ -159,21 +159,78 @@ CGGLoader.modules=async function(){
 
 /* ==========================================
    Dynamic Schema Loader
+   Build 23.3
+   Smart Cache
    ========================================== */
 
-CGGLoader.schema=async function(sheet){
+CGGLoader.schema = async function(module){
 
-  const endpoint=CGGConfig.endpoint;
+  const cacheKey = `schema_${module}`;
 
-  const res=await fetch(
+  // 1. Coba ambil dari IndexedDB dulu
+  if(window.CGGCache){
 
-    `${endpoint}?action=schema&sheet=${encodeURIComponent(sheet)}`
+    const cached = await CGGCache.load(cacheKey);
 
-  );
+    if(cached?.data){
 
-  return res.json();
+      // Refresh ke server di background
+      refreshSchema(module, cacheKey);
+
+      return cached.data;
+
+    }
+
+  }
+
+  // 2. Kalau belum ada cache, ambil dari server
+  const endpoint =
+    localStorage.getItem("CGG_ENDPOINT") ||
+    CGGConfig.endpoint;
+
+  const res = await fetch(`${endpoint}?action=schema&sheet=${module}`);
+
+  const json = await res.json();
+
+  if(json.success && window.CGGCache){
+
+    await CGGCache.save(cacheKey, json);
+
+  }
+
+  return json;
 
 };
+
+/* ==========================================
+   Background Refresh
+   ========================================== */
+
+async function refreshSchema(module, cacheKey){
+
+  try{
+
+    const endpoint =
+      localStorage.getItem("CGG_ENDPOINT") ||
+      CGGConfig.endpoint;
+
+    const res = await fetch(`${endpoint}?action=schema&sheet=${module}`);
+
+    const json = await res.json();
+
+    if(json.success){
+
+      await CGGCache.save(cacheKey, json);
+
+    }
+
+  }catch(e){
+
+    console.warn("Schema refresh gagal:", e);
+
+  }
+
+}
 
 /* ==========================================
    Health Check
