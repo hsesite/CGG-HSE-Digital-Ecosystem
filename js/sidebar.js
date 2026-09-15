@@ -199,29 +199,30 @@ const Sidebar = {
 
   },
 
-  async loadRegistry(){
+ async loadRegistry(){
 
-    if(Array.isArray(this.cache) && this.cache.length){
-
-      return this.cache;
-
-    }
-
-    try{
-
-      this.cache=await window.CGGLoader.modules();
-
-    }catch(e){
-
-      console.warn("Sidebar menggunakan cache lokal.");
-      this.cache=[];
-
-    }
+  if(Array.isArray(this.cache) && this.cache.length){
 
     return this.cache;
 
-  },
+  }
 
+  try{
+
+    this.cache = await CGGLoader.modules();
+
+  }catch(e){
+
+    console.warn("Sidebar menggunakan cache lokal.");
+
+    this.cache = [];
+
+  }
+
+  return this.cache;
+
+},
+   
   async template(){
 
     const modules=await this.loadRegistry();
@@ -230,17 +231,17 @@ const Sidebar = {
 
     for(const m of modules){
 
-      if(window.CGGRole?.canView){
+  if(window.CGGRole?.canView && m.company){
 
-        const ok=await window.CGGRole.canView(m.module);
+    const ok = await CGGRole.canView(m.company);
 
-        if(!ok) continue;
+    if(!ok) continue;
 
-      }
+  }
 
-      visible.push(m);
+  visible.push(m);
 
-    }
+}
 
     visible.sort((a,b)=>(a.order||999)-(b.order||999));
 
