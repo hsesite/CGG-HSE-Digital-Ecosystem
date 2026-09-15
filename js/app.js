@@ -59,10 +59,7 @@ async function boot(){
 
   try{
 
-    /* 1. Registry */
-    await waitRegistry();
-
-    /* 2. Sidebar */
+    /* 1. Sidebar langsung dibuat (shell muncul dulu) */
     if(window.Sidebar){
 
       await Sidebar.init();
@@ -71,7 +68,7 @@ async function boot(){
 
     }
 
-    /* 3. Router */
+    /* 2. Router langsung aktif */
     if(window.Router){
 
       await Router.init();
@@ -80,7 +77,17 @@ async function boot(){
 
     }
 
-    /* 4. Dashboard Live */
+    /* 3. Registry dimuat di belakang layar */
+    const modules = await waitRegistry();
+
+    /* 4. Kalau registry berhasil, refresh isi sidebar */
+    if(modules.length && window.Sidebar?.refresh){
+
+      await Sidebar.refresh();
+
+    }
+
+    /* 5. Dashboard Live */
     if(window.DashboardLive?.init){
 
       DashboardLive.init();
