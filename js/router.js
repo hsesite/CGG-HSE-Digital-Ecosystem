@@ -1,20 +1,21 @@
 /* ==========================================
    CGG HSE Digital Operating System
    Router Engine
-   Build 8A Stable
+   Build 23.2 Stable
+   Dynamic Module Router
    ========================================== */
 
 (() => {
 
 "use strict";
 
-const Router = {
+const Router={
 
-current: "dashboard",
+current:"dashboard",
 
-routes: {},
+routes:{},
 
-init() {
+init(){
 
 this.registerDefaults();
 
@@ -22,23 +23,27 @@ this.bindSidebar();
 
 this.bindHash();
 
-const first = location.hash.replace("#", "") || "dashboard";
+const first=location.hash.replace("#","")||"dashboard";
 
-return this.navigate(first, false);
+return this.navigate(first,false);
 
 },
 
-registerDefaults() {
+/* ==========================================
+   Register Route
+   ========================================== */
 
-this.routes = {
+registerDefaults(){
 
-dashboard: async () => {
+this.routes={
 
-if (window.Dashboard?.render) {
+dashboard:async()=>{
+
+if(window.Dashboard?.render){
 
 await Dashboard.render();
 
-} else {
+}else{
 
 this.placeholder("Dashboard belum tersedia.");
 
@@ -46,77 +51,139 @@ this.placeholder("Dashboard belum tersedia.");
 
 },
 
-inspection: async () => {
+inspection:async()=>{
 
-if (window.Inspection?.render) {
+if(window.Inspection?.render){
 
 await Inspection.render();
 
-} else {
+}else{
 
-this.placeholder("Modul Inspection sedang dipersiapkan.");
+await this.dynamicModule("inspection","Inspection");
 
 }
 
 },
 
-ptw: () => this.placeholder("Permit To Work"),
+hazard:async()=>{
 
-incident: () => this.placeholder("Incident Management"),
+await this.dynamicModule("hazard","Hazard Report");
 
-hazard: () => this.placeholder("Hazard Report"),
+},
 
-pica: () => this.placeholder("PICA Management"),
+incident:async()=>{
 
-audit: () => this.placeholder("Audit"),
+await this.dynamicModule("incident","Incident");
 
-sop: () => this.placeholder("SOP Center"),
+},
 
-analytics: () => this.placeholder("Analytics"),
+ptw:async()=>{
 
-reports: () => this.placeholder("Reports"),
+await this.dynamicModule("ptw","Permit To Work");
 
-"mine-permit": () => this.placeholder("Mine Permit"),
+},
 
-settings: () => this.placeholder("Settings")
+pica:async()=>{
+
+await this.dynamicModule("pica","PICA Management");
+
+},
+
+audit:()=>this.placeholder("Audit"),
+
+sop:()=>this.placeholder("SOP Center"),
+
+analytics:()=>this.placeholder("Analytics"),
+
+reports:()=>this.placeholder("Reports"),
+
+"mine-permit":()=>this.placeholder("Mine Permit"),
+
+settings:()=>this.placeholder("Settings")
 
 };
 
 },
 
-async navigate(route = "dashboard", push = true) {
+/* ==========================================
+   Dynamic Module
+   ========================================== */
 
-if (!this.routes[route]) {
+async dynamicModule(module,title){
 
-route = "dashboard";
+const view=document.getElementById("router-view");
+
+if(!view) return;
+
+view.innerHTML=`
+
+<div class="glass-card section-card fade-in">
+
+<h2>${title}</h2>
+
+<p>Dynamic Schema Renderer</p>
+
+<div id="dynamic-form"></div>
+
+</div>
+
+`;
+
+try{
+
+const data=await CGGLoader.schema(module);
+
+CGGRenderer.mount("#dynamic-form",data.schema);
+
+console.log(`✓ Dynamic module "${module}" loaded.`);
+
+}catch(err){
+
+console.error("Dynamic Module:",err);
+
+this.placeholder(`${title} gagal dimuat.`);
 
 }
 
-this.current = route;
+},
 
-if (push) {
+/* ==========================================
+   Navigation
+   ========================================== */
 
-history.replaceState({}, "", "#" + route);
+async navigate(route="dashboard",push=true){
+
+if(!this.routes[route]){
+
+route="dashboard";
+
+}
+
+this.current=route;
+
+if(push){
+
+history.replaceState({},"","#"+route);
 
 }
 
 this.activateSidebar(route);
 
-const view = document.getElementById("router-view");
+const view=document.getElementById("router-view");
 
-if (view) {
+if(view){
 
-view.innerHTML = "";
+view.innerHTML="";
 
 }
 
-try {
+try{
 
 await Promise.resolve(this.routes[route]());
 
-} catch (err) {
+}catch(err){
 
-console.error("Router:", err);
+console.error("Router:",err);
 
 this.placeholder("Terjadi kesalahan saat membuka modul.");
 
@@ -124,25 +191,33 @@ this.placeholder("Terjadi kesalahan saat membuka modul.");
 
 },
 
-bindHash() {
+/* ==========================================
+   Hash Change
+   ========================================== */
 
-window.addEventListener("hashchange", () => {
+bindHash(){
 
-const route = location.hash.replace("#", "") || "dashboard";
+window.addEventListener("hashchange",()=>{
 
-this.navigate(route, false);
+const route=location.hash.replace("#","")||"dashboard";
+
+this.navigate(route,false);
 
 });
 
 },
 
-bindSidebar() {
+/* ==========================================
+   Sidebar
+   ========================================== */
 
-document.addEventListener("click", e => {
+bindSidebar(){
 
-const item = e.target.closest("[data-route]");
+document.addEventListener("click",e=>{
 
-if (!item) return;
+const item=e.target.closest("[data-route]");
+
+if(!item) return;
 
 e.preventDefault();
 
@@ -152,35 +227,42 @@ this.navigate(item.dataset.route);
 
 },
 
-activateSidebar(route) {
+activateSidebar(route){
 
-document.querySelectorAll("[data-route]").forEach(el => {
+document.querySelectorAll("[data-route]").forEach(el=>{
 
-el.classList.toggle("active", el.dataset.route === route);
+el.classList.toggle("active",el.dataset.route===route);
 
 });
 
 },
 
-placeholder(title) {
+/* ==========================================
+   Placeholder
+   ========================================== */
 
-const view = document.getElementById("router-view");
+placeholder(title){
 
-if (!view) return;
+const view=document.getElementById("router-view");
 
-view.innerHTML = `
+if(!view) return;
+
+view.innerHTML=`
+
 <div class="glass-card section-card fade-in">
 
 <h2>${title}</h2>
 
-<p>Modul akan dibangun pada Build berikutnya.</p>
+<p>Modul belum memiliki Dynamic Schema.</p>
 
-</div>`;
+</div>
+
+`;
 
 }
 
 };
 
-window.Router = Router;
+window.Router=Router;
 
 })();
