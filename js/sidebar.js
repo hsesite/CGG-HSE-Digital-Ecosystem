@@ -1,308 +1,30 @@
 /* ==========================================
-   CGG HDOS Sidebar Enterprise V3
-   Build 10 Stable
-   ========================================== */
-
-/* ==========================================
-   CGG HSE Digital Operating System
-   Dynamic Sidebar Constitution
-   Build 25.0 Stable
+   CGG HDOS Sidebar Enterprise
+   Build 25.1 Stable
+   Registry Driven + Enterprise UI
    ========================================== */
 
 (() => {
 
 "use strict";
 
-const ICONS={
-
-dashboard:"▦",
-inspection:"☑",
-finding:"⌕",
-pica:"✓",
-hazard:"⚠",
-incident:"🛡",
-ptw:"📄",
-audit:"☰",
-sop:"📘",
-policy:"📜",
-contractor:"👥",
-notification:"🔔",
-master:"⚙",
-users:"👤"
-
-};
+/* ==========================================
+   Category Title
+   ========================================== */
 
 const CATEGORY_TITLE={
 
-operational:"SAFETY",
-environment:"ENVIRONMENT",
-admin:"ADMINISTRATION",
-custom:"CUSTOM"
+operational:"Safety",
+environment:"Environment",
+medical:"Medical",
+admin:"Administration",
+custom:"Custom"
 
 };
 
-async function render(){
-
-const sidebar=document.getElementById("sidebar");
-
-if(!sidebar) return;
-
-const modules=await CGGLoader.modules();
-
-const visible=[];
-
-for(const m of modules){
-
-if(window.CGGRole?.canView){
-
-const ok=await CGGRole.canView(m.module);
-
-if(!ok) continue;
-
-}
-
-visible.push(m);
-
-}
-
-visible.sort((a,b)=>(a.order||999)-(b.order||999));
-
-const groups={};
-
-visible.forEach(m=>{
-
-const key=m.category||"custom";
-
-if(!groups[key]) groups[key]=[];
-
-groups[key].push(m);
-
-});
-
-let html=`
-
-<div class="sidebar-header">
-
-<button class="menu-toggle" id="sidebar-toggle">☰</button>
-
-<div class="brand">
-
-<img src="assets/Logo/logo-cgg.png" alt="CGG">
-
-<div>
-
-<h3>CGG HDOS</h3>
-
-<small>Digital Operating System</small>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="sidebar-scroll">
-
-`;
-
-html+=`
-
-<div class="sidebar-section">
-
-<div class="sidebar-title">DASHBOARD</div>
-
-<a class="sidebar-item"
-data-route="dashboard">
-
-<span>▦</span>
-
-Dashboard
-
-</a>
-
-</div>
-
-`;
-
-Object.keys(groups).forEach(cat=>{
-
-html+=`
-
-<div class="sidebar-section">
-
-<div class="sidebar-title">
-
-${CATEGORY_TITLE[cat]||cat.toUpperCase()}
-
-</div>
-
-`;
-
-groups[cat].forEach(m=>{
-
-const icon=ICONS[m.module]||m.icon||"•";
-
-html+=`
-
-<a class="sidebar-item"
-data-route="${m.route.replace("#","")}">
-
-<span>${icon}</span>
-
-${m.title}
-
-</a>
-
-`;
-
-});
-
-html+=`</div>`;
-
-});
-
-html+=`
-
-</div>
-
-<div class="sidebar-footer">
-
-<div class="user-card">
-
-<div class="avatar">FS</div>
-
-<div>
-
-<div class="name">Foreman Safety</div>
-
-<small>CGG HDOS v25.0</small>
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-sidebar.innerHTML=html;
-
-activate(location.hash.replace("#","")||"dashboard");
-
-bindToggle();
-
-}
-
-function activate(route){
-
-document.querySelectorAll(".sidebar-item")
-.forEach(el=>{
-
-el.classList.toggle(
-"active",
-el.dataset.route===route
-);
-
-});
-
-}
-
-function bindToggle(){
-
-const btn=document.getElementById("sidebar-toggle");
-
-if(!btn) return;
-
-btn.onclick=()=>{
-
-document.body.classList.toggle("sidebar-open");
-
-};
-
-}
-
-window.Sidebar={
-
-render,
-activate
-
-};
-
-})();
-
-/* ========= MENU ========= */
-
-const MENU = [
-  {
-    group:"Dashboard",
-    items:[
-      {id:"dashboard",icon:"grid",label:"Dashboard"}
-    ]
-  },
-  {
-    group:"Safety",
-    items:[
-      {id:"inspection",icon:"clipboard",label:"Inspection"},
-      {id:"hazard",icon:"alert",label:"Hazard"},
-      {id:"incident",icon:"shield",label:"Incident"},
-      {id:"ptw",icon:"file",label:"PTW"},
-      {id:"mine-permit",icon:"landmark",label:"Mine Permit"},
-      {id:"commissioning",icon:"check",label:"Commissioning"},
-      {id:"audit",icon:"list",label:"Audit"}
-    ]
-  },
-  {
-    group:"Environment",
-    items:[
-      {id:"waste",icon:"recycle",label:"Waste B3"},
-      {id:"spill",icon:"droplet",label:"Spill Report"},
-      {id:"dust",icon:"wind",label:"Dust"},
-      {id:"water",icon:"waves",label:"Water"},
-      {id:"noise",icon:"volume",label:"Noise"},
-      {id:"emission",icon:"cloud",label:"Emission"},
-      {id:"flora",icon:"leaf",label:"Flora & Fauna"},
-      {id:"housekeeping",icon:"home",label:"Housekeeping"}
-    ]
-  },
-  {
-    group:"Medical",
-    items:[
-      {id:"first-aid",icon:"cross",label:"First Aid"},
-      {id:"clinic",icon:"hospital",label:"Clinic Register"},
-      {id:"mcu",icon:"heart",label:"MCU"},
-      {id:"fatigue",icon:"moon",label:"Fatigue Management"},
-      {id:"fit-work",icon:"activity",label:"Fit to Work"},
-      {id:"emergency",icon:"siren",label:"Emergency Response"}
-    ]
-  },
-  {
-    group:"PICA",
-    items:[
-      {id:"pica",icon:"wrench",label:"PICA Engine"}
-    ]
-  },
-  {
-    group:"Kebijakan",
-    items:[
-      {id:"policy",icon:"book",label:"Policy Center"}
-    ]
-  },
-  {
-    group:"Analytics",
-    items:[
-      {id:"analytics",icon:"chart",label:"Analytics"},
-      {id:"reports",icon:"report",label:"Reports"}
-    ]
-  },
-  {
-    group:"Settings",
-    items:[
-      {id:"settings",icon:"settings",label:"Settings"}
-    ]
-  }
-];
-
-/* ========= ICON ========= */
+/* ==========================================
+   SVG Icon
+   ========================================== */
 
 const SVG={
 
@@ -362,22 +84,48 @@ settings:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 1
 
 };
 
-/* ========= ENGINE ========= */
+/* ==========================================
+   Icon Mapping Registry
+   ========================================== */
+
+const ICON_MAP={
+
+dashboard:"grid",
+inspection:"clipboard",
+finding:"list",
+pica:"wrench",
+hazard:"alert",
+incident:"shield",
+ptw:"file",
+audit:"list",
+sop:"book",
+policy:"book",
+contractor:"grid",
+notification:"grid",
+master:"settings",
+users:"grid"
+
+};
+
+/* ==========================================
+   Sidebar Engine
+   ========================================== */
 
 const Sidebar={
 
 collapsed:false,
 
-init(){
+async init(){
 
 const root=document.getElementById("sidebar");
+
 if(!root) return;
 
-root.innerHTML=this.template();
+root.innerHTML=await this.template();
 
 this.bind();
 
-this.activate("dashboard");
+this.activate(location.hash.replace("#","")||"dashboard");
 
 },
 
@@ -401,11 +149,11 @@ document.body.classList.remove("sidebar-open");
 
 });
 
-const toggleBtn=document.getElementById("sb-toggle");
+const toggle=document.getElementById("sb-toggle");
 
-if(toggleBtn){
+if(toggle){
 
-toggleBtn.onclick=()=>this.toggle();
+toggle.onclick=()=>this.toggle();
 
 }
 
@@ -437,9 +185,51 @@ btn.classList.toggle("active",btn.dataset.route===route);
 
 },
 
-template(){
+async template(){
 
-return`
+let modules=[];
+
+try{
+
+modules=await CGGLoader.modules();
+
+}catch(e){
+
+console.warn("Registry gagal dimuat.");
+
+}
+
+const visible=[];
+
+for(const m of modules){
+
+if(window.CGGRole?.canView){
+
+const ok=await CGGRole.canView(m.module);
+
+if(!ok) continue;
+
+}
+
+visible.push(m);
+
+}
+
+visible.sort((a,b)=>(a.order||999)-(b.order||999));
+
+const groups={};
+
+visible.forEach(m=>{
+
+const key=m.category||"custom";
+
+if(!groups[key]) groups[key]=[];
+
+groups[key].push(m);
+
+});
+
+let html=`
 
 <div class="sb-shell">
 
@@ -448,7 +238,6 @@ return`
 <button id="sb-toggle" class="sb-toggle">☰</button>
 
 <img src="/CGG-HSE-Digital-Ecosystem/assets/Logo/logo-cgg.png"
-alt="CGG Logo"
 onerror="this.src='assets/Logo/logo-cgg.png'">
 
 <div class="sb-brand">
@@ -463,29 +252,61 @@ onerror="this.src='assets/Logo/logo-cgg.png'">
 
 <div class="sb-scroll">
 
-${MENU.map(group=>`
-
 <div class="sb-group">
 
-<div class="sb-title">${group.group}</div>
-
-${group.items.map(item=>`
+<div class="sb-title">Dashboard</div>
 
 <button class="sb-item"
-data-route="${item.id}"
-title="${item.label}">
+data-route="dashboard">
 
-${SVG[item.icon]}
+${SVG.grid}
 
-<span>${item.label}</span>
+<span>Dashboard</span>
 
 </button>
 
-`).join("")}
+</div>
+
+`;
+
+Object.keys(groups).forEach(cat=>{
+
+html+=`
+
+<div class="sb-group">
+
+<div class="sb-title">
+
+${CATEGORY_TITLE[cat]||cat}
 
 </div>
 
-`).join("")}
+`;
+
+groups[cat].forEach(m=>{
+
+const iconName=ICON_MAP[m.module]||"grid";
+
+html+=`
+
+<button class="sb-item"
+data-route="${m.route.replace("#","")}">
+
+${SVG[iconName]||SVG.grid}
+
+<span>${m.title}</span>
+
+</button>
+
+`;
+
+});
+
+html+=`</div>`;
+
+});
+
+html+=`
 
 </div>
 
@@ -499,7 +320,7 @@ ${SVG[item.icon]}
 
 <b>Foreman Safety</b>
 
-<span>CGG Mining</span>
+<span>CGG HDOS v25.1</span>
 
 </div>
 
@@ -507,7 +328,11 @@ ${SVG[item.icon]}
 
 </div>
 
-</div>`;
+</div>
+
+`;
+
+return html;
 
 }
 
