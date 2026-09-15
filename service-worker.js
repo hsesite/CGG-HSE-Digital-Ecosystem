@@ -1,121 +1,85 @@
 /* ==========================================
    CGG HDOS Service Worker
-   Build 1.4 LTS
-   Stable Cache + Auto Update
+   Build 16.2
+   Clean Cache Foundation
    ========================================== */
 
-const CACHE_NAME = "cgg-hdos-v25-2";
+const VERSION="16.2";
+const CACHE_NAME=`cgg-hdos-${VERSION}`;
 
-const APP_SHELL = [
-  "/CGG-HSE-Digital-Ecosystem/",
-  "/CGG-HSE-Digital-Ecosystem/index.html",
-  "/CGG-HSE-Digital-Ecosystem/manifest.json",
-  "/CGG-HSE-Digital-Ecosystem/assets/Logo/logo-cgg.png"
+const APP_ROOT="/CGG-HSE-Digital-Ecosystem";
+
+const CORE=[
+ `${APP_ROOT}/`,
+ `${APP_ROOT}/index.html`,
+ `${APP_ROOT}/manifest.json`,
+ `${APP_ROOT}/assets/Logo/logo-cgg.png`
 ];
 
-/* ==========================================
-   Install
-   ========================================== */
+self.addEventListener("install",event=>{
 
-self.addEventListener("install", event => {
+ event.waitUntil(
+  caches.open(CACHE_NAME).then(c=>c.addAll(CORE))
+ );
 
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
+ self.skipWaiting();
+
+});
+
+self.addEventListener("activate",event=>{
+
+ event.waitUntil((async()=>{
+
+  const keys=await caches.keys();
+
+  await Promise.all(
+   keys
+    .filter(k=>k!==CACHE_NAME)
+    .map(k=>caches.delete(k))
   );
 
-  self.skipWaiting();
+  await self.clients.claim();
+
+ })());
 
 });
 
-/* ==========================================
-   Activate
-   ========================================== */
+self.addEventListener("fetch",event=>{
 
-self.addEventListener("activate", event => {
+ if(event.request.method!=="GET") return;
 
-  event.waitUntil((async()=>{
+ const url=new URL(event.request.url);
 
-    const keys = await caches.keys();
+ if(url.origin!==location.origin) return;
 
-    await Promise.all(
-      keys
-        .filter(key => key !== CACHE_NAME)
-        .map(key => caches.delete(key))
-    );
-
-    await self.clients.claim();
-
-  })());
-
-});
-
-/* ==========================================
-   Fetch Strategy
-   Navigation : Network First
-   Assets     : Cache First
-   ========================================== */
-
-self.addEventListener("fetch", event => {
-
-  const req = event.request;
-
-  if (req.method !== "GET") return;
-
-  /* HTML */
-
-  if (req.mode === "navigate") {
-
-    event.respondWith((async()=>{
-
-      try{
-
-        const fresh = await fetch(req);
-
-        const cache = await caches.open(CACHE_NAME);
-
-        cache.put(req, fresh.clone());
-
-        return fresh;
-
-      }catch{
-
-        return (
-          await caches.match(req) ||
-          await caches.match("/CGG-HSE-Digital-Ecosystem/index.html")
-        );
-
-      }
-
-    })());
-
-    return;
-
-  }
-
-  /* Static Assets */
+ if(event.request.mode==="navigate"){
 
   event.respondWith((async()=>{
 
-    const cached = await caches.match(req);
+   try{
 
-    if(cached) return cached;
+    return await fetch(event.request);
 
-    try{
+   }catch{
 
-      const fresh = await fetch(req);
+    return await caches.match(`${APP_ROOT}/index.html`);
 
-      const cache = await caches.open(CACHE_NAME);
-
-      cache.put(req, fresh.clone());
-
-      return fresh;
-
-    }catch{
-
-      return cached;
-
-    }
+   }
 
   })());
+
+  return;
+
+ }
+
+ event.respondWith((async()=>{
+
+  const cache=await caches.match(event.request);
+
+  if(cache) return cache;
+
+  return fetch(event.request);
+
+ })());
 
 });
