@@ -1,8 +1,8 @@
 /* ==========================================
    CGG HSE Digital Operating System
    Router Engine
-   Build 23.2 Stable
-   Dynamic Module Router
+   Build 16.2 Foundation
+   Dynamic Schema Ready
    ========================================== */
 
 (() => {
@@ -28,10 +28,6 @@ const first=location.hash.replace("#","")||"dashboard";
 return this.navigate(first,false);
 
 },
-
-/* ==========================================
-   Register Route
-   ========================================== */
 
 registerDefaults(){
 
@@ -59,105 +55,77 @@ await Inspection.render();
 
 }else{
 
-await this.dynamicModule("inspection","Inspection");
+await this.renderDynamic("inspection","Inspection");
 
 }
 
 },
 
-hazard:async()=>{
+finding:()=>this.renderDynamic("finding","Finding"),
 
-await this.dynamicModule("hazard","Hazard Report");
+pica:()=>this.renderDynamic("pica","PICA"),
 
-},
+hazard:()=>this.renderDynamic("hazard","Hazard Report"),
 
-incident:async()=>{
+incident:()=>this.renderDynamic("incident","Incident"),
 
-await this.dynamicModule("incident","Incident");
+ptw:()=>this.renderDynamic("ptw","Permit To Work"),
 
-},
+audit:()=>this.renderDynamic("audit","Audit"),
 
-ptw:async()=>{
+sop:()=>this.renderDynamic("sop","SOP"),
 
-await this.dynamicModule("ptw","Permit To Work");
+policy:()=>this.renderDynamic("policy","Policy"),
 
-},
+contractor:()=>this.renderDynamic("contractor","Contractor"),
 
-pica:async()=>{
+notification:()=>this.renderDynamic("notification","Notification"),
 
-await this.dynamicModule("pica","PICA Management");
+master:()=>this.renderDynamic("master","Master"),
 
-},
-
-audit:()=>this.placeholder("Audit"),
-
-sop:()=>this.placeholder("SOP Center"),
+users:()=>this.renderDynamic("users","Users"),
 
 analytics:()=>this.placeholder("Analytics"),
 
 reports:()=>this.placeholder("Reports"),
 
+settings:()=>this.placeholder("Settings"),
+
 "mine-permit":()=>this.placeholder("Mine Permit"),
 
-settings:()=>this.placeholder("Settings")
+commissioning:()=>this.placeholder("Commissioning"),
+
+waste:()=>this.placeholder("Waste B3"),
+
+spill:()=>this.placeholder("Spill Report"),
+
+dust:()=>this.placeholder("Dust"),
+
+water:()=>this.placeholder("Water"),
+
+noise:()=>this.placeholder("Noise"),
+
+emission:()=>this.placeholder("Emission"),
+
+flora:()=>this.placeholder("Flora & Fauna"),
+
+housekeeping:()=>this.placeholder("Housekeeping"),
+
+"first-aid":()=>this.placeholder("First Aid"),
+
+clinic:()=>this.placeholder("Clinic"),
+
+mcu:()=>this.placeholder("Medical Check Up"),
+
+fatigue:()=>this.placeholder("Fatigue Management"),
+
+"fit-work":()=>this.placeholder("Fit To Work"),
+
+emergency:()=>this.placeholder("Emergency Response")
 
 };
 
 },
-
-/* ==========================================
-   Dynamic Module
-   ========================================== */
-
-async dynamicModule(module,title){
-
-const view=document.getElementById("router-view");
-
-if(!view) return;
-
-view.innerHTML=`
-
-<div class="glass-card section-card fade-in">
-
-<h2>${title}</h2>
-
-<p>Dynamic Schema Renderer</p>
-
-<div id="dynamic-form">
-  <div class="form-group">
-    <div class="skeleton-input"></div>
-  </div>
-  <div class="form-group">
-    <div class="skeleton-input"></div>
-  </div>
-  <div class="form-group">
-    <div class="skeleton-input"></div>
-  </div>
-</div>>
-
-`;
-
-try{
-
-const data=await CGGLoader.schema(module);
-
-CGGRenderer.mount("#dynamic-form",data.schema);
-
-console.log(`✓ Dynamic module "${module}" loaded.`);
-
-}catch(err){
-
-console.error("Dynamic Module:",err);
-
-this.placeholder(`${title} gagal dimuat.`);
-
-}
-
-},
-
-/* ==========================================
-   Navigation
-   ========================================== */
 
 async navigate(route="dashboard",push=true){
 
@@ -199,10 +167,6 @@ this.placeholder("Terjadi kesalahan saat membuka modul.");
 
 },
 
-/* ==========================================
-   Hash Change
-   ========================================== */
-
 bindHash(){
 
 window.addEventListener("hashchange",()=>{
@@ -214,10 +178,6 @@ this.navigate(route,false);
 });
 
 },
-
-/* ==========================================
-   Sidebar
-   ========================================== */
 
 bindSidebar(){
 
@@ -241,12 +201,67 @@ if(window.Sidebar?.activate){
 
 Sidebar.activate(route);
 
+return;
+
+}
+
+document.querySelectorAll("[data-route]").forEach(el=>{
+
+el.classList.toggle("active",el.dataset.route===route);
+
+});
+
+},
+
+async renderDynamic(module,title){
+
+const view=document.getElementById("router-view");
+
+if(!view) return;
+
+view.innerHTML=`
+<div class="glass-card section-card fade-in">
+
+<h2>${title}</h2>
+
+<p>Dynamic Schema Renderer</p>
+
+<div id="dynamic-form"></div>
+
+</div>
+`;
+
+try{
+
+const data=await CGGLoader.schema(module);
+
+if(!data.success){
+
+throw new Error("Schema gagal dimuat");
+
+}
+
+CGGRenderer.mount("#dynamic-form",data.schema);
+
+console.log(`✓ Dynamic module "${module}" loaded.`);
+
+}catch(err){
+
+console.error(err);
+
+view.innerHTML=`
+<div class="glass-card section-card fade-in">
+
+<h2>${title}</h2>
+
+<p>Schema belum tersedia.</p>
+
+</div>
+`;
+
 }
 
 },
-/* ==========================================
-   Placeholder
-   ========================================== */
 
 placeholder(title){
 
@@ -255,15 +270,13 @@ const view=document.getElementById("router-view");
 if(!view) return;
 
 view.innerHTML=`
-
 <div class="glass-card section-card fade-in">
 
 <h2>${title}</h2>
 
-<p>Modul belum memiliki Dynamic Schema.</p>
+<p>Modul akan dibangun pada Build berikutnya.</p>
 
 </div>
-
 `;
 
 }
