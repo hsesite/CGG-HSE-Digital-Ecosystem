@@ -1,7 +1,8 @@
 /* ==========================================
    CGG HSE Digital Operating System
    App Bootstrap
-   Build 16.3.1 LTS Recovery
+   Build 16.3 Stable (Locked)
+   Original Boot Sequence Recovery
    ========================================== */
 
 (() => {
@@ -9,12 +10,12 @@
 "use strict";
 
 /* ==========================================
-   Registry Warmup
+   Registry Waiter
    ========================================== */
 
 async function waitRegistry(retry = 5){
 
-  for(let i = 1; i <= retry; i++){
+  for(let i=1;i<=retry;i++){
 
     try{
 
@@ -32,9 +33,9 @@ async function waitRegistry(retry = 5){
 
       console.warn(`Registry percobaan ${i}/${retry} gagal`);
 
-      if(i < retry){
+      if(i<retry){
 
-        await new Promise(r => setTimeout(r,300));
+        await new Promise(r=>setTimeout(r,300));
 
       }
 
@@ -49,7 +50,7 @@ async function waitRegistry(retry = 5){
 }
 
 /* ==========================================
-   Main Boot Sequence
+   Boot Sequence
    ========================================== */
 
 async function boot(){
@@ -58,10 +59,10 @@ async function boot(){
 
   try{
 
-    /* 1. Pastikan registry siap */
+    /* 1. Registry */
     await waitRegistry();
 
-    /* 2. Sidebar (sekali saja) */
+    /* 2. Sidebar */
     if(window.Sidebar){
 
       await Sidebar.init();
@@ -92,7 +93,7 @@ async function boot(){
 
   }catch(err){
 
-    console.error("Boot Error:", err);
+    console.error("Boot Error:",err);
 
   }
 
@@ -102,6 +103,6 @@ async function boot(){
    Start
    ========================================== */
 
-window.addEventListener("load", boot);
+window.addEventListener("load",boot);
 
 })();
