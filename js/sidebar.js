@@ -1,6 +1,6 @@
 /* ==========================================
    CGG HDOS Sidebar Enterprise
-   Build 25.2.1 LTS Recovery
+   Build 25.2.2 LTS Stable
    Registry Driven + Enterprise UI
    ========================================== */
 
@@ -110,6 +110,33 @@ const ICON_MAP = {
   master:"settings",
   users:"grid"
 };
+   const CATEGORY_MAP = {
+
+  inspection:"operational",
+  finding:"operational",
+  pica:"operational",
+  hazard:"operational",
+  incident:"operational",
+  ptw:"operational",
+  audit:"operational",
+  "mine-permit":"operational",
+  commissioning:"operational",
+
+  waste:"environment",
+  spill:"environment",
+  dust:"environment",
+  water:"environment",
+  noise:"environment",
+  emission:"environment",
+  flora:"environment",
+
+  "first-aid":"medical",
+  clinic:"medical",
+  mcu:"medical",
+  fatigue:"medical",
+  "fit-work":"medical"
+
+};
 
 /* ==========================================
    Sidebar Engine
@@ -120,6 +147,8 @@ const Sidebar = {
   collapsed:false,
   cache:null,
 
+  /* ---------- FIX #1 ---------- */
+
   async init(){
 
     const root=document.getElementById("sidebar");
@@ -128,7 +157,12 @@ const Sidebar = {
     root.innerHTML=await this.template();
 
     this.bind();
-    this.activate(location.hash.replace("#","")||"dashboard");
+
+    this.activate(
+      window.Router?.current ||
+      location.hash.replace("#","") ||
+      "dashboard"
+    );
 
   },
 
@@ -139,13 +173,20 @@ const Sidebar = {
 
   },
 
+  /* ---------- FIX #2 ---------- */
+
   bind(){
 
     document.querySelectorAll(".sb-item").forEach(btn=>{
 
       btn.onclick=()=>{
 
-        window.Router?.navigate(btn.dataset.route);
+        if(window.Router){
+
+          Router.navigate(btn.dataset.route);
+
+        }
+
         this.activate(btn.dataset.route);
 
         if(window.innerWidth<=768){
@@ -196,52 +237,60 @@ const Sidebar = {
       );
 
     });
-
   },
 
- async loadRegistry(){
+  /* ---------- FIX #3 ---------- */
 
-  if(Array.isArray(this.cache) && this.cache.length){
+  async loadRegistry(){
+
+    if(Array.isArray(this.cache) && this.cache.length){
+
+      return this.cache;
+
+    }
+
+    try{
+
+      this.cache=await CGGLoader.modules();
+
+    }catch(e){
+
+      console.warn("Sidebar menggunakan cache lokal.");
+
+      this.cache=[];
+
+    }
 
     return this.cache;
 
-  }
+  },
 
-  try{
-
-    this.cache = await CGGLoader.modules();
-
-  }catch(e){
-
-    console.warn("Sidebar menggunakan cache lokal.");
-
-    this.cache = [];
-
-  }
-
-  return this.cache;
-
-},
-   
   async template(){
 
     const modules=await this.loadRegistry();
 
     const visible=[];
 
+    /* ---------- FIX #4 ---------- */
+
     for(const m of modules){
 
-  if(window.CGGRole?.canView && m.company){
+      if(window.CGGRole?.canView){
 
-    const ok = await CGGRole.canView(m.company);
+        const scopeTarget=
+          m.company ||
+          m.scope ||
+          "CGG";
 
-    if(!ok) continue;
+        const ok=await CGGRole.canView(scopeTarget);
 
-  }
+        if(!ok) continue;
 
-  visible.push(m);
+      }
 
-}
+      visible.push(m);
+
+    }
 
     visible.sort((a,b)=>(a.order||999)-(b.order||999));
 
@@ -249,7 +298,7 @@ const Sidebar = {
 
     visible.forEach(m=>{
 
-      const cat=m.category||"custom";
+      const cat = m.category || CATEGORY_MAP[m.module] || "custom";
 
       (groups[cat]??=[]).push(m);
 
@@ -293,7 +342,6 @@ ${SVG.grid}
 </div>
 
 `;
-
     CATEGORY_ORDER.forEach(cat=>{
 
       const list=groups[cat];
@@ -349,7 +397,7 @@ ${SVG[iconName]||SVG.grid}
 
 <b>Foreman Safety</b>
 
-<span>CGG HDOS v25.2.1 LTS</span>
+<span>CGG HDOS v25.2.2 LTS</span>
 
 </div>
 
