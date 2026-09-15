@@ -237,14 +237,13 @@ this.navigate(item.dataset.route);
 
 activateSidebar(route){
 
-document.querySelectorAll("[data-route]").forEach(el=>{
+if(window.Sidebar?.activate){
 
-el.classList.toggle("active",el.dataset.route===route);
+Sidebar.activate(route);
 
-});
+}
 
 },
-
 /* ==========================================
    Placeholder
    ========================================== */
