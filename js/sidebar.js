@@ -17,7 +17,7 @@ const CATEGORY_ORDER=[
 "environment",
 "medical",
 "admin",
-"custom"
+"administration"
 ];
 
 const CATEGORY_TITLE={
@@ -26,7 +26,7 @@ operational:"Safety",
 environment:"Environment",
 medical:"Medical",
 admin:"Administration",
-custom:"Custom"
+administration:"administration"
 
 };
 
@@ -154,7 +154,6 @@ const CATEGORY_MAP={
   noise:"environment",
   emission:"environment",
   flora:"environment",
-  housekeeping:"environment",
 
   /* Medical */
   "first-aid":"medical",
@@ -278,7 +277,6 @@ const STATIC_MODULES = [
   {module:"noise",title:"Noise",icon:"volume"},
   {module:"emission",title:"Emission",icon:"cloud"},
   {module:"flora",title:"Flora & Fauna",icon:"leaf"},
-  {module:"housekeeping",title:"Housekeeping",icon:"home"},
 
   {module:"first-aid",title:"First Aid",icon:"cross"},
   {module:"clinic",title:"Clinic",icon:"hospital"},
