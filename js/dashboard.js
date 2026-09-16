@@ -108,7 +108,7 @@ ${zoneCard("Jetty","🟢","Normal")}
 ${launch("🚙","Inspection","inspection")}
 ${launch("📋","PTW","ptw")}
 ${launch("⚠️","Incident","incident")}
-${launch("🛠","Audit","audit")}
+${launch("🛠","Kebijakan","kebijakan")}
 ${launch("📑","SOP","sop")}
 ${launch("📊","Analytics","analytics")}
 ${launch("📂","Reports","reports")}
