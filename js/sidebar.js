@@ -1,6 +1,6 @@
 /* ==========================================
    CGG HDOS Sidebar Enterprise
-   Build 25.2.2 LTS Stable - Fixed
+   Build 25.2.3 LTS Stable - Complete
    ========================================== */
 
 (() => {
@@ -8,7 +8,7 @@
 "use strict";
 
 /* ==========================================
-   Category Order & Title Fix
+   Category Order & Title
    ========================================== */
 
 const CATEGORY_ORDER = [
@@ -16,7 +16,7 @@ const CATEGORY_ORDER = [
   "environment",
   "medical",
   "admin",
-  "custom" // Ditambahkan agar modul tanpa kategori spesifik tetap tampil
+  "custom"
 ];
 
 const CATEGORY_TITLE = {
@@ -47,7 +47,6 @@ const SVG = {
   volume: `<svg viewBox="0 0 24 24"><path d="M5 10h4l5-4v12l-5-4H5z"/></svg>`,
   cloud: `<svg viewBox="0 0 24 24"><path d="M6 18h12a4 4 0 000-8 6 6 0 00-12 1"/></svg>`,
   leaf: `<svg viewBox="0 0 24 24"><path d="M5 19c7-2 11-8 14-14"/><path d="M9 15c1 1 3 3 6 4"/></svg>`,
-  home: `<svg viewBox="0 0 24 24"><path d="M3 10 12 3l9 7"/><path d="M5 10v10h14V10"/></svg>`,
   cross: `<svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>`,
   hospital: `<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M12 7v8"/><path d="M8 11h8"/></svg>`,
   heart: `<svg viewBox="0 0 24 24"><path d="M12 20 5 13a5 5 0 117-7 5 5 0 117 7z"/></svg>`,
@@ -58,7 +57,8 @@ const SVG = {
   book: `<svg viewBox="0 0 24 24"><path d="M12 6c-2-2-5-2-8-2v15c3 0 6 0 8 2"/><path d="M12 6c2-2 5-2 8-2v15c-3 0-6 0-8 2"/></svg>`,
   chart: `<svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-8"/></svg>`,
   report: `<svg viewBox="0 0 24 24"><path d="M14 3H6v18h12V9z"/><path d="M14 3v6h6"/></svg>`,
-  settings: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1-2-3-2 1a7 7 0 0 0-2-1l-.3-2H10l-.3 2a7 7 0 0 0-2 1l-2-1-2 3 2 1a7 7 0 0 0 0 2l-2 1 2 3 2-1a7 7 0 0 0 2 1l.3 2h4l.3-2a7 7 0 0 0 2-1l2 1 2-3-2-1c.1-.3.1-.7.1-1z"/></svg>`
+  settings: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1-2-3-2 1a7 7 0 0 0-2-1l-.3-2H10l-.3 2a7 7 0 0 0-2 1l-2-1-2 3 2 1a7 7 0 0 0 0 2l-2 1 2 3 2-1a7 7 0 0 0 2 1l.3 2h4l.3-2a7 7 0 0 0 2-1l2 1 2-3-2-1c.1-.3.1-.7.1-1z"/></svg>`,
+  users: `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
 };
 
 const ICON_MAP = {
@@ -85,14 +85,14 @@ const ICON_MAP = {
   fatigue: "moon",
   "fit-work": "activity",
   emergency: "siren",
-  analytics: "chart",
-  reports: "report",
   sop: "book",
   policy: "book",
   contractor: "grid",
   notification: "siren",
-  users: "grid",
+  users: "users",
   master: "settings",
+  analytics: "chart",
+  reports: "report",
   settings: "settings"
 };
 
@@ -125,7 +125,7 @@ const CATEGORY_MAP = {
   "fit-work": "medical",
   emergency: "medical",
 
-  /* Administration */
+  /* Administration (Lengkap) */
   sop: "admin",
   policy: "admin",
   contractor: "admin",
@@ -160,14 +160,14 @@ const TITLE_MAP = {
   fatigue: "Fatigue Management",
   "fit-work": "Fit To Work",
   emergency: "Emergency Response",
-  analytics: "Analytics",
-  reports: "Reports",
   sop: "SOP",
   policy: "Policy",
   contractor: "Contractor",
   notification: "Notification",
   users: "Users",
   master: "Master",
+  analytics: "Analytics",
+  reports: "Reports",
   settings: "Settings"
 };
 
@@ -209,7 +209,7 @@ const ORDER_MAP = {
 };
 
 /* ==========================================
-   Static Module Fallback Clean
+   Static Modules
    ========================================== */
 
 const STATIC_MODULES = [
@@ -316,19 +316,20 @@ const Sidebar = {
       return this.cache;
     }
     try {
-      this.cache = await CGGLoader.modules();
+      if (window.CGGLoader?.modules) {
+        this.cache = await CGGLoader.modules();
+      }
     } catch (e) {
-      console.warn("Sidebar menggunakan cache lokal.");
+      console.warn("Sidebar menggunakan fallback statis.");
       this.cache = [];
     }
-    return this.cache;
+    return this.cache || [];
   },
 
   async template() {
     const registry = await this.loadRegistry();
     const merged = STATIC_MODULES.map(m => ({ ...m }));
 
-    // Merge data dari registry jika ada
     registry.forEach(r => {
       const i = merged.findIndex(m => m.module === r.module);
       if (i >= 0) {
@@ -350,19 +351,16 @@ const Sidebar = {
     const visible = [];
 
     for (const m of merged) {
-      // 1. Tanpa batasan company -> langsung tampil
       if (!m.company) {
         visible.push(m);
         continue;
       }
 
-      // 2. Tanpa passport login -> tampilkan default
       if (!passport || !passport.scope) {
         visible.push(m);
         continue;
       }
 
-      // 3. Pengecekan scope fleksibel (penanganan case-insensitive & role Admin)
       const isAllowed = passport.scope.some(s => 
         s.toUpperCase() === m.company.toUpperCase() ||
         s.toUpperCase() === "CGG" ||
@@ -375,7 +373,6 @@ const Sidebar = {
       }
     }
 
-    // Urutkan berdasarkan ORDER_MAP
     visible.sort((a, b) => {
       const ao = a.order ?? ORDER_MAP[a.module] ?? 999;
       const bo = b.order ?? ORDER_MAP[b.module] ?? 999;
@@ -443,7 +440,7 @@ const Sidebar = {
       <div class="sb-avatar">FS</div>
       <div class="sb-info">
         <b>Foreman Safety</b>
-        <span>CGG HDOS v25.2.2 LTS</span>
+        <span>CGG HDOS v25.2.3 LTS</span>
       </div>
     </div>
   </div>
