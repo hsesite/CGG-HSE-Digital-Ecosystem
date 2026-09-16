@@ -277,26 +277,36 @@ return this.cache;
 
     const visible=[];
 
-    /* PATCH: filter role aman */
+/* Ambil passport sekali saja */
+let passport = null;
 
-    for(const m of modules){
+if(window.CGGRole?.current){
+  passport = await CGGRole.current();
+}
 
-      if(window.CGGRole?.canView){
+for(const m of modules){
 
-        const scopeTarget=
-          m.company ||
-          m.scope ||
-          "CGG";
+  /* Kalau modul tidak punya company → langsung tampil */
+  if(!m.company){
+    visible.push(m);
+    continue;
+  }
 
-        const ok=await CGGRole.canView(scopeTarget);
+  /* Kalau belum login → tampilkan (mode publik seperti sebelumnya) */
+  if(!passport){
+    visible.push(m);
+    continue;
+  }
 
-        if(!ok) continue;
+  /* Cek scope tanpa memanggil IndexedDB berulang */
+  if(
+    passport.scope.includes(m.company) ||
+    passport.scope.includes("SUBCON")
+  ){
+    visible.push(m);
+  }
 
-      }
-
-      visible.push(m);
-
-    }
+}
 
     visible.sort((a,b)=>(a.order||999)-(b.order||999));
 
