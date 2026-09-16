@@ -246,39 +246,48 @@ ${activity("10:15","Safety Talk")}
 
     /* ---------- Data ---------- */
 
-   /* ---------- Data (Non-blocking Fast Render) ---------- */
+   async function loadDashboardData() {
+    // 1. Tentukan data awal dari state, atau gunakan fallback default jika masih kosong (0)
+    DashboardState.inspection = DashboardState.inspection || 5;
+    DashboardState.finding = DashboardState.finding || 10;
+    DashboardState.pica = DashboardState.pica || 10;
+    DashboardState.ptw = DashboardState.ptw || 2;
 
-    async function loadDashboardData() {
+    // Render tampilan awal secara instan
+    renderCounters();
 
-        // 1. Tampilkan nilai default/cache dengan cepat
-        DashboardState.inspection = DashboardState.inspection || 5;
-        DashboardState.finding = DashboardState.finding || 10;
-        DashboardState.pica = DashboardState.pica || 10;
-        DashboardState.ptw = DashboardState.ptw || 2;
+    // 2. Ambil data dari API secara background (non-blocking)
+    if (window.DashboardAPI && typeof DashboardAPI.getSummary === "function") {
+        try {
+            const summary = await DashboardAPI.getSummary();
 
-        animateCounter("kpi-inspection", DashboardState.inspection);
-        animateCounter("kpi-finding", DashboardState.finding);
-        animateCounter("kpi-pica", DashboardState.pica);
-        animateCounter("kpi-ptw", DashboardState.ptw);
-
-        // 2. Fetch data terbaru dari API tanpa memblokir UI
-        if (window.DashboardAPI && typeof DashboardAPI.getSummary === "function") {
-            DashboardAPI.getSummary().then(summary => {
-                if (!summary) return;
+            // Hanya perbarui jika API mengembalikan data valid (bukan null/undefined)
+            if (summary && typeof summary === "object") {
                 DashboardState.inspection = summary.inspection ?? DashboardState.inspection;
                 DashboardState.finding = summary.finding ?? DashboardState.finding;
                 DashboardState.pica = summary.pica ?? DashboardState.pica;
                 DashboardState.ptw = summary.ptw ?? DashboardState.ptw;
 
-                animateCounter("kpi-inspection", DashboardState.inspection);
-                animateCounter("kpi-finding", DashboardState.finding);
-                animateCounter("kpi-pica", DashboardState.pica);
-                animateCounter("kpi-ptw", DashboardState.ptw);
-            }).catch(err => {
-                console.warn("Background API fetch error, using cached data:", err);
-            });
+                // Render ulang animasi dengan data asli dari server
+                renderCounters();
+            }
+        } catch (err) {
+            console.warn("DashboardAPI Error (menggunakan data fallback/cache):", err);
         }
     }
+}
+
+// Helper khusus untuk memicu animasi counter
+function renderCounters() {
+    animateCounter("kpi-inspection", DashboardState.inspection);
+    animateCounter("kpi-finding", DashboardState.finding);
+    animateCounter("kpi-pica", DashboardState.pica);
+    animateCounter("kpi-ptw", DashboardState.ptw);
+}
+
+async function refresh() {
+    await loadDashboardData();
+}
     /* ---------- Counter ---------- */
 
     function animateCounter(id,target){
