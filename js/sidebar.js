@@ -294,9 +294,6 @@ const STATIC_MODULES = [
    {module:"notification",title:"Notification",icon:"grid"},
    {module:"users",title:"Users",icon:"grid"},
    {module:"master",title:"Master",icon:"settings"},
-   {module:"analytics",title:"Analytics",icon:"chart"},
-   {module:"reports",title:"Reports",icon:"report"},
-   {module:"settings",title:"Settings",icon:"settings"},
 
 ];
 
