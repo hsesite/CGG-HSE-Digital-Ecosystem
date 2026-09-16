@@ -135,36 +135,45 @@ master:"settings"
 
 const CATEGORY_MAP={
 
-inspection:"operational",
-finding:"operational",
-pica:"operational",
-hazard:"operational",
-incident:"operational",
-ptw:"operational",
-audit:"operational",
-"mine-permit":"operational",
-commissioning:"operational",
+  /* Safety */
+  inspection:"operational",
+  finding:"operational",
+  pica:"operational",
+  hazard:"operational",
+  incident:"operational",
+  ptw:"operational",
+  audit:"operational",
+  "mine-permit":"operational",
+  commissioning:"operational",
 
-waste:"environment",
-spill:"environment",
-dust:"environment",
-water:"environment",
-noise:"environment",
-emission:"environment",
-flora:"environment",
+  /* Environment */
+  waste:"environment",
+  spill:"environment",
+  dust:"environment",
+  water:"environment",
+  noise:"environment",
+  emission:"environment",
+  flora:"environment",
+  housekeeping:"environment",
 
-"first-aid":"medical",
-clinic:"medical",
-mcu:"medical",
-fatigue:"medical",
-"fit-work":"medical",
+  /* Medical */
+  "first-aid":"medical",
+  clinic:"medical",
+  mcu:"medical",
+  fatigue:"medical",
+  "fit-work":"medical",
+  emergency:"medical",
 
-sop:"admin",
-policy:"admin",
-contractor:"admin",
-notification:"admin",
-users:"admin",
-master:"admin"
+  /* Administration */
+  sop:"admin",
+  policy:"admin",
+  contractor:"admin",
+  notification:"admin",
+  users:"admin",
+  master:"admin",
+  analytics:"admin",
+  reports:"admin",
+  settings:"admin"
 
 };
 
