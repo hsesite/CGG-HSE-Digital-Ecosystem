@@ -91,10 +91,11 @@ report:`<svg viewBox="0 0 24 24"><path d="M14 3H6v18h12V9z"/><path d="M14 3v6h6"
 settings:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1-2-3-2 1a7 7 0 0 0-2-1l-.3-2H10l-.3 2a7 7 0 0 0-2 1l-2-1-2 3 2 1a7 7 0 0 0 0 2l-2 1 2 3 2-1a7 7 0 0 0 2 1l.3 2h4l.3-2a7 7 0 0 0 2-1l2 1 2-3-2-1c.1-.3.1-.7.1-1z"/></svg>`
 
 };
-
+   
 const ICON_MAP={
 
 dashboard:"grid",
+
 inspection:"clipboard",
 finding:"list",
 pica:"wrench",
@@ -102,15 +103,31 @@ hazard:"alert",
 incident:"shield",
 ptw:"file",
 audit:"list",
+"mine-permit":"landmark",
+commissioning:"check",
+
+waste:"recycle",
+spill:"droplet",
+dust:"wind",
+water:"waves",
+noise:"volume",
+emission:"cloud",
+flora:"leaf",
+
+"first-aid":"cross",
+clinic:"hospital",
+mcu:"heart",
+fatigue:"moon",
+"fit-work":"activity",
+
 sop:"book",
 policy:"book",
 contractor:"grid",
-notification:"grid",
-master:"settings",
-users:"grid"
+notification:"siren",
+users:"grid",
+master:"settings"
 
 };
-
 /* ==========================================
    PATCH 25.2.2
    Fallback Category (Dikembalikan)
@@ -140,7 +157,84 @@ flora:"environment",
 clinic:"medical",
 mcu:"medical",
 fatigue:"medical",
-"fit-work":"medical"
+"fit-work":"medical",
+
+sop:"admin",
+policy:"admin",
+contractor:"admin",
+notification:"admin",
+users:"admin",
+master:"admin"
+
+};
+
+const TITLE_MAP={
+
+inspection:"Inspection",
+finding:"Finding",
+pica:"PICA",
+hazard:"Hazard Report",
+incident:"Incident",
+ptw:"PTW",
+audit:"Audit",
+"mine-permit":"Mine Permit",
+commissioning:"Commissioning",
+
+waste:"Waste",
+spill:"Spill",
+dust:"Dust",
+water:"Water",
+noise:"Noise",
+emission:"Emission",
+flora:"Flora & Fauna",
+
+"first-aid":"First Aid",
+clinic:"Clinic",
+mcu:"Medical Check Up",
+fatigue:"Fatigue",
+"fit-work":"Fit To Work",
+
+sop:"SOP",
+policy:"Policy",
+contractor:"Contractor",
+notification:"Notification",
+users:"Users",
+master:"Master"
+
+};
+
+const ORDER_MAP={
+
+inspection:10,
+finding:20,
+pica:30,
+hazard:40,
+incident:50,
+ptw:60,
+audit:70,
+"mine-permit":80,
+commissioning:90,
+
+waste:110,
+spill:120,
+dust:130,
+water:140,
+noise:150,
+emission:160,
+flora:170,
+
+"first-aid":210,
+clinic:220,
+mcu:230,
+fatigue:240,
+"fit-work":250,
+
+sop:310,
+policy:320,
+contractor:330,
+notification:340,
+users:350,
+master:360
 
 };
 
@@ -308,7 +402,14 @@ for(const m of modules){
 
 }
 
-    visible.sort((a,b)=>(a.order||999)-(b.order||999));
+   visible.sort((a,b)=>{
+
+const ao=a.order ?? ORDER_MAP[a.module] ?? 999;
+const bo=b.order ?? ORDER_MAP[b.module] ?? 999;
+
+return ao-bo;
+
+});
 
     const groups={};
 
@@ -397,7 +498,11 @@ data-route="${(m.route||("#"+m.module)).replace("#","")}">
 
 ${SVG[iconName]||SVG.grid}
 
-<span>${m.title||m.module}</span>
+<span>${
+m.title ||
+TITLE_MAP[m.module] ||
+m.module
+}</span>
 
 </button>
 
