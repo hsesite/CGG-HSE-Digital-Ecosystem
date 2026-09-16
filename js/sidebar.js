@@ -287,7 +287,16 @@ const STATIC_MODULES = [
   {module:"emergency",title:"Emergency Response",icon:"siren"},
   {module:"analytics",title:"Analytics",icon:"chart"},
   {module:"reports",title:"Reports",icon:"report"},
-  {module:"settings",title:"Settings",icon:"settings"}
+  {module:"settings",title:"Settings",icon:"settings"},
+   {module:"sop",title:"SOP",icon:"book"},
+   {module:"policy",title:"Kebijakan",icon:"book"},
+   {module:"contractor",title:"Contractor",icon:"grid"},
+   {module:"notification",title:"Notification",icon:"grid"},
+   {module:"users",title:"Users",icon:"grid"},
+   {module:"master",title:"Master",icon:"settings"},
+   {module:"analytics",title:"Analytics",icon:"chart"},
+   {module:"reports",title:"Reports",icon:"report"},
+   {module:"settings",title:"Settings",icon:"settings"},
 
 ];
 
