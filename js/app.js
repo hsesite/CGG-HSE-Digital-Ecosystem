@@ -1,107 +1,52 @@
 /* ==========================================
    CGG HSE Digital Operating System
-   App Bootstrap
-   Build 16.3 Stable (Locked Recovery)
+   App Bootstrap - Fast Boot Engine
    ========================================== */
 
 (() => {
 
 "use strict";
 
-/* ==========================================
-   Registry Waiter
-   ========================================== */
+async function boot() {
+  console.log("⚡ CGG HDOS Fast Boot Starting...");
 
-async function waitRegistry(retry = 5){
+  try {
 
-  for(let i=1;i<=retry;i++){
-
-    try{
-
-      const modules = await CGGLoader.modules();
-
-      if(Array.isArray(modules) && modules.length){
-
-        console.log(`✓ Registry Ready (${modules.length} modules)`);
-
-        return modules;
-
-      }
-
-    }catch(err){
-
-      console.warn(`Registry percobaan ${i}/${retry} gagal`);
-
-      if(i<retry){
-
-        await new Promise(r=>setTimeout(r,300));
-
-      }
-
-    }
-
-  }
-
-  console.warn("Registry gagal setelah retry.");
-
-  return [];
-
-}
-
-/* ==========================================
-   Boot Sequence
-   ========================================== */
-
-async function boot(){
-
-  console.log("CGG HDOS Boot Starting...");
-
-  try{
-
-    /* 1. Registry harus siap dulu */
-    await waitRegistry();
-
-    /* 2. Sidebar */
-    if(window.Sidebar){
-
+    /* 1. Render UI Utama secara Instan (Menggunakan Fallback Local / Cache) */
+    if (window.Sidebar) {
       await Sidebar.init();
-
       console.log("✓ Sidebar Ready");
-
     }
 
-    /* 3. Router */
-    if(window.Router){
-
+    if (window.Router) {
       await Router.init();
-
       console.log("✓ Router Ready");
-
     }
 
-    /* 4. Dashboard Live */
-    if(window.DashboardLive?.init){
-
+    if (window.DashboardLive?.init) {
       DashboardLive.init();
-
       console.log("✓ Dashboard Live");
-
     }
 
-    console.log("CGG HDOS Boot Complete");
+    // Sembunyikan Splash Screen segera setelah UI utama ter-render
+    const splash = document.getElementById("splash-screen");
+    if (splash) {
+      splash.classList.add("fade-out");
+    }
 
-  }catch(err){
+    /* 2. Jalankan Sync/Fetch Registry di Latar Belakang (Non-blocking) */
+    CGGLoader.modules().then(() => {
+      console.log("✓ Network Registry Synchronized in Background");
+    }).catch(err => {
+      console.warn("Registry background fetch skipped/failed:", err);
+    });
 
-    console.error("Boot Error:",err);
-
+  } catch (err) {
+    console.error("Boot Critical Error:", err);
   }
 
 }
 
-/* ==========================================
-   Start
-   ========================================== */
-
-window.addEventListener("load",boot);
+window.addEventListener("DOMContentLoaded", boot);
 
 })();
