@@ -246,53 +246,39 @@ ${activity("10:15","Safety Talk")}
 
     /* ---------- Data ---------- */
 
-    async function loadDashboardData(){
+   /* ---------- Data (Non-blocking Fast Render) ---------- */
 
-        try{
+    async function loadDashboardData() {
 
-            if(window.DashboardAPI &&
-               typeof DashboardAPI.getSummary==="function"){
+        // 1. Tampilkan nilai default/cache dengan cepat
+        DashboardState.inspection = DashboardState.inspection || 5;
+        DashboardState.finding = DashboardState.finding || 10;
+        DashboardState.pica = DashboardState.pica || 10;
+        DashboardState.ptw = DashboardState.ptw || 2;
 
-                const summary=await DashboardAPI.getSummary();
+        animateCounter("kpi-inspection", DashboardState.inspection);
+        animateCounter("kpi-finding", DashboardState.finding);
+        animateCounter("kpi-pica", DashboardState.pica);
+        animateCounter("kpi-ptw", DashboardState.ptw);
 
-                DashboardState.inspection=summary.inspection||0;
-                DashboardState.finding=summary.finding||0;
-                DashboardState.pica=summary.pica||0;
-                DashboardState.ptw=summary.ptw||0;
+        // 2. Fetch data terbaru dari API tanpa memblokir UI
+        if (window.DashboardAPI && typeof DashboardAPI.getSummary === "function") {
+            DashboardAPI.getSummary().then(summary => {
+                if (!summary) return;
+                DashboardState.inspection = summary.inspection ?? DashboardState.inspection;
+                DashboardState.finding = summary.finding ?? DashboardState.finding;
+                DashboardState.pica = summary.pica ?? DashboardState.pica;
+                DashboardState.ptw = summary.ptw ?? DashboardState.ptw;
 
-            }else{
-
-                DashboardState.inspection=5;
-                DashboardState.finding=10;
-                DashboardState.pica=10;
-                DashboardState.ptw=2;
-
-            }
-
-        }catch(err){
-
-            console.error("DashboardAPI Error",err);
-
-            DashboardState.inspection=5;
-            DashboardState.finding=10;
-            DashboardState.pica=10;
-            DashboardState.ptw=2;
-
+                animateCounter("kpi-inspection", DashboardState.inspection);
+                animateCounter("kpi-finding", DashboardState.finding);
+                animateCounter("kpi-pica", DashboardState.pica);
+                animateCounter("kpi-ptw", DashboardState.ptw);
+            }).catch(err => {
+                console.warn("Background API fetch error, using cached data:", err);
+            });
         }
-
-        animateCounter("kpi-inspection",DashboardState.inspection);
-        animateCounter("kpi-finding",DashboardState.finding);
-        animateCounter("kpi-pica",DashboardState.pica);
-        animateCounter("kpi-ptw",DashboardState.ptw);
-
     }
-
-    async function refresh(){
-
-        await loadDashboardData();
-
-    }
-
     /* ---------- Counter ---------- */
 
     function animateCounter(id,target){
