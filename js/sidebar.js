@@ -239,6 +239,52 @@ master:360
 };
 
 /* ==========================================
+   Static Module Fallback
+   Menjaga sidebar tetap lengkap
+   ========================================== */
+
+const STATIC_MODULES = [
+
+  {module:"inspection",title:"Inspection",icon:"clipboard"},
+  {module:"finding",title:"Finding",icon:"list"},
+  {module:"pica",title:"PICA",icon:"wrench"},
+  {module:"hazard",title:"Hazard Report",icon:"alert"},
+  {module:"incident",title:"Incident",icon:"shield"},
+  {module:"ptw",title:"Permit To Work",icon:"file"},
+  {module:"audit",title:"Audit",icon:"list"},
+  {module:"sop",title:"SOP",icon:"book"},
+  {module:"policy",title:"Policy",icon:"book"},
+  {module:"contractor",title:"Contractor",icon:"grid"},
+  {module:"notification",title:"Notification",icon:"grid"},
+  {module:"master",title:"Master",icon:"settings"},
+  {module:"users",title:"Users",icon:"grid"},
+
+  {module:"mine-permit",title:"Mine Permit",icon:"landmark"},
+  {module:"commissioning",title:"Commissioning",icon:"check"},
+
+  {module:"waste",title:"Waste B3",icon:"recycle"},
+  {module:"spill",title:"Spill Report",icon:"droplet"},
+  {module:"dust",title:"Dust",icon:"wind"},
+  {module:"water",title:"Water",icon:"waves"},
+  {module:"noise",title:"Noise",icon:"volume"},
+  {module:"emission",title:"Emission",icon:"cloud"},
+  {module:"flora",title:"Flora & Fauna",icon:"leaf"},
+  {module:"housekeeping",title:"Housekeeping",icon:"home"},
+
+  {module:"first-aid",title:"First Aid",icon:"cross"},
+  {module:"clinic",title:"Clinic",icon:"hospital"},
+  {module:"mcu",title:"Medical Check Up",icon:"heart"},
+  {module:"fatigue",title:"Fatigue Management",icon:"moon"},
+  {module:"fit-work",title:"Fit To Work",icon:"activity"},
+
+  {module:"emergency",title:"Emergency Response",icon:"siren"},
+  {module:"analytics",title:"Analytics",icon:"chart"},
+  {module:"reports",title:"Reports",icon:"report"},
+  {module:"settings",title:"Settings",icon:"settings"}
+
+];
+
+/* ==========================================
    Sidebar Engine
    ========================================== */
 
@@ -367,9 +413,27 @@ return this.cache;
 
   async template(){
 
-    const modules=await this.loadRegistry();
+    const registry = await this.loadRegistry();
 
-    const visible=[];
+const merged = [...STATIC_MODULES];
+
+registry.forEach(r=>{
+
+  const i=merged.findIndex(m=>m.module===r.module);
+
+  if(i>=0){
+
+    merged[i]={...merged[i],...r};
+
+  }else{
+
+    merged.push(r);
+
+  }
+
+});
+
+const visible=[];
 
 /* Ambil passport sekali saja */
 let passport = null;
@@ -378,7 +442,7 @@ if(window.CGGRole?.current){
   passport = await CGGRole.current();
 }
 
-for(const m of modules){
+for(const m of merged){
 
   /* Kalau modul tidak punya company → langsung tampil */
   if(!m.company){
