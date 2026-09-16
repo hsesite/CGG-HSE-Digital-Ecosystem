@@ -12,27 +12,29 @@
    Category Order
    ========================================== */
 
-const CATEGORY_ORDER = [
-  "operational",
-  "environment",
-  "medical",
-  "admin",
-  "custom"
+const CATEGORY_ORDER=[
+"operational",
+"environment",
+"medical",
+"admin",
+"custom"
 ];
 
-const CATEGORY_TITLE = {
-  operational: "Safety",
-  environment: "Environment",
-  medical: "Medical",
-  admin: "Administration",
-  custom: "Custom"
+const CATEGORY_TITLE={
+
+operational:"Safety",
+environment:"Environment",
+medical:"Medical",
+admin:"Administration",
+custom:"Custom"
+
 };
 
 /* ==========================================
    SVG Icons
    ========================================== */
 
-const SVG = {
+const SVG={
 
 grid:`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>`,
 
@@ -90,51 +92,55 @@ settings:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 1
 
 };
 
+const ICON_MAP={
+
+dashboard:"grid",
+inspection:"clipboard",
+finding:"list",
+pica:"wrench",
+hazard:"alert",
+incident:"shield",
+ptw:"file",
+audit:"list",
+sop:"book",
+policy:"book",
+contractor:"grid",
+notification:"grid",
+master:"settings",
+users:"grid"
+
+};
+
 /* ==========================================
-   Icon Mapping
+   PATCH 25.2.2
+   Fallback Category (Dikembalikan)
    ========================================== */
 
-const ICON_MAP = {
-  dashboard:"grid",
-  inspection:"clipboard",
-  finding:"list",
-  pica:"wrench",
-  hazard:"alert",
-  incident:"shield",
-  ptw:"file",
-  audit:"list",
-  sop:"book",
-  policy:"book",
-  contractor:"grid",
-  notification:"grid",
-  master:"settings",
-  users:"grid"
-};
-   const CATEGORY_MAP = {
+const CATEGORY_MAP={
 
-  inspection:"operational",
-  finding:"operational",
-  pica:"operational",
-  hazard:"operational",
-  incident:"operational",
-  ptw:"operational",
-  audit:"operational",
-  "mine-permit":"operational",
-  commissioning:"operational",
+inspection:"operational",
+finding:"operational",
+pica:"operational",
+hazard:"operational",
+incident:"operational",
+ptw:"operational",
+audit:"operational",
+"mine-permit":"operational",
+commissioning:"operational",
 
-  waste:"environment",
-  spill:"environment",
-  dust:"environment",
-  water:"environment",
-  noise:"environment",
-  emission:"environment",
-  flora:"environment",
+waste:"environment",
+spill:"environment",
+dust:"environment",
+water:"environment",
+noise:"environment",
+emission:"environment",
+flora:"environment",
 
-  "first-aid":"medical",
-  clinic:"medical",
-  mcu:"medical",
-  fatigue:"medical",
-  "fit-work":"medical"
+"first-aid":"medical",
+clinic:"medical",
+mcu:"medical",
+fatigue:"medical",
+"fit-work":"medical"
 
 };
 
@@ -142,128 +148,128 @@ const ICON_MAP = {
    Sidebar Engine
    ========================================== */
 
-const Sidebar = {
+const Sidebar={
 
-  collapsed:false,
-  cache:null,
+collapsed:false,
+cache:null,
 
-  /* ---------- FIX #1 ---------- */
+async init(){
 
-  async init(){
+const root=document.getElementById("sidebar");
+if(!root) return;
 
-    const root=document.getElementById("sidebar");
-    if(!root) return;
+root.innerHTML=await this.template();
 
-    root.innerHTML=await this.template();
+this.bind();
 
-    this.bind();
+/* PATCH: sinkron Router */
 
-    this.activate(
-      window.Router?.current ||
-      location.hash.replace("#","") ||
-      "dashboard"
-    );
+this.activate(
+window.Router?.current ||
+location.hash.replace("#","") ||
+"dashboard"
+);
 
-  },
+},
 
-  async refresh(){
+async refresh(){
 
-    this.cache=null;
-    await this.init();
+this.cache=null;
+await this.init();
 
-  },
+},
 
-  /* ---------- FIX #2 ---------- */
+bind(){
 
-  bind(){
+document.querySelectorAll(".sb-item").forEach(btn=>{
 
-    document.querySelectorAll(".sb-item").forEach(btn=>{
+btn.onclick=()=>{
 
-      btn.onclick=()=>{
+/* PATCH: Router aman */
 
-        if(window.Router){
+if(window.Router){
 
-          Router.navigate(btn.dataset.route);
+Router.navigate(btn.dataset.route);
 
-        }
+}
 
-        this.activate(btn.dataset.route);
+this.activate(btn.dataset.route);
 
-        if(window.innerWidth<=768){
+if(window.innerWidth<=768){
 
-          document.body.classList.remove("sidebar-open");
+document.body.classList.remove("sidebar-open");
 
-        }
+}
 
-      };
+};
 
-    });
+});
 
-    const toggle=document.getElementById("sb-toggle");
+const toggle=document.getElementById("sb-toggle");
 
-    if(toggle){
+if(toggle){
 
-      toggle.onclick=()=>this.toggle();
+toggle.onclick=()=>this.toggle();
 
-    }
+}
 
-  },
+},
 
-  toggle(){
+toggle(){
 
-    if(window.innerWidth<=768){
+if(window.innerWidth<=768){
 
-      document.body.classList.toggle("sidebar-open");
-      return;
+document.body.classList.toggle("sidebar-open");
+return;
 
-    }
+}
 
-    this.collapsed=!this.collapsed;
+this.collapsed=!this.collapsed;
 
-    document.body.classList.toggle(
-      "sidebar-collapsed",
-      this.collapsed
-    );
+document.body.classList.toggle(
+"sidebar-collapsed",
+this.collapsed
+);
 
-  },
+},
 
-  activate(route){
+activate(route){
 
-    document.querySelectorAll(".sb-item").forEach(btn=>{
+document.querySelectorAll(".sb-item")
+.forEach(btn=>{
 
-      btn.classList.toggle(
-        "active",
-        btn.dataset.route===route
-      );
+btn.classList.toggle(
+"active",
+btn.dataset.route===route
+);
 
-    });
-  },
+});
 
-  /* ---------- FIX #3 ---------- */
+},
 
-  async loadRegistry(){
+async loadRegistry(){
 
-    if(Array.isArray(this.cache) && this.cache.length){
+if(Array.isArray(this.cache)&&this.cache.length){
 
-      return this.cache;
+return this.cache;
 
-    }
+}
 
-    try{
+try{
 
-      this.cache=await CGGLoader.modules();
+this.cache=await CGGLoader.modules();
 
-    }catch(e){
+}catch(e){
 
-      console.warn("Sidebar menggunakan cache lokal.");
+console.warn("Sidebar menggunakan cache lokal.");
 
-      this.cache=[];
+this.cache=[];
 
-    }
+}
 
-    return this.cache;
+return this.cache;
 
-  },
+},
 
   async template(){
 
@@ -271,7 +277,7 @@ const Sidebar = {
 
     const visible=[];
 
-    /* ---------- FIX #4 ---------- */
+    /* PATCH: filter role aman */
 
     for(const m of modules){
 
@@ -298,7 +304,12 @@ const Sidebar = {
 
     visible.forEach(m=>{
 
-      const cat = m.category || CATEGORY_MAP[m.module] || "custom";
+      /* PATCH: fallback category */
+
+      const cat=
+        m.category ||
+        CATEGORY_MAP[m.module] ||
+        "custom";
 
       (groups[cat]??=[]).push(m);
 
@@ -331,7 +342,8 @@ onerror="this.src='assets/Logo/logo-cgg.png'">
 
 <div class="sb-title">Dashboard</div>
 
-<button class="sb-item" data-route="dashboard">
+<button class="sb-item"
+data-route="dashboard">
 
 ${SVG.grid}
 
@@ -342,6 +354,7 @@ ${SVG.grid}
 </div>
 
 `;
+
     CATEGORY_ORDER.forEach(cat=>{
 
       const list=groups[cat];
@@ -362,7 +375,10 @@ ${CATEGORY_TITLE[cat]}
 
       list.forEach(m=>{
 
-        const iconName=ICON_MAP[m.module]||m.icon||"grid";
+        const iconName=
+          ICON_MAP[m.module] ||
+          m.icon ||
+          "grid";
 
         html+=`
 
