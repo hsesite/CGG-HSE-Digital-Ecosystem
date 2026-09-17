@@ -246,14 +246,14 @@ Loading Command Center...
 
 /* Splash */
 
-window.addEventListener("load",()=>{
+document.addEventListener("DOMContentLoaded",()=>{
 
-setTimeout(()=>{
+    requestAnimationFrame(()=>{
 
-document.getElementById("splash-screen")
-?.classList.add("fade-out");
+        document.getElementById("splash-screen")
+        ?.classList.add("fade-out");
 
-},300);
+    });
 
 });
 
