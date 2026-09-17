@@ -66,7 +66,7 @@ z-index:99998;
 box-shadow:0 10px 25px rgba(0,230,118,.35);
 `;
 
-buploadButton.onclick = ()=>Router.navigate("upload");
+btn.onclick=()=>Router.navigate("upload");
 
 document.body.appendChild(btn);
 
