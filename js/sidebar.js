@@ -90,6 +90,12 @@ report:`<svg viewBox="0 0 24 24"><path d="M14 3H6v18h12V9z"/><path d="M14 3v6h6"
 
 settings:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1-2-3-2 1a7 7 0 0 0-2-1l-.3-2H10l-.3 2a7 7 0 0 0-2 1l-2-1-2 3 2 1a7 7 0 0 0 0 2l-2 1 2 3 2-1a7 7 0 0 0 2 1l.3 2h4l.3-2a7 7 0 0 0 2-1l2 1 2-3-2-1c.1-.3.1-.7.1-1z"/></svg>`
 
+upload:`<svg viewBox="0 0 24 24">
+<path d="M12 16V4"/>
+<path d="M8 8l4-4 4 4"/>
+<path d="M4 20h16"/>
+</svg>`,
+
 };
    
 const ICON_MAP={
