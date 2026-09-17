@@ -1019,3 +1019,58 @@ color:#00E676;
 }
 
 }
+/* ==========================================
+   HDOS Upload Center
+   Build 26.2
+   ========================================== */
+
+.hdos-dropzone{
+
+margin-top:16px;
+padding:36px;
+border:2px dashed rgba(0,230,118,.35);
+border-radius:20px;
+text-align:center;
+cursor:pointer;
+transition:.25s;
+background:rgba(255,255,255,.02);
+
+}
+
+.hdos-dropzone:hover{
+
+background:rgba(0,230,118,.05);
+
+}
+
+.hdos-dropzone.drag{
+
+border-color:#00E676;
+background:rgba(0,230,118,.08);
+
+}
+
+.hdos-job{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+margin-top:12px;
+padding:14px;
+border-radius:14px;
+
+background:rgba(255,255,255,.04);
+
+}
+
+.hdos-job .badge{
+
+padding:6px 12px;
+border-radius:999px;
+
+background:#00E676;
+color:#00130A;
+font-weight:700;
+
+}
