@@ -130,13 +130,13 @@ list.innerHTML=this.jobs.map(job=>`
 
 window.HDOSUploadCenter=UploadCenter;
 
-window.addEventListener("load",()=>{
+document.addEventListener("DOMContentLoaded",()=>{
 
-setTimeout(()=>{
+    requestAnimationFrame(()=>{
 
-HDOSUploadCenter.mount();
+        HDOSUploadCenter.mount();
 
-},300);
+    });
 
 });
 
