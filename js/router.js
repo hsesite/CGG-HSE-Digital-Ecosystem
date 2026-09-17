@@ -77,6 +77,8 @@ sop:()=>this.renderDynamic("sop","SOP"),
 
 policy:()=>this.renderDynamic("policy","Policy"),
 
+upload:()=>HDOSUploadCenter.render(),
+
 contractor:()=>this.renderDynamic("contractor","Contractor"),
 
 notification:()=>this.renderDynamic("notification","Notification"),
