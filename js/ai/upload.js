@@ -1,6 +1,6 @@
 /* ==========================================
    CGG HDOS AI Upload Center
-   Build 26.1.2 Stable
+   Build 26.1.3 Stable
    Permanent Upload Launcher
    ========================================== */
 
@@ -12,10 +12,19 @@ const Upload={
 
 input:null,
 
+/* ==========================================
+   Upload Center Page
+   ========================================== */
+
 render(){
 
   const view=document.getElementById("router-view");
   if(!view) return;
+
+  /* pastikan hidden input sudah ada */
+  if(!this.input){
+    this.init();
+  }
 
   view.innerHTML=`
   <div class="glass-card section-card fade-in">
@@ -52,6 +61,10 @@ render(){
 
 },
 
+/* ==========================================
+   Initialize Upload Engine
+   ========================================== */
+
 init(){
 
 if(this.input) return;
@@ -69,10 +82,7 @@ this.input.addEventListener("change",async()=>{
 const file=this.input.files[0];
 if(!file) return;
 
-const detect=HDOSDetector.detect(file);
-const result=await HDOSEngine.process(file);
-
-this.showResult(file,detect,result);
+await this.process(file);
 
 /* reset agar file sama bisa dipilih lagi */
 
@@ -80,19 +90,11 @@ this.input.value="";
 
 });
 
-process:async function(file){
-
-const detect=HDOSDetector.detect(file);
-
-const result=await HDOSEngine.process(file);
-
-this.showResult(file,detect,result);
-
-},
-
 document.body.appendChild(this.input);
 
 /* Floating Upload Button */
+
+if(!document.getElementById("hdos-upload-btn")){
 
 const btn=document.createElement("button");
 
@@ -120,7 +122,27 @@ btn.onclick=()=>Router.navigate("upload");
 
 document.body.appendChild(btn);
 
+}
+
 },
+
+/* ==========================================
+   Unified Upload Process
+   ========================================== */
+
+async process(file){
+
+const detect=HDOSDetector.detect(file);
+
+const result=await HDOSEngine.process(file);
+
+this.showResult(file,detect,result);
+
+},
+
+/* ==========================================
+   Preview Result
+   ========================================== */
 
 showResult(file,detect,result){
 
@@ -195,7 +217,9 @@ document.getElementById("hdos-close-preview").onclick=()=>panel.remove();
 
 window.HDOSUpload=Upload;
 
-/* Auto Start */
+/* ==========================================
+   Auto Start
+   ========================================== */
 
 window.addEventListener("load",()=>Upload.init());
 
