@@ -21,17 +21,19 @@ const RETRY_DELAY = 3000;
 
 async function send(item){
 
-  const endpoint = await CGGConfig.load(item.module);
+  const endpoint = window.CGGConfig?.endpoint;
 
   if(!endpoint){
 
-    throw new Error(`Endpoint ${item.module} belum dikonfigurasi.`);
+    throw new Error("Endpoint HDOS belum dikonfigurasi.");
 
   }
 
   const payload = {
 
+    action:item.module,
     module:item.module,
+    queue_id:item.id,
     tenant:item.tenant,
     company:item.company,
     createdBy:item.createdBy,
