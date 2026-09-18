@@ -344,19 +344,6 @@ Konfirmasi Simpan
 
 `).join("");
 
-    /* Event pilih modul */
-    list.querySelectorAll(".hdos-module-select").forEach(select=>{
-
-      select.onchange=()=>{
-
-        const job=this.jobs.find(j=>j.id==select.dataset.id);
-
-        if(job){
-          job.module=select.value;
-        }
-      };
-    });
-
     /* Event Simpan */
     list.querySelectorAll(".hdos-save-btn").forEach(btn=>{
 
