@@ -54,6 +54,7 @@ render(){
 </div>
 `;
   const drop=view.querySelector("#hdos-dropzone");
+  launch.onclick=()=>this.input.click();
 
   drop.onclick=()=>this.input.click();
 
