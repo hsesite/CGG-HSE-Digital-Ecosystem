@@ -272,6 +272,120 @@ color:white;">
 
 };
 
+    list.innerHTML=this.jobs.map(job=>`
+
+<div class="glass-card" style="margin-top:18px;padding:18px;">
+
+<div style="display:flex;justify-content:space-between;align-items:center;">
+
+<div>
+
+<div style="font-weight:700;font-size:18px;">${job.name}</div>
+
+<div style="color:#9fb3c8;font-size:13px;">
+${job.type} • ${job.size} KB
+</div>
+
+</div>
+
+<div style="background:#00E67622;color:#00E676;padding:6px 12px;border-radius:999px;font-size:12px;">
+${job.status}
+</div>
+
+</div>
+
+<div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+<div>
+<div style="font-size:12px;color:#9fb3c8;">AI Confidence</div>
+<div style="font-weight:700;">${job.confidence}%</div>
+</div>
+
+<div>
+
+<div style="font-size:12px;color:#9fb3c8;">Simpan ke Modul</div>
+
+<select
+class="hdos-module-select"
+data-id="${job.id}"
+style="
+width:100%;
+margin-top:6px;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#112033;
+color:white;">
+
+<option value="inspection" ${job.module==="inspection"?"selected":""}>Inspection</option>
+<option value="finding" ${job.module==="finding"?"selected":""}>Finding</option>
+<option value="hazard" ${job.module==="hazard"?"selected":""}>Hazard Report</option>
+<option value="incident" ${job.module==="incident"?"selected":""}>Incident</option>
+<option value="waste" ${job.module==="waste"?"selected":""}>Waste B3</option>
+<option value="sop" ${job.module==="sop"?"selected":""}>SOP</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div style="margin-top:18px;display:flex;gap:10px;justify-content:flex-end;">
+
+<button class="btn-secondary">Preview</button>
+
+<button class="btn-primary hdos-save-btn" data-id="${job.id}">
+Konfirmasi Simpan
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+    /* Event pilih modul */
+    list.querySelectorAll(".hdos-module-select").forEach(select=>{
+
+      select.onchange=()=>{
+
+        const job=this.jobs.find(j=>j.id==select.dataset.id);
+
+        if(job){
+          job.module=select.value;
+        }
+
+      };
+
+    });
+
+    /* Event Simpan */
+    list.querySelectorAll(".hdos-save-btn").forEach(btn=>{
+
+      btn.onclick=async()=>{
+
+        const job=this.jobs.find(j=>j.id==btn.dataset.id);
+
+        if(!job) return;
+
+        job.status="Menyimpan...";
+        this.renderQueue();
+
+        await new Promise(r=>setTimeout(r,500));
+
+        job.status="Tersimpan";
+        this.renderQueue();
+
+      };
+
+    });
+
+  }
+
+};
+
+window.HDOSUpload=Upload;
+
 /* Event pilih modul */
 
 list.querySelectorAll(".hdos-module-select").forEach(select=>{
