@@ -73,8 +73,6 @@ const detect=HDOSDetector.detect(file);
 const result=await HDOSEngine.process(file);
 
 this.showResult(file,detect,result);
-   
-await this.process(file);
 
 /* reset agar file sama bisa dipilih lagi */
 
