@@ -208,8 +208,35 @@ ${job.status}
 </div>
 
 <div>
-<div style="font-size:12px;color:#9fb3c8;">Modul AI</div>
-<div style="font-weight:700;">${job.module}</div>
+
+<div style="font-size:12px;color:#9fb3c8;">Simpan ke Modul</div>
+
+<select
+class="hdos-module-select"
+data-id="${job.id}"
+style="
+width:100%;
+margin-top:6px;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#112033;
+color:white;">
+
+<option value="inspection" ${job.module==="inspection"?"selected":""}>Inspection</option>
+
+<option value="finding" ${job.module==="finding"?"selected":""}>Finding</option>
+
+<option value="hazard" ${job.module==="hazard"?"selected":""}>Hazard Report</option>
+
+<option value="incident" ${job.module==="incident"?"selected":""}>Incident</option>
+
+<option value="waste" ${job.module==="waste"?"selected":""}>Waste B3</option>
+
+<option value="sop" ${job.module==="sop"?"selected":""}>SOP</option>
+
+</select>
+
 </div>
 
 </div>
@@ -218,7 +245,7 @@ ${job.status}
 
 <button class="btn-secondary">Preview</button>
 
-<button class="btn-primary">Konfirmasi Simpan</button>
+<button class="btn-primary hdos-save-btn" data-id="${job.id}"> Konfirmasi Simpan</button>
 
 </div>
 
@@ -229,6 +256,50 @@ ${job.status}
 }
 
 };
+
+/* Event pilih modul */
+
+list.querySelectorAll(".hdos-module-select").forEach(select=>{
+
+select.onchange=()=>{
+
+const job=this.jobs.find(j=>j.id==select.dataset.id);
+
+if(job){
+
+job.module=select.value;
+
+}
+
+};
+
+});
+
+/* Event Simpan */
+
+list.querySelectorAll(".hdos-save-btn").forEach(btn=>{
+
+btn.onclick=async()=>{
+
+const job=this.jobs.find(j=>j.id==btn.dataset.id);
+
+if(!job) return;
+
+job.status="Menyimpan...";
+
+this.renderQueue();
+
+/* sementara tahap berikutnya */
+
+await new Promise(r=>setTimeout(r,500));
+
+job.status="Tersimpan";
+
+this.renderQueue();
+
+};
+
+});
 window.HDOSUpload=Upload;
 
 /* ==========================================
