@@ -523,17 +523,22 @@ const InspectionModule = (() => {
 
     try{
 
-      const result=await apiPost("inspection",payload);
+      const result=await HDOSModule.save({
+        module:"inspection",
+        payload,
+        company:payload.company,
+        createdBy:payload.inspector
+      });
 
-      if(!result.success){
+      if(result.sync.processed>0){
 
-        alert(result.message||"Gagal menyimpan.");
+        alert(`Inspection tersimpan dan tersinkron (${result.item.id}).`);
 
-        return;
+      }else{
+
+        alert(`Inspection tersimpan offline (${result.item.id}). Akan disinkronkan otomatis.`);
 
       }
-
-      alert(`Inspection ${result.inspection_id} berhasil disimpan.`);
 
       if(window.DashboardLive){
 
