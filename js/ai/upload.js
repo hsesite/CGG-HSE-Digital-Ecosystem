@@ -11,7 +11,8 @@
 const Upload={
 
 input:null,
-
+jobs:[],
+   
 /* ==========================================
    Upload Center Page
    ========================================== */
@@ -34,6 +35,7 @@ render(){
       <div id="hdos-dropzone" class="hdos-dropzone">
           📄 Klik atau Drop File di sini
       </div>
+      <div id="hdos-upload-list" class="hdos-upload-list"></div>
   </div>
   `;
 
@@ -146,70 +148,27 @@ this.showResult(file,detect,result);
 
 showResult(file,detect,result){
 
-const old=document.getElementById("hdos-upload-preview");
-if(old) old.remove();
+const job={
 
-const panel=document.createElement("div");
+id:Date.now(),
 
-panel.id="hdos-upload-preview";
+name:file.name,
 
-panel.style.cssText=`
-position:fixed;
-right:24px;
-bottom:84px;
-width:360px;
-background:#071423;
-border:1px solid rgba(0,255,170,.25);
-border-radius:18px;
-padding:18px;
-color:white;
-z-index:99999;
-box-shadow:0 20px 50px rgba(0,0,0,.45);
-`;
+size:(file.size/1024).toFixed(1),
 
-panel.innerHTML=`
+type:detect.type.toUpperCase(),
 
-<div style="font-size:18px;font-weight:700;margin-bottom:12px">
-HDOS AI Engine
-</div>
+confidence:Math.round(detect.confidence*100),
 
-<div style="font-size:13px;color:#9fb3c8;margin-bottom:16px">
-Dokumen berhasil dianalisis.
-</div>
+module:detect.module||"manual",
 
-<div style="display:grid;gap:8px">
+status:"Siap Disimpan"
 
-<div><b>Nama</b><br>${file.name}</div>
+};
 
-<div><b>Jenis</b><br>${detect.type.toUpperCase()}</div>
+this.jobs.unshift(job);
 
-<div><b>Ukuran</b><br>${(file.size/1024).toFixed(1)} KB</div>
-
-<div><b>Confidence</b><br>${Math.round(detect.confidence*100)}%</div>
-
-<div><b>Status</b><br>${result.status}</div>
-
-</div>
-
-<button id="hdos-close-preview"
-style="
-margin-top:18px;
-width:100%;
-padding:10px;
-border:none;
-border-radius:12px;
-background:#00E676;
-color:#00130A;
-font-weight:700;
-cursor:pointer;">
-Tutup
-</button>
-
-`;
-
-document.body.appendChild(panel);
-
-document.getElementById("hdos-close-preview").onclick=()=>panel.remove();
+this.renderQueue();
 
 }
 
