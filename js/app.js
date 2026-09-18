@@ -47,6 +47,35 @@ async function boot() {
 
 }
 
-window.addEventListener("DOMContentLoaded", boot);
+window.addEventListener("load", async () => {
+  console.log("CGG HDOS Fast Boot Starting...");
 
-})();
+  try {
+    if (window.Sidebar) {
+      await Sidebar.init();
+      console.log("✓ Sidebar Ready");
+    }
+
+    if (window.Router) {
+      await Router.init();
+      console.log("✓ Router Ready");
+    }
+
+    if (window.CGGSync) {
+      CGGSync.start();
+      console.log("✓ Network Registry Synchronized in Background");
+    }
+  } catch (err) {
+    console.error("Boot Error:", err);
+
+    const view = document.getElementById("router-view");
+    if (view) {
+      view.innerHTML = `
+        <div class="glass-card section-card">
+          <h2>Boot Error</h2>
+          <p>${err.message}</p>
+        </div>
+      `;
+    }
+  }
+});
