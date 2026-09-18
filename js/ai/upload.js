@@ -12,6 +12,46 @@ const Upload={
 
 input:null,
 
+render(){
+
+  const view=document.getElementById("router-view");
+  if(!view) return;
+
+  view.innerHTML=`
+  <div class="glass-card section-card fade-in">
+      <h1>Upload Center</h1>
+      <p>Drag & Drop PDF, Word, Excel, atau gambar.</p>
+
+      <div id="hdos-dropzone" class="hdos-dropzone">
+          📄 Klik atau Drop File di sini
+      </div>
+  </div>
+  `;
+
+  const drop=view.querySelector("#hdos-dropzone");
+
+  drop.onclick=()=>this.input.click();
+
+  drop.ondragover=e=>{
+    e.preventDefault();
+    drop.classList.add("drag");
+  };
+
+  drop.ondragleave=()=>{
+    drop.classList.remove("drag");
+  };
+
+  drop.ondrop=e=>{
+    e.preventDefault();
+    drop.classList.remove("drag");
+
+    if(e.dataTransfer.files.length){
+      this.process(e.dataTransfer.files[0]);
+    }
+  };
+
+},
+
 init(){
 
 if(this.input) return;
@@ -29,16 +69,23 @@ this.input.addEventListener("change",async()=>{
 const file=this.input.files[0];
 if(!file) return;
 
-const detect=HDOSDetector.detect(file);
-const result=await HDOSEngine.process(file);
-
-this.showResult(file,detect,result);
+await this.process(file);
 
 /* reset agar file sama bisa dipilih lagi */
 
 this.input.value="";
 
 });
+
+process:async function(file){
+
+const detect=HDOSDetector.detect(file);
+
+const result=await HDOSEngine.process(file);
+
+this.showResult(file,detect,result);
+
+},
 
 document.body.appendChild(this.input);
 
