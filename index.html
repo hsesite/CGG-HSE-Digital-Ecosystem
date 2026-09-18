@@ -37,7 +37,7 @@
 
 /* ==========================================
    Splash Screen
-   ========================================== */
+========================================== */
 
 #splash-screen{
 
@@ -130,7 +130,7 @@ font-size:18px;
 
 <!-- ==========================================
      Splash Screen
-     ========================================== -->
+========================================== -->
 
 <div id="splash-screen">
 
@@ -155,7 +155,7 @@ Loading Command Center...
 
 <!-- ==========================================
      Main Application
-     ========================================== -->
+========================================== -->
 
 <div id="app">
 
@@ -181,7 +181,7 @@ Loading Command Center...
 
 <!-- ==========================================
      Core Engine
-     ========================================== -->
+========================================== -->
 
 <script src="js/api.js"></script>
 
@@ -205,33 +205,21 @@ Loading Command Center...
 <script src="js/mobile-effects.js"></script>
 <script src="js/mobile.js"></script>
 
-<!-- ========================================
-     Offline & Database Foundation
-======================================== -->
+<!-- ==========================================
+     Offline & Data Engine
+========================================== -->
 
 <script src="js/offline/db.js"></script>
 <script src="js/data/cache.js"></script>
-<script src="js/core/document-store.js"></script>
 
-<!-- ========================================
-     Data Engine
-======================================== -->
+<!-- Document Store (lokasi sesuai project saat ini) -->
+<script src="assets/js/core/document-store.js"></script>
 
 <script src="js/data/loader.js"></script>
-<script src="js/data/schema.js"></script>
-<script src="js/data/signature.js"></script>
-<script src="js/data/evolution.js"></script>
-<script src="js/data/queue.js"></script>
 
-<!-- ========================================
-     Core Engine
-======================================== -->
-
-<script src="js/core/module-engine.js"></script>
-
-<!-- ========================================
+<!-- ==========================================
      AI Engine
-======================================== -->
+========================================== -->
 
 <script src="js/ai/detector.js"></script>
 <script src="js/ai/parser.js"></script>
@@ -239,28 +227,40 @@ Loading Command Center...
 <script src="js/ai/upload.js"></script>
 <script src="js/ai/upload-center.js"></script>
 
-<!-- ========================================
+<!-- ==========================================
      Renderer
-======================================== -->
+========================================== -->
 
 <script src="js/render/form-renderer.js"></script>
+
+<!-- ==========================================
+     Dynamic Data
+========================================== -->
+
+<script src="js/data/schema.js"></script>
+<script src="js/data/signature.js"></script>
+<script src="js/data/evolution.js"></script>
+<script src="js/data/queue.js"></script>
+
+<script src="js/core/module-engine.js"></script>
+
 <!-- ==========================================
      Authentication
-     ========================================== -->
+========================================== -->
 
 <script src="js/auth/identity.js"></script>
 <script src="js/auth/role.js"></script>
 
 <!-- ==========================================
      Sync Engine
-     ========================================== -->
+========================================== -->
 
 <script src="js/data/sync.js"></script>
 
 <!-- ==========================================
      HDOS Boot Sequence
      Build 23.1 Stable
-     ========================================== -->
+========================================== -->
 
 <script>
 
@@ -268,12 +268,12 @@ Loading Command Center...
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-    requestAnimationFrame(()=>{
+requestAnimationFrame(()=>{
 
-        document.getElementById("splash-screen")
-        ?.classList.add("fade-out");
+document.getElementById("splash-screen")
+?.classList.add("fade-out");
 
-    });
+});
 
 });
 
