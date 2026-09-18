@@ -163,7 +163,7 @@ const Upload={
 
       id:Date.now(),
 
-      file,
+      file:file,
 
       name:file.name,
       size:(file.size/1024).toFixed(1),
@@ -324,19 +324,36 @@ const Upload={
 
       btn.onclick=async()=>{
 
-        const job=this.jobs.find(j=>j.id==btn.dataset.id);
+const job=this.jobs.find(j=>j.id==btn.dataset.id);
 
-        if(!job) return;
+if(!job) return;
 
-        job.status="Menyimpan...";
-        this.renderQueue();
+job.status="Menyimpan...";
+this.renderQueue();
 
-        await new Promise(r=>setTimeout(r,500));
+try{
 
-        job.status="Tersimpan";
-        this.renderQueue();
+  await DocumentStore.save(job.file,{
+    id:job.id,
+    name:job.name,
+    module:job.module,
+    type:job.type,
+    confidence:job.confidence,
+    created:new Date().toISOString()
+  });
 
-      };
+  job.status="Tersimpan";
+
+}catch(err){
+
+  console.error(err);
+  job.status="Gagal";
+
+}
+
+this.renderQueue();
+
+};
 
     });
 
