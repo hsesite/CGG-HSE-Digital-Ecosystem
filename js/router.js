@@ -79,7 +79,19 @@ finding:()=>this.renderDynamic("finding","Finding"),
 
 pica:()=>this.renderDynamic("pica","PICA"),
 
-hazard:()=>this.renderDynamic("hazard","Hazard Report"),
+hazard:async()=>{
+
+if(window.Hazard?.render){
+
+await Hazard.render();
+
+}else{
+
+await this.renderDynamic("hazard","Hazard Report");
+
+}
+
+},
 
 incident:()=>this.renderDynamic("incident","Incident"),
 
@@ -90,8 +102,6 @@ audit:()=>this.renderDynamic("audit","Audit"),
 sop:()=>this.renderDynamic("sop","SOP"),
 
 policy:()=>this.renderDynamic("policy","Policy"),
-
-upload:()=>HDOSUploadCenter.render(),
 
 contractor:()=>this.renderDynamic("contractor","Contractor"),
 
