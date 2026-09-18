@@ -27,18 +27,32 @@ render(){
     this.init();
   }
 
-  view.innerHTML=`
-  <div class="glass-card section-card fade-in">
-      <h1>Upload Center</h1>
-      <p>Drag & Drop PDF, Word, Excel, atau gambar.</p>
+ view.innerHTML=`
+<div class="glass-card section-card fade-in">
 
-      <div id="hdos-dropzone" class="hdos-dropzone">
-          📄 Klik atau Drop File di sini
-      </div>
-      <div id="hdos-upload-list" class="hdos-upload-list"></div>
-  </div>
-  `;
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
 
+        <div>
+            <h1>Upload Center</h1>
+            <p>Drag & Drop PDF, Word, Excel, atau gambar.</p>
+        </div>
+
+        <button id="hdos-upload-launch"
+        class="btn-primary"
+        style="padding:12px 22px;border-radius:12px;">
+            📄 Upload File
+        </button>
+
+    </div>
+
+    <div id="hdos-dropzone" class="hdos-dropzone">
+        📄 Klik atau Drop File di sini
+    </div>
+
+    <div id="hdos-upload-list" class="hdos-upload-list"></div>
+
+</div>
+`;
   const drop=view.querySelector("#hdos-dropzone");
 
   drop.onclick=()=>this.input.click();
