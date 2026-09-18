@@ -365,10 +365,6 @@ Konfirmasi Simpan
 
     });
 
-  }
-
-};
-
 window.HDOSUpload=Upload;
 
 /* Event pilih modul */
