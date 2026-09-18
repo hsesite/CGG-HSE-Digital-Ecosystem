@@ -288,35 +288,6 @@ job.module=select.value;
 
 };
 
-});
-
-/* Event Simpan */
-
-list.querySelectorAll(".hdos-save-btn").forEach(btn=>{
-
-btn.onclick=async()=>{
-
-const job=this.jobs.find(j=>j.id==btn.dataset.id);
-
-if(!job) return;
-
-job.status="Menyimpan...";
-
-this.renderQueue();
-
-/* sementara tahap berikutnya */
-
-await new Promise(r=>setTimeout(r,500));
-
-job.status="Tersimpan";
-
-this.renderQueue();
-
-};
-
-});
-window.HDOSUpload=Upload;
-
 /* ==========================================
    Auto Start
    ========================================== */
