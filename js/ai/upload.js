@@ -354,9 +354,6 @@ Konfirmasi Simpan
         if(job){
           job.module=select.value;
         }
-
-      };
-
     });
 
     /* Event Simpan */
