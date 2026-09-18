@@ -47,6 +47,20 @@ this.placeholder("Dashboard belum tersedia.");
 
 },
 
+upload:async()=>{
+
+  if(window.HDOSUpload?.render){
+
+    await HDOSUpload.render();
+
+  }else{
+
+    this.placeholder("Upload Center");
+
+  }
+
+},
+   
 inspection:async()=>{
 
 if(window.Inspection?.render){
