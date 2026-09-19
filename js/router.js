@@ -49,9 +49,9 @@ this.placeholder("Dashboard belum tersedia.");
 
 upload:async()=>{
 
-  if(window.HDOSUpload?.render){
+  if(window.HDOSRepositoryUpload?.render){
 
-    await HDOSUpload.render();
+    await HDOSRepositoryUpload.render();
 
   }else{
 
