@@ -24,6 +24,11 @@ async function fastBoot(){
             console.log("✓ Router Ready");
         }
 
+       if(window.HDOSUpload){
+            HDOSUpload.init();
+            console.log("✓ Upload Launcher Ready");
+        }
+
         document.getElementById("splash-screen")
             ?.classList.add("fade-out");
 
