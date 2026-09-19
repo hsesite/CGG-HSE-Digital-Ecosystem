@@ -1,115 +1,68 @@
 /* ==========================================
    CGG HSE Digital Operating System
-   App Bootstrap - Fast Boot Engine
-   Build 26.3 Stable
-   ========================================== */
+   Build 26.4 LTS
+   Fast Boot Engine
+========================================== */
 
 (() => {
 
 "use strict";
 
-/* ==========================================
-   Main Boot Sequence
-   ========================================== */
+async function fastBoot(){
 
-async function boot(){
+    console.log("⚡ CGG HDOS Fast Boot Starting...");
 
-  console.log("⚡ CGG HDOS Fast Boot Starting...");
+    try{
 
-  try{
+        if(window.Sidebar){
+            await Sidebar.init();
+            console.log("✓ Sidebar Ready");
+        }
 
-    /* --------------------------------------
-       1. Render UI Instan
-       -------------------------------------- */
+        if(window.Router){
+            await Router.init();
+            console.log("✓ Router Ready");
+        }
 
-    if(window.Sidebar?.init){
-      await Sidebar.init();
-      console.log("✓ Sidebar Ready");
-    }
+        document.getElementById("splash-screen")
+            ?.classList.add("fade-out");
 
-    if(window.Router?.init){
-      await Router.init();
-      console.log("✓ Router Ready");
-    }
+        requestIdleCallback?.(()=>backgroundBoot());
 
-    if(window.DashboardLive?.init){
-      DashboardLive.init();
-      console.log("✓ Dashboard Live");
-    }
+        if(!window.requestIdleCallback){
+            setTimeout(backgroundBoot,50);
+        }
 
-    if(window.HDOSUpload?.init){
-      HDOSUpload.init();
-      console.log("✓ Upload Engine Ready");
-    }
+    }catch(err){
 
-    /* --------------------------------------
-       2. Hilangkan Splash
-       -------------------------------------- */
-
-    const splash=document.getElementById("splash-screen");
-
-    if(splash){
-      splash.classList.add("fade-out");
-    }
-
-    /* --------------------------------------
-       3. Sync Registry Background
-       -------------------------------------- */
-
-    if(window.CGGLoader?.modules){
-
-      CGGLoader.modules()
-        .then(()=>{
-
-          console.log("✓ Network Registry Synchronized in Background");
-
-        })
-        .catch(err=>{
-
-          console.warn("Registry background fetch skipped:",err);
-
-        });
+        console.error("Boot Error:",err);
 
     }
-
-    /* --------------------------------------
-       4. Offline Sync
-       -------------------------------------- */
-
-    if(window.CGGSync?.start){
-
-      CGGSync.start();
-
-    }
-
-  }catch(err){
-
-    console.error("Boot Critical Error:",err);
-
-    const view=document.getElementById("router-view");
-
-    if(view){
-
-      view.innerHTML=`
-      <div class="glass-card section-card fade-in">
-
-        <h2>Boot Error</h2>
-
-        <p>${err.message}</p>
-
-      </div>
-      `;
-
-    }
-
-  }
 
 }
 
-/* ==========================================
-   Start Application
-   ========================================== */
+async function backgroundBoot(){
 
-window.addEventListener("load",boot);
+    try{
+
+        if(window.CGGLoader){
+            await CGGLoader.modules();
+            console.log("✓ Registry Background Ready");
+        }
+
+        if(window.CGGSync){
+            CGGSync.start();
+            console.log("✓ Sync Ready");
+        }
+
+    }catch(err){
+
+        console.warn("Background Boot:",err);
+
+    }
+
+}
+
+window.addEventListener("load",fastBoot);
 
 })();
