@@ -10,7 +10,7 @@
 
 const DB_NAME="HDOS_DOCUMENTS";
 const STORE="documents";
-const VERSION=1;
+const VERSION=2;
 
 const Store={
 
@@ -40,6 +40,17 @@ s.createIndex("status","status");
 
 }
 
+if(!db.objectStoreNames.contains("audit")){
+
+const audit=db.createObjectStore("audit",{
+keyPath:"id"
+});
+
+audit.createIndex("entityId","entityId");
+audit.createIndex("time","time");
+
+}
+
 };
 
 req.onsuccess=e=>{
@@ -62,6 +73,8 @@ return "DOC-"+Date.now();
 async save(file,meta){
 
 const db=await this.open();
+const id=this.id();
+const now=new Date().toISOString();
 
 const tx=db.transaction(STORE,"readwrite");
 
@@ -69,7 +82,7 @@ const store=tx.objectStore(STORE);
 
 const doc={
 
-id:this.id(),
+id,
 
 name:file.name,
 
@@ -79,11 +92,23 @@ type:file.name.split(".").pop().toLowerCase(),
 
 blob:file,
 
-uploadedAt:new Date().toISOString(),
+uploadedAt:now,
+updatedAt:now,
 
 status:"pending-sync",
 
-version:"1.0",
+version:meta.revision||"1.0",
+originalFile:{
+  name:file.name,
+  size:file.size,
+  type:file.type||"application/octet-stream",
+  lastModified:file.lastModified||null
+},
+digitalVersion:{
+  status:"pending-sync",
+  generatedAt:now,
+  source:"HDOS AI Hybrid"
+},
 
 ...meta
 
@@ -91,10 +116,68 @@ version:"1.0",
 
 store.put(doc);
 
-return new Promise(resolve=>{
+return new Promise((resolve,reject)=>{
 
 tx.oncomplete=()=>resolve(doc);
+tx.onerror=()=>reject(tx.error);
 
+});
+
+},
+
+async update(id,patch={}){
+
+const current=await this.get(id);
+if(!current) throw new Error("Dokumen tidak ditemukan.");
+
+const db=await this.open();
+const updated={
+ ...current,
+ ...patch,
+ updatedAt:new Date().toISOString()
+};
+
+const tx=db.transaction(STORE,"readwrite");
+tx.objectStore(STORE).put(updated);
+
+return new Promise((resolve,reject)=>{
+tx.oncomplete=()=>resolve(updated);
+tx.onerror=()=>reject(tx.error);
+});
+
+},
+
+async audit(event,entityId,details={}){
+
+const db=await this.open();
+const entry={
+ id:`AUDIT-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+ event,
+ entityId,
+ time:new Date().toISOString(),
+ details
+};
+
+const tx=db.transaction("audit","readwrite");
+tx.objectStore("audit").put(entry);
+
+return new Promise((resolve,reject)=>{
+tx.oncomplete=()=>resolve(entry);
+tx.onerror=()=>reject(tx.error);
+});
+
+},
+
+async listAudit(entityId){
+
+const db=await this.open();
+const index=db.transaction("audit","readonly")
+ .objectStore("audit").index("entityId");
+
+return new Promise((resolve,reject)=>{
+const req=index.getAll(entityId);
+req.onsuccess=()=>resolve(req.result||[]);
+req.onerror=()=>reject(req.error);
 });
 
 },
