@@ -24,6 +24,11 @@ async function fastBoot(){
             console.log("✓ Router Ready");
         }
 
+       if(window.HDOSUploadCenter?.mount){
+            HDOSUploadCenter.mount();
+            console.log("✓ Upload Center Ready");
+        }
+
        if(window.HDOSUpload){
             HDOSUpload.init();
             console.log("✓ Upload Launcher Ready");
