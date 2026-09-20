@@ -10,7 +10,7 @@
 
 const DB_NAME="HDOS_DOCUMENTS";
 const STORE="documents";
-const VERSION=2;
+const VERSION=3;
 
 const Store={
 
