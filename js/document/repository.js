@@ -37,6 +37,16 @@ document.id,
 title:document.title,
 noForm:document.noForm,
 category:document.category
+
+const template=HDOSTemplateEngine.build({
+ name:job.name,
+ parsed:job.parsed,
+ id:document.id
+});
+
+document.template=template;
+document.module=template.module;
+document.inspectionType=template.inspectionType;
 }
 );
 
@@ -116,5 +126,13 @@ window.dispatchEvent(new Event("hdos:repository-updated"));
 };
 
 window.HDOSRepository=Repository;
+async listTemplates(module){
+
+const docs=await this.list();
+
+return docs.filter(doc=>
+doc.template &&
+doc.template.module===module
+);
 
 })();
