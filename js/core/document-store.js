@@ -235,7 +235,6 @@ tx.oncomplete=resolve;
 }
 
 };
-
-window.DocumentStore=Store;
+window.DocumentStore = DocumentStore;
 
 })();
