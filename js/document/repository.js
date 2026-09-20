@@ -1,59 +1,115 @@
 /* ==========================================
-   CGG HDOS Repository Engine
-   Build 27.0
+   CGG HDOS Repository
+   Build 27.2 Enterprise
+   Repository Gateway
    ========================================== */
 
 (() => {
 
 "use strict";
 
-const Repository = {
+const Repository={
 
-async save(document){
+/* ==========================
+   Save Document
+========================== */
+
+async save(job){
 
 if(!window.DocumentStore){
 
-throw new Error("DocumentStore belum tersedia.");
+throw new Error("DocumentStore belum dimuat.");
 
 }
 
-const id=document.id || `DOC-${Date.now()}`;
+const document=HDOSControlEngine.build(job);
 
-const payload={
+/* Simpan ke IndexedDB */
 
-...document,
+await DocumentStore.save(document);
 
-id,
+/* Audit Trail */
 
-createdAt:new Date().toISOString(),
+await DocumentStore.audit(
+"document.saved",
+document.id,
+{
+title:document.title,
+noForm:document.noForm,
+category:document.category
+}
+);
 
-updatedAt:new Date().toISOString(),
+/* Refresh Dashboard bila ada */
 
-status:document.status || "Approved"
+window.dispatchEvent(new CustomEvent("hdos:repository-updated",{
+detail:document
+}));
 
-};
-
-await DocumentStore.save(payload);
-
-return payload;
+return document;
 
 },
 
-async list(){
+/* ==========================
+   List Documents
+========================== */
 
-return await DocumentStore.list("documents");
+async list(category=null){
+
+const docs=await DocumentStore.list();
+
+if(!category) return docs;
+
+return docs.filter(d=>d.category===category);
 
 },
+
+/* ==========================
+   Get One
+========================== */
 
 async get(id){
 
-return await DocumentStore.get(id);
+return DocumentStore.get(id);
 
 },
 
+/* ==========================
+   Update
+========================== */
+
+async update(id,patch){
+
+const doc=await DocumentStore.update(id,patch);
+
+await DocumentStore.audit(
+"document.updated",
+id,
+patch
+);
+
+window.dispatchEvent(new CustomEvent("hdos:repository-updated",{
+detail:doc
+}));
+
+return doc;
+
+},
+
+/* ==========================
+   Delete
+========================== */
+
 async remove(id){
 
-return await DocumentStore.remove(id);
+await DocumentStore.remove(id);
+
+await DocumentStore.audit(
+"document.deleted",
+id
+);
+
+window.dispatchEvent(new Event("hdos:repository-updated"));
 
 }
 
