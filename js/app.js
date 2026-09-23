@@ -24,12 +24,12 @@ async function fastBoot(){
             console.log("✓ Router Ready");
         }
 
-       if(window.HDOSUploadCenter?.mount){
+        if(window.HDOSUploadCenter?.mount){
             HDOSUploadCenter.mount();
             console.log("✓ Upload Center Ready");
         }
 
-       if(window.HDOSUpload){
+        if(window.HDOSUpload){
             HDOSUpload.init();
             console.log("✓ Upload Launcher Ready");
         }
@@ -37,15 +37,15 @@ async function fastBoot(){
         document.getElementById("splash-screen")
             ?.classList.add("fade-out");
 
-        requestIdleCallback?.(()=>backgroundBoot());
-
-        if(!window.requestIdleCallback){
-            setTimeout(backgroundBoot,50);
+        if(typeof window.requestIdleCallback === "function"){
+            window.requestIdleCallback(() => backgroundBoot());
+        }else{
+            window.setTimeout(() => backgroundBoot(), 50);
         }
 
     }catch(err){
 
-        console.error("Boot Error:",err);
+        console.error("Boot Error:", err);
 
     }
 
@@ -67,12 +67,12 @@ async function backgroundBoot(){
 
     }catch(err){
 
-        console.warn("Background Boot:",err);
+        console.warn("Background Boot:", err);
 
     }
 
 }
 
-window.addEventListener("load",fastBoot);
+window.addEventListener("load", fastBoot);
 
 })();
