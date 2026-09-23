@@ -84,6 +84,44 @@ const InspectionModule = (() => {
 
           </div>
 
+          <!-- ==========================================
+     HDOS Dynamic Inspection Runtime
+     Build 27.4 Enterprise
+     ========================================== -->
+
+<div id="hdos-runtime-wrapper"
+     class="glass-card"
+     style="
+     margin:24px 0;
+     padding:20px;
+     border:1px solid rgba(0,230,118,.15);">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+
+    <div>
+
+      <h3 style="margin:0;">
+        Jenis Pemeriksaan
+      </h3>
+
+      <div style="font-size:13px;color:#8aa2bf;">
+        Template otomatis dari Repository
+      </div>
+
+    </div>
+
+    <span class="badge badge-info">
+      Runtime
+    </span>
+
+  </div>
+
+  <div id="hdos-runtime"
+       style="margin-top:18px;">
+  </div>
+
+</div>
+
           <hr class="section-divider">
 
           <div class="finding-header">
@@ -156,6 +194,47 @@ const InspectionModule = (() => {
     document.getElementById("date").value = today();
 
     populateMasterData();
+
+     /* ==========================================
+   HDOS Runtime Loader
+   Build 27.4
+   ========================================== */
+
+const runtimeContainer=document.getElementById("hdos-runtime");
+
+if(runtimeContainer){
+
+  if(window.HDOSInspectionRuntime){
+
+    try{
+
+      await HDOSInspectionRuntime.renderSelector(runtimeContainer);
+
+      console.log("✓ HDOS Runtime aktif.");
+
+    }catch(err){
+
+      console.error("Runtime gagal:",err);
+
+      runtimeContainer.innerHTML=`
+      <div style="padding:14px;background:#1f2937;border-radius:12px;">
+        Template gagal dimuat.
+      </div>
+      `;
+
+    }
+
+  }else{
+
+    runtimeContainer.innerHTML=`
+    <div style="padding:14px;background:#1f2937;border-radius:12px;">
+      Runtime Engine belum dimuat.
+    </div>
+    `;
+
+  }
+
+}
 
     document
       .getElementById("btn-add-finding")
@@ -503,9 +582,31 @@ const InspectionModule = (() => {
       unit_type:document.getElementById("unit-type").value,
       inspector:document.getElementById("inspector").value.trim(),
       date:document.getElementById("date").value,
-      findings
+      findings,
+       inspectionTemplate:
+runtimeData.template,
+
+inspectionChecklist:
+runtimeData.checklist,
+
+inspectionPhotos:
+runtimeData.photos,
 
     };
+
+     /* ==========================================
+   Runtime Collection
+   ========================================== */
+
+const runtimeData=
+window.HDOSInspectionRuntime &&
+window.HDOSInspectionRuntime.collect
+?HDOSInspectionRuntime.collect()
+:{
+template:null,
+checklist:[],
+photos:[]
+};
 
     if(!payload.area)
       return alert("Area wajib dipilih.");
@@ -632,6 +733,25 @@ const InspectionModule = (() => {
     return new Date().toISOString().split("T")[0];
 
   }
+
+   /* ==========================================
+   Runtime Refresh Listener
+   ========================================== */
+
+window.addEventListener(
+"hdos:repository-updated",
+()=>{
+
+const runtime=document.getElementById("hdos-runtime");
+
+if(runtime && window.HDOSInspectionRuntime){
+
+HDOSInspectionRuntime.renderSelector(runtime);
+
+}
+
+}
+);
 
   return{
 
