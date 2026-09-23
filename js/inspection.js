@@ -569,30 +569,84 @@ if(runtimeContainer){
      Submit
      ========================================== */
 
-  async function submitInspection(){
+  
+async function submitInspection(){
 
-    const payload={
-
-      company:document.getElementById("company").value,
-      site:document.getElementById("site").value,
-      area:document.getElementById("area").value,
-      shift:document.getElementById("shift").value,
-      unit:document.getElementById("unit").value,
-      unit_number:document.getElementById("unit-number").value,
-      unit_type:document.getElementById("unit-type").value,
-      inspector:document.getElementById("inspector").value.trim(),
-      date:document.getElementById("date").value,
-      findings,
-       inspectionTemplate:
-runtimeData.template,
-
-inspectionChecklist:
-runtimeData.checklist,
-
-inspectionPhotos:
-runtimeData.photos,
-
+  const runtimeData =
+    window.HDOSInspectionRuntime?.collect?.() || {
+      template:null,
+      checklist:[],
+      photos:[]
     };
+
+  const payload={
+
+    company:document.getElementById("company").value,
+    site:document.getElementById("site").value,
+    area:document.getElementById("area").value,
+    shift:document.getElementById("shift").value,
+    unit:document.getElementById("unit").value,
+    unit_number:document.getElementById("unit-number").value,
+    unit_type:document.getElementById("unit-type").value,
+    inspector:document.getElementById("inspector").value.trim(),
+    date:document.getElementById("date").value,
+
+    findings,
+
+    inspectionTemplate:runtimeData.template,
+    inspectionChecklist:runtimeData.checklist,
+    inspectionPhotos:runtimeData.photos
+
+  };
+
+  if(!payload.area)
+    return alert("Area wajib dipilih.");
+
+  if(!payload.unit)
+    return alert("Unit wajib dipilih.");
+
+  if(!payload.inspector)
+    return alert("Nama Inspector wajib diisi.");
+
+  const kosong=findings.some(f=>!f.description.trim());
+
+  if(kosong)
+    return alert("Semua deskripsi temuan wajib diisi.");
+
+  try{
+
+    const result=await HDOSModule.save({
+      module:"inspection",
+      payload,
+      company:payload.company,
+      createdBy:payload.inspector
+    });
+
+    if(result.sync.processed>0){
+
+      alert(`Inspection tersimpan dan tersinkron (${result.item.id}).`);
+
+    }else{
+
+      alert(`Inspection tersimpan offline (${result.item.id}). Akan disinkronkan otomatis.`);
+
+    }
+
+    window.DashboardLive?.refresh?.();
+
+    EnterpriseModal.close();
+
+    render(false);
+
+  }catch(err){
+
+    console.error(err);
+
+    alert("Gagal mengirim data.");
+
+  }
+
+}
 
      /* ==========================================
    Runtime Collection
