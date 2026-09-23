@@ -37,10 +37,12 @@ async function fastBoot(){
         document.getElementById("splash-screen")
             ?.classList.add("fade-out");
 
-        requestIdleCallback?.(()=>backgroundBoot());
-
-        if(!window.requestIdleCallback){
-            setTimeout(backgroundBoot,50);
+        // Referensi harus melalui window: optional chaining pada identifier
+        // yang belum didefinisikan tetap melempar ReferenceError.
+        if(typeof window.requestIdleCallback === "function"){
+            window.requestIdleCallback(() => backgroundBoot());
+        }else{
+            window.setTimeout(() => backgroundBoot(),50);
         }
 
     }catch(err){
