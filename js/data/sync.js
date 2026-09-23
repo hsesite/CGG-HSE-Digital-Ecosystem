@@ -1,4 +1,3 @@
-
 /* ==========================================
    CGG HDOS Sync Engine
    Build 15.6 Production
@@ -8,29 +7,21 @@
 (() => {
 "use strict";
 
-/* ==========================================
-   Sync Configuration
-   ========================================== */
-
 const MAX_RETRY = 5;
 const RETRY_DELAY = 3000;
-
-/* ==========================================
-   Send One Queue Item
-   ========================================== */
+let processing = false;
+let started = false;
+let timer = null;
 
 async function send(item){
 
   const endpoint = window.CGGConfig?.endpoint;
 
   if(!endpoint){
-
     throw new Error("Endpoint HDOS belum dikonfigurasi.");
-
   }
 
   const payload = {
-
     action:item.module,
     module:item.module,
     queue_id:item.id,
@@ -39,139 +30,107 @@ async function send(item){
     createdBy:item.createdBy,
     createdAt:item.createdAt,
     payload:item.payload
-
   };
 
   const res = await fetch(endpoint,{
-
     method:"POST",
-
-    headers:{
-      "Content-Type":"application/json"
-    },
-
+    headers:{"Content-Type":"application/json"},
     body:JSON.stringify(payload)
-
   });
 
   if(!res.ok){
-
     throw new Error("HTTP "+res.status);
-
   }
 
   const json = await res.json();
 
   if(!json.success){
-
-    throw new Error(json.message||"Sync gagal");
-
+    throw new Error(json.message || "Sync gagal");
   }
 
   return json;
 
 }
 
-/* ==========================================
-   Process Queue
-   ========================================== */
-
 async function processQueue(){
 
-  if(!navigator.onLine){
-
-    return {
-      online:false,
-      processed:0
-    };
-
+  if(processing){
+    return {online:navigator.onLine, processed:0, busy:true};
   }
 
-  const list = await CGGQueue.pending();
+  if(!navigator.onLine || !window.CGGQueue){
+    return {online:false, processed:0};
+  }
 
-  let processed = 0;
+  processing = true;
 
-  for(const item of list){
+  try{
 
-    try{
+    const list = await CGGQueue.pending();
+    let processed = 0;
 
-      item.status="processing";
+    for(const item of list){
 
-      await CGGQueue.update(item);
+      try{
 
-      const result = await send(item);
+        item.status = "processing";
+        await CGGQueue.update(item);
 
-      item.status="sent";
+        const result = await send(item);
 
-      item.serverId=result.id||null;
+        item.status = "sent";
+        item.serverId = result.id || null;
+        item.syncedAt = new Date().toISOString();
 
-      item.syncedAt=new Date().toISOString();
+        await CGGQueue.update(item);
 
-      await CGGQueue.update(item);
+        processed++;
+        console.log("✓ Synced:", item.module, item.id);
 
-      processed++;
+      }catch(err){
 
-      console.log("✓ Synced:",item.module,item.id);
+        item.retry = Number.isFinite(Number(item.retry))
+          ? Number(item.retry) + 1
+          : 1;
+
+        item.status = item.retry >= MAX_RETRY ? "failed" : "pending";
+        item.lastError = err?.message || String(err);
+
+        await CGGQueue.update(item);
+
+        console.warn("Retry:", item.id, item.retry, item.lastError);
+
+      }
 
     }
 
-    catch(err){
+    return {online:true, processed};
 
-      item.retry++;
-
-      item.status = item.retry>=MAX_RETRY
-        ? "failed"
-        : "pending";
-
-      item.lastError=err.message;
-
-      await CGGQueue.update(item);
-
-      console.warn("Retry:",item.id,item.retry,err.message);
-
-    }
-
+  }finally{
+    processing = false;
   }
-
-  return{
-
-    online:true,
-    processed
-
-  };
 
 }
-
-/* ==========================================
-   Auto Sync
-   ========================================== */
 
 function start(){
 
-  window.addEventListener("online",()=>{
+  if(started){
+    return timer;
+  }
 
-    processQueue();
+  started = true;
 
-  });
+  window.addEventListener("online", () => processQueue());
+  timer = window.setInterval(() => processQueue(), RETRY_DELAY);
 
-  setInterval(()=>{
-
-    processQueue();
-
-  },RETRY_DELAY);
+  return timer;
 
 }
 
-/* ==========================================
-   Public API
-   ========================================== */
-
-window.CGGSync={
-
+window.CGGSync = {
   send,
   processQueue,
   start
-
 };
 
 })();
