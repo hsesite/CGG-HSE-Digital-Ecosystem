@@ -4,82 +4,87 @@
    Clean Cache Foundation
    ========================================== */
 
-const VERSION="16.2";
-const CACHE_NAME=`cgg-hdos-${VERSION}`;
+const VERSION = "16.2";
+const CACHE_NAME = `cgg-hdos-${VERSION}`;
 
-const APP_ROOT="/CGG-HSE-Digital-Ecosystem";
+const APP_ROOT = (() => {
+  const scriptUrl = new URL(import.meta.url || self.location.href);
+  const path = scriptUrl.pathname || self.location.pathname;
+  const serviceWorkerPath = "/service-worker.js";
+  const index = path.lastIndexOf(serviceWorkerPath);
 
-const CORE=[
- `${APP_ROOT}/`,
- `${APP_ROOT}/index.html`,
- `${APP_ROOT}/manifest.json`,
- `${APP_ROOT}/assets/Logo/logo-cgg.png`
+  if(index > -1){
+    return path.slice(0, index).replace(/\/+$/, "") || "/";
+  }
+
+  return self.registration?.scope
+    ? new URL(self.registration.scope).pathname.replace(/\/+$/, "") || "/"
+    : "/";
+})();
+
+const CORE = [
+  `${APP_ROOT}/`,
+  `${APP_ROOT}/index.html`,
+  `${APP_ROOT}/manifest.json`,
+  `${APP_ROOT}/assets/Logo/logo-cgg.png`
 ];
 
-self.addEventListener("install",event=>{
+self.addEventListener("install", event => {
 
- event.waitUntil(
-  caches.open(CACHE_NAME).then(c=>c.addAll(CORE))
- );
-
- self.skipWaiting();
-
-});
-
-self.addEventListener("activate",event=>{
-
- event.waitUntil((async()=>{
-
-  const keys=await caches.keys();
-
-  await Promise.all(
-   keys
-    .filter(k=>k!==CACHE_NAME)
-    .map(k=>caches.delete(k))
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(CORE))
+      .catch(() => undefined)
   );
 
-  await self.clients.claim();
-
- })());
+  self.skipWaiting();
 
 });
 
-self.addEventListener("fetch",event=>{
+self.addEventListener("activate", event => {
 
- if(event.request.method!=="GET") return;
+  event.waitUntil((async() => {
 
- const url=new URL(event.request.url);
+    const keys = await caches.keys();
 
- if(url.origin!==location.origin) return;
+    await Promise.all(
+      keys
+        .filter(k => k !== CACHE_NAME)
+        .map(k => caches.delete(k))
+    );
 
- if(event.request.mode==="navigate"){
-
-  event.respondWith((async()=>{
-
-   try{
-
-    return await fetch(event.request);
-
-   }catch{
-
-    return await caches.match(`${APP_ROOT}/index.html`);
-
-   }
+    await self.clients.claim();
 
   })());
 
-  return;
+});
 
- }
+self.addEventListener("fetch", event => {
 
- event.respondWith((async()=>{
+  if(event.request.method !== "GET") return;
 
-  const cache=await caches.match(event.request);
+  const url = new URL(event.request.url);
 
-  if(cache) return cache;
+  if(url.origin !== self.location.origin) return;
 
-  return fetch(event.request);
+  if(event.request.mode === "navigate"){
 
- })());
+    event.respondWith((async() => {
+      try{
+        return await fetch(event.request, { cache: "no-store" });
+      }catch{
+        const fallback = new URL("./index.html", self.registration.scope).toString();
+        return await caches.match(fallback) || caches.match("./index.html") || Response.redirect("/");
+      }
+    })());
+
+    return;
+  }
+
+  event.respondWith((async() => {
+    const cached = await caches.match(event.request);
+    if(cached) return cached;
+    return fetch(event.request);
+  })());
 
 });
