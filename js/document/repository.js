@@ -1,152 +1,148 @@
 /* ==========================================
    CGG HDOS Repository
-   Build 27.3 Enterprise Stable
-   Repository Gateway
+   Master Blueprint v1.0
+   Document Gateway
    ========================================== */
 
 (() => {
+  "use strict";
 
-"use strict";
+  const Repository = {
 
-const Repository={
+    async save(job) {
+      if (!window.DocumentStore) {
+        throw new Error("DocumentStore belum dimuat.");
+      }
 
-/* ==========================
-   Save Document
-========================== */
+      if (!job || typeof job !== "object") {
+        throw new Error("Job dokumen tidak valid.");
+      }
 
-async save(job){
+      const document = window.HDOSControlEngine?.build
+        ? window.HDOSControlEngine.build(job)
+        : {
+            id: job.id || `DOC-${Date.now()}`,
+            title: job.name || "Dokumen",
+            noForm: job.noForm || "-",
+            category: job.category || "general",
+            module: job.module || "repository",
+            payload: job.payload || job
+          };
 
-if(!window.DocumentStore){
-throw new Error("DocumentStore belum dimuat.");
-}
+      if (window.HDOSTemplateEngine) {
+        const template = window.HDOSTemplateEngine.build({
+          name: job.name || document.title,
+          parsed: job.parsed || job.meta || {},
+          id: document.id,
+          meta: job.meta || {}
+        });
 
-/* Bangun metadata dokumen */
-const document=HDOSControlEngine.build(job);
+        document.template = template;
+        document.module = template.module || document.module || "repository";
+        document.inspectionType = template.inspectionType || document.inspectionType || "General";
+      }
 
-/* Bangun template runtime */
-if(window.HDOSTemplateEngine){
+      await window.DocumentStore.save(document);
 
-const template=HDOSTemplateEngine.build({
-name:job.name,
-parsed:job.parsed,
-id:document.id,
-meta:job.meta
-});
+      await window.DocumentStore.audit(
+        "document.saved",
+        document.id,
+        {
+          title: document.title,
+          noForm: document.noForm,
+          category: document.category,
+          module: document.module
+        }
+      );
 
-document.template=template;
-document.module=template.module;
-document.inspectionType=template.inspectionType;
+      window.dispatchEvent(
+        new CustomEvent("hdos:repository-updated", {
+          detail: document
+        })
+      );
 
-}
+      return document;
+    },
 
-/* Simpan ke IndexedDB */
-await DocumentStore.save(document);
+    async list(category = null) {
+      if (!window.DocumentStore) {
+        throw new Error("DocumentStore belum dimuat.");
+      }
 
-/* Audit Trail */
-await DocumentStore.audit(
-"document.saved",
-document.id,
-{
-title:document.title,
-noForm:document.noForm,
-category:document.category
-}
-);
+      const docs = await window.DocumentStore.list();
 
-/* Refresh Dashboard */
-window.dispatchEvent(new CustomEvent(
-"hdos:repository-updated",
-{detail:document}
-));
+      if (!category) {
+        return docs;
+      }
 
-return document;
+      return docs.filter(doc => doc.category === category);
+    },
 
-},
+    async listTemplates(module) {
+      const docs = await this.list();
 
-/* ==========================
-   List Documents
-========================== */
+      return docs.filter(doc =>
+        doc.template &&
+        (
+          doc.template.module === module ||
+          doc.module === module ||
+          doc.template.module === "Inspection" ||
+          doc.module === "inspection"
+        )
+      );
+    },
 
-async list(category=null){
+    async get(id) {
+      if (!window.DocumentStore) {
+        throw new Error("DocumentStore belum dimuat.");
+      }
 
-const docs=await DocumentStore.list();
+      return window.DocumentStore.get(id);
+    },
 
-if(!category) return docs;
+    async update(id, patch) {
+      if (!window.DocumentStore) {
+        throw new Error("DocumentStore belum dimuat.");
+      }
 
-return docs.filter(d=>d.category===category);
+      const doc = await window.DocumentStore.update(id, patch);
 
-},
+      await window.DocumentStore.audit(
+        "document.updated",
+        id,
+        patch
+      );
 
-/* ==========================
-   List Runtime Templates
-========================== */
+      window.dispatchEvent(
+        new CustomEvent("hdos:repository-updated", {
+          detail: doc
+        })
+      );
 
-async listTemplates(module){
+      return doc;
+    },
 
-const docs=await this.list();
+    async remove(id) {
+      if (!window.DocumentStore) {
+        throw new Error("DocumentStore belum dimuat.");
+      }
 
-return docs.filter(doc=>
-doc.template &&
-doc.template.module===module
-);
+      await window.DocumentStore.remove(id);
 
-},
+      await window.DocumentStore.audit(
+        "document.deleted",
+        id,
+        {}
+      );
 
-/* ==========================
-   Get One
-========================== */
+      window.dispatchEvent(
+        new CustomEvent("hdos:repository-updated", {
+          detail: { id }
+        })
+      );
+    }
+  };
 
-async get(id){
-
-return DocumentStore.get(id);
-
-},
-
-/* ==========================
-   Update
-========================== */
-
-async update(id,patch){
-
-const doc=await DocumentStore.update(id,patch);
-
-await DocumentStore.audit(
-"document.updated",
-id,
-patch
-);
-
-window.dispatchEvent(new CustomEvent(
-"hdos:repository-updated",
-{detail:doc}
-));
-
-return doc;
-
-},
-
-/* ==========================
-   Delete
-========================== */
-
-async remove(id){
-
-await DocumentStore.remove(id);
-
-await DocumentStore.audit(
-"document.deleted",
-id
-);
-
-window.dispatchEvent(new CustomEvent(
-"hdos:repository-updated",
-{detail:{id}}
-));
-
-}
-
-};
-
-window.HDOSRepository=Repository;
+  window.HDOSRepository = Repository;
 
 })();
