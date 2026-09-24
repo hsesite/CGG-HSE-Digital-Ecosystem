@@ -1,226 +1,257 @@
 /* ==========================================
-   CGG HDOS Cache Engine
-   Build 15.5 Production
-   Core Foundation (Frozen)
+   CGG HDOS IndexedDB Cache
+   Master Blueprint v1.0
+   Shared Offline Storage
    ========================================== */
 
 (() => {
-"use strict";
+  "use strict";
 
-/* ==========================================
-   Database Configuration
-   ========================================== */
+  const DB_NAME = "CGG_HDOS_CACHE";
+  const DB_VERSION = 1;
 
-const DB_NAME = "CGG_HDOS_DB";
-const DB_VERSION = 4;
+  const STORES = [
+    "queue",
+    "settings",
+    "documents",
+    "attachments",
+    "sync_meta"
+  ];
 
-let dbPromise = null;
+  let dbPromise = null;
 
-/* ==========================================
-   Open Database
-   ========================================== */
+  function openDB() {
+    if (!("indexedDB" in window)) {
+      throw new Error("Browser tidak mendukung IndexedDB.");
+    }
 
-function openDB(){
+    if (dbPromise) {
+      return dbPromise;
+    }
 
-  if(dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-  dbPromise = new Promise((resolve,reject)=>{
+      request.onupgradeneeded = event => {
+        const database = event.target.result;
 
-    const req = indexedDB.open(DB_NAME,DB_VERSION);
+        STORES.forEach(storeName => {
+          if (!database.objectStoreNames.contains(storeName)) {
+            const store = database.createObjectStore(storeName, {
+              keyPath: "id"
+            });
 
-    req.onupgradeneeded = (e)=>{
+            if (storeName === "queue") {
+              try {
+                store.createIndex("status", "status", {
+                  unique: false
+                });
+              } catch (error) {}
+              try {
+                store.createIndex("module", "module", {
+                  unique: false
+                });
+              } catch (error) {}
+            }
 
-      const db = e.target.result;
+            if (storeName === "documents") {
+              try {
+                store.createIndex("module", "module", {
+                  unique: false
+                });
+              } catch (error) {}
+            }
 
-      /* ---------- Config Store ---------- */
-
-      if(!db.objectStoreNames.contains("config")){
-
-        const store = db.createObjectStore("config",{
-          keyPath:"key"
+            if (storeName === "settings") {
+              try {
+                store.createIndex("key", "key", {
+                  unique: true
+                });
+              } catch (error) {}
+            }
+          }
         });
+      };
 
-        store.createIndex("updatedAt","updatedAt");
+      request.onsuccess = event => {
+        resolve(event.target.result);
+      };
 
-      }
-
-      /* ---------- System Log ---------- */
-
-      if(!db.objectStoreNames.contains("systemlog")){
-
-        const log = db.createObjectStore("systemlog",{
-          keyPath:"id",
-          autoIncrement:true
-        });
-
-        log.createIndex("time","time");
-
-      }
-
-      /* ---------- Universal Queue ---------- */
-
-      if(!db.objectStoreNames.contains("queue")){
-
-        const queue = db.createObjectStore("queue",{
-          keyPath:"id"
-        });
-
-        queue.createIndex("status","status");
-        queue.createIndex("module","module");
-        queue.createIndex("createdAt","createdAt");
-        queue.createIndex("priority","priority");
-        queue.createIndex("tenant","tenant");
-        queue.createIndex("company","company");
-
-      }
-
-    };
-
-    req.onsuccess = ()=>resolve(req.result);
-
-    req.onerror = ()=>reject(req.error);
-
-  });
-
-  return dbPromise;
-
-}
-
-/* ==========================================
-   CONFIG STORE
-   ========================================== */
-
-async function save(key,data,version=1){
-
-  const db = await openDB();
-
-  return new Promise((resolve,reject)=>{
-
-    const tx = db.transaction("config","readwrite");
-
-    tx.objectStore("config").put({
-
-      key,
-      version,
-      updatedAt:new Date().toISOString(),
-      data
-
+      request.onerror = () => {
+        reject(new Error("IndexedDB gagal dibuka."));
+      };
     });
 
-    tx.oncomplete = ()=>resolve(true);
+    return dbPromise;
+  }
 
-    tx.onerror = ()=>reject(tx.error);
+  function toSerializableValue(value) {
+    if (value === undefined) {
+      return null;
+    }
 
-  });
+    if (value instanceof Blob) {
+      return {
+        __type: "blob",
+        data: value
+      };
+    }
 
-}
+    return value;
+  }
 
-async function load(key){
+  async function setItem(storeName, id, value) {
+    const db = await openDB();
 
-  const db = await openDB();
+    return new Promise((resolve, reject) => {
+      try {
+        const transaction = db.transaction(storeName, "readwrite");
+        const store = transaction.objectStore(storeName);
 
-  return new Promise((resolve,reject)=>{
+        const payload = {
+          id,
+          value: toSerializableValue(value),
+          updatedAt: new Date().toISOString()
+        };
 
-    const req = db
-      .transaction("config")
-      .objectStore("config")
-      .get(key);
+        const request = store.put(payload);
 
-    req.onsuccess = ()=>resolve(req.result || null);
+        request.onsuccess = () => resolve(true);
+        request.onerror = () => reject(
+          request.error || new Error(`Gagal simpan ${storeName}`)
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
-    req.onerror = ()=>reject(req.error);
+  async function getItem(storeName, id) {
+    const db = await openDB();
 
-  });
+    return new Promise((resolve, reject) => {
+      try {
+        const transaction = db.transaction(storeName, "readonly");
+        const store = transaction.objectStore(storeName);
 
-}
+        const request = store.get(id);
 
-async function remove(key){
+        request.onsuccess = () => {
+          const result = request.result || null;
+          resolve(result ? result.value : null);
+        };
 
-  const db = await openDB();
+        request.onerror = () => reject(
+          request.error || new Error(`Gagal baca ${storeName}`)
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
-  return new Promise((resolve,reject)=>{
+  async function removeItem(storeName, id) {
+    const db = await openDB();
 
-    const tx = db.transaction("config","readwrite");
+    return new Promise((resolve, reject) => {
+      try {
+        const transaction = db.transaction(storeName, "readwrite");
+        const store = transaction.objectStore(storeName);
 
-    tx.objectStore("config").delete(key);
+        const request = store.delete(id);
 
-    tx.oncomplete = ()=>resolve(true);
+        request.onsuccess = () => resolve(true);
+        request.onerror = () => reject(
+          request.error || new Error(`Gagal hapus ${storeName}`)
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
-    tx.onerror = ()=>reject(tx.error);
+  async function list(storeName) {
+    const db = await openDB();
 
-  });
+    return new Promise((resolve, reject) => {
+      try {
+        const transaction = db.transaction(storeName, "readonly");
+        const store = transaction.objectStore(storeName);
 
-}
+        const request = store.getAll();
 
-async function clear(){
+        request.onsuccess = () => {
+          const result = request.result || [];
+          resolve(result.map(item => item.value ?? item));
+        };
 
-  const db = await openDB();
+        request.onerror = () => reject(
+          request.error || new Error(`Gagal list ${storeName}`)
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
-  return new Promise((resolve,reject)=>{
+  async function clear(storeName) {
+    const db = await openDB();
 
-    const tx = db.transaction("config","readwrite");
+    return new Promise((resolve, reject) => {
+      try {
+        const transaction = db.transaction(storeName, "readwrite");
+        const store = transaction.objectStore(storeName);
 
-    tx.objectStore("config").clear();
+        const request = store.clear();
 
-    tx.oncomplete = ()=>resolve(true);
+        request.onsuccess = () => resolve(true);
+        request.onerror = () => reject(
+          request.error || new Error(`Gagal clear ${storeName}`)
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
-    tx.onerror = ()=>reject(tx.error);
+  async function setSettings(key, value) {
+    return setItem("settings", key, value);
+  }
 
-  });
+  async function getSettings(key, fallback = null) {
+    const value = await getItem("settings", key);
+    return value === null ? fallback : value;
+  }
 
-}
+  async function getQueue() {
+    return list("queue");
+  }
 
-async function list(){
+  async function saveQueueItem(item) {
+    if (!item || !item.id) {
+      throw new Error("Queue item tidak valid.");
+    }
 
-  const db = await openDB();
+    return setItem("queue", item.id, item);
+  }
 
-  return new Promise((resolve,reject)=>{
+  async function getQueueItem(id) {
+    if (!id) return null;
+    return getItem("queue", id);
+  }
 
-    const req = db
-      .transaction("config")
-      .objectStore("config")
-      .getAll();
-
-    req.onsuccess = ()=>resolve(req.result);
-
-    req.onerror = ()=>reject(req.error);
-
-  });
-
-}
-
-/* ==========================================
-   Health Check
-   ========================================== */
-
-async function health(){
-
-  const db = await openDB();
-
-  return {
-    name: db.name,
-    version: db.version,
-    stores: [...db.objectStoreNames]
+  window.CGGCache = {
+    openDB,
+    setItem,
+    getItem,
+    removeItem,
+    list,
+    clear,
+    setSettings,
+    getSettings,
+    getQueue,
+    saveQueueItem,
+    getQueueItem
   };
-
-}
-
-/* ==========================================
-   Public API
-   ========================================== */
-
-window.CGGCache = {
-
-  openDB,
-
-  save,
-  load,
-  remove,
-  clear,
-  list,
-
-  health
-
-};
 
 })();
