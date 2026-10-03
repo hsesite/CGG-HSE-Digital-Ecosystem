@@ -1,136 +1,290 @@
 /* ==========================================
    CGG HDOS Sync Engine
-   Build 15.6 Production
-   Offline First • Transactional Sync
+   Master Blueprint v1.0
+   Offline Queue → Apps Script → Sheets
    ========================================== */
 
 (() => {
-"use strict";
+  "use strict";
 
-const MAX_RETRY = 5;
-const RETRY_DELAY = 3000;
-let processing = false;
-let started = false;
-let timer = null;
+  const MAX_RETRY = 5;
+  const RETRY_DELAY = 3000;
+  const REQUEST_TIMEOUT = 15000;
 
-async function send(item){
+  let processing = false;
+  let started = false;
+  let timer = null;
+  let onlineHandler = null;
 
-  const endpoint = window.CGGConfig?.endpoint;
-
-  if(!endpoint){
-    throw new Error("Endpoint HDOS belum dikonfigurasi.");
+  function errorMessage(error) {
+    return error?.message || String(error);
   }
 
-  const payload = {
-    action:item.module,
-    module:item.module,
-    queue_id:item.id,
-    tenant:item.tenant,
-    company:item.company,
-    createdBy:item.createdBy,
-    createdAt:item.createdAt,
-    payload:item.payload
-  };
+  function createTimeoutSignal() {
+    const controller = new AbortController();
 
-  const res = await fetch(endpoint,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(payload)
-  });
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+    }, REQUEST_TIMEOUT);
 
-  if(!res.ok){
-    throw new Error("HTTP "+res.status);
+    return {
+      signal: controller.signal,
+      clear: () => window.clearTimeout(timeout)
+    };
   }
 
-  const json = await res.json();
-
-  if(!json.success){
-    throw new Error(json.message || "Sync gagal");
-  }
-
-  return json;
-
-}
-
-async function processQueue(){
-
-  if(processing){
-    return {online:navigator.onLine, processed:0, busy:true};
-  }
-
-  if(!navigator.onLine || !window.CGGQueue){
-    return {online:false, processed:0};
-  }
-
-  processing = true;
-
-  try{
-
-    const list = await CGGQueue.pending();
-    let processed = 0;
-
-    for(const item of list){
-
-      try{
-
-        item.status = "processing";
-        await CGGQueue.update(item);
-
-        const result = await send(item);
-
-        item.status = "sent";
-        item.serverId = result.id || null;
-        item.syncedAt = new Date().toISOString();
-
-        await CGGQueue.update(item);
-
-        processed++;
-        console.log("✓ Synced:", item.module, item.id);
-
-      }catch(err){
-
-        item.retry = Number.isFinite(Number(item.retry))
-          ? Number(item.retry) + 1
-          : 1;
-
-        item.status = item.retry >= MAX_RETRY ? "failed" : "pending";
-        item.lastError = err?.message || String(err);
-
-        await CGGQueue.update(item);
-
-        console.warn("Retry:", item.id, item.retry, item.lastError);
-
-      }
-
+  async function send(item) {
+    if (!item?.id || !item.module) {
+      throw new Error("Queue item tidak valid.");
     }
 
-    return {online:true, processed};
+    const endpoint = window.CGGConfig?.endpoint;
 
-  }finally{
-    processing = false;
+    if (!endpoint) {
+      throw new Error("Endpoint HDOS belum dikonfigurasi.");
+    }
+
+    const payload = {
+      action: item.module,
+      module: item.module,
+      queue_id: item.id,
+      tenant: item.tenant || "CGG",
+      company: item.company || "CGG",
+      createdBy: item.createdBy || "anonymous",
+      createdAt: item.createdAt || new Date().toISOString(),
+      payload: item.payload || {}
+    };
+
+    const request = createTimeoutSignal();
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        mode: "cors",
+        redirect: "follow",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload),
+        signal: request.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result || result.success !== true) {
+        throw new Error(
+          result?.message || "Server menolak sinkronisasi."
+        );
+      }
+
+      return result;
+
+    } finally {
+      request.clear();
+    }
   }
 
-}
+  async function markProcessing(item) {
+    return window.CGGQueue.update({
+      ...item,
+      status: "processing",
+      processingAt: new Date().toISOString(),
+      lastError: null
+    });
+  }
 
-function start(){
+  async function markSent(item, result) {
+    return window.CGGQueue.update({
+      ...item,
+      status: "sent",
+      serverId: result?.id || result?.serverId || null,
+      syncedAt: new Date().toISOString(),
+      processingAt: null,
+      lastError: null
+    });
+  }
 
-  if(started){
+  async function markFailed(item, error) {
+    const retry = Number.isFinite(Number(item.retry))
+      ? Number(item.retry) + 1
+      : 1;
+
+    const status = retry >= MAX_RETRY
+      ? "failed"
+      : "pending";
+
+    return window.CGGQueue.update({
+      ...item,
+      retry,
+      status,
+      processingAt: null,
+      lastError: errorMessage(error),
+      lastAttemptAt: new Date().toISOString()
+    });
+  }
+
+  async function processQueue() {
+    if (processing) {
+      return {
+        online: navigator.onLine,
+        processed: 0,
+        busy: true
+      };
+    }
+
+    if (!navigator.onLine) {
+      return {
+        online: false,
+        processed: 0
+      };
+    }
+
+    if (!window.CGGQueue?.pending || !window.CGGQueue?.update) {
+      return {
+        online: true,
+        processed: 0,
+        error: "Queue engine belum siap."
+      };
+    }
+
+    processing = true;
+
+    try {
+      const items = await window.CGGQueue.pending();
+      let processed = 0;
+      let failed = 0;
+
+      for (const item of items) {
+        if (!navigator.onLine) {
+          break;
+        }
+
+        try {
+          await markProcessing(item);
+
+          const result = await send(item);
+
+          await markSent(item, result);
+
+          processed++;
+
+          window.dispatchEvent(
+            new CustomEvent("hdos:queue-item-synced", {
+              detail: {
+                item,
+                result
+              }
+            })
+          );
+
+          console.log("✓ Synced:", item.module, item.id);
+
+        } catch (error) {
+          failed++;
+
+          try {
+            await markFailed(item, error);
+          } catch (updateError) {
+            console.error(
+              "Queue status update failed:",
+              updateError
+            );
+          }
+
+          window.dispatchEvent(
+            new CustomEvent("hdos:queue-item-failed", {
+              detail: {
+                item,
+                error
+              }
+            })
+          );
+
+          console.warn(
+            "Sync retry:",
+            item.id,
+            errorMessage(error)
+          );
+        }
+      }
+
+      window.dispatchEvent(
+        new CustomEvent("hdos:queue-processed", {
+          detail: {
+            processed,
+            failed,
+            online: navigator.onLine
+          }
+        })
+      );
+
+      return {
+        online: navigator.onLine,
+        processed,
+        failed
+      };
+
+    } finally {
+      processing = false;
+    }
+  }
+
+  function start() {
+    if (started) {
+      return timer;
+    }
+
+    started = true;
+
+    onlineHandler = () => {
+      processQueue().catch(error => {
+        console.warn("Online sync failed:", errorMessage(error));
+      });
+    };
+
+    window.addEventListener("online", onlineHandler);
+
+    timer = window.setInterval(() => {
+      processQueue().catch(error => {
+        console.warn("Periodic sync failed:", errorMessage(error));
+      });
+    }, RETRY_DELAY);
+
+    processQueue().catch(error => {
+      console.warn("Initial sync failed:", errorMessage(error));
+    });
+
     return timer;
   }
 
-  started = true;
+  function stop() {
+    if (!started) {
+      return;
+    }
 
-  window.addEventListener("online", () => processQueue());
-  timer = window.setInterval(() => processQueue(), RETRY_DELAY);
+    started = false;
 
-  return timer;
+    if (onlineHandler) {
+      window.removeEventListener("online", onlineHandler);
+      onlineHandler = null;
+    }
 
-}
+    if (timer) {
+      window.clearInterval(timer);
+      timer = null;
+    }
+  }
 
-window.CGGSync = {
-  send,
-  processQueue,
-  start
-};
+  window.CGGSync = {
+    send,
+    processQueue,
+    start,
+    stop
+  };
 
 })();
